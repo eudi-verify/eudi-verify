@@ -1,0 +1,479 @@
+openapi: 3.1.0
+info:
+  title: EUDI Verifier API
+  description: |
+    Framework-agnostic REST API for EUDI Wallet verification.
+    
+    This API enables any backend (Node, PHP, Python, Java) to integrate EUDI Wallet
+    identity verification without framework lock-in. Built on OpenEUDI protocol libraries.
+    
+    ## Integration Flow (captcha-style)
+    
+    1. Client creates session via `POST /sessions` with verification request
+    2. Client displays QR code from `qrUrl` to user
+    3. User scans QR with EUDI Wallet and approves
+    4. Wallet posts VP to callback (handled by server)
+    5. Client polls `GET /sessions/:id` until status is terminal
+    6. On `verified`, client receives opaque token
+    7. **Merchant server** validates token via `POST /tokens/verify` (never trust client)
+    
+    ## Demo Mode Warning
+    
+    Demo mode returns simulated credentials. Never use in production.
+    Demo responses include `X-Eudi-Mode: demo` header.
+  version: 0.1.0
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  contact:
+    name: eudi-verify
+    url: https://github.com/eudi-verify/eudi-verify
+
+servers:
+  - url: /api/eudi
+    description: Relative mount point (configure via api-url attribute on widget)
+
+tags:
+  - name: Sessions
+    description: Verification session lifecycle
+  - name: Tokens
+    description: Server-side token verification (captcha pattern)
+  - name: Wallet Callbacks
+    description: Endpoints called by EUDI Wallet (production only)
+
+paths:
+  /sessions:
+    post:
+      operationId: createSession
+      tags: [Sessions]
+      summary: Create verification session
+      description: |
+        Creates a new verification session with the requested claims.
+        Returns a session ID and QR URL for the widget to display.
+        
+        Rate limited per IP to prevent abuse.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSessionRequest'
+            examples:
+              ageVerification:
+                summary: Age verification only
+                value:
+                  request:
+                    age_over_18: true
+              ageAndNationality:
+                summary: Age and nationality
+                value:
+                  request:
+                    age_over_18: true
+                    nationality: true
+      responses:
+        '201':
+          description: Session created
+          headers:
+            X-Eudi-Mode:
+              schema:
+                type: string
+                enum: [demo, production]
+              description: Indicates whether this is demo or production mode
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /sessions/{sessionId}:
+    get:
+      operationId: getSession
+      tags: [Sessions]
+      summary: Get session status
+      description: |
+        Poll this endpoint to check verification status.
+        Use exponential backoff (e.g., 1s, 2s, 4s, max 10s).
+        
+        When status is `verified`, response includes an opaque `token`
+        that must be validated server-side via `POST /tokens/verify`.
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Session status
+          headers:
+            X-Eudi-Mode:
+              schema:
+                type: string
+                enum: [demo, production]
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /sessions/{sessionId}/cancel:
+    post:
+      operationId: cancelSession
+      tags: [Sessions]
+      summary: Cancel verification session
+      description: |
+        Cancels an active session. Use when user navigates away
+        or explicitly cancels the verification flow.
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Session cancelled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Session already in terminal state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /tokens/verify:
+    post:
+      operationId: verifyToken
+      tags: [Tokens]
+      summary: Verify token (server-side only)
+      description: |
+        **Call this from your server, never from the browser.**
+        
+        Validates the opaque token received from the widget's `verified` event.
+        Like reCAPTCHA's siteverify endpoint — the final trust anchor.
+        
+        Tokens are:
+        - Single-use (consumed on successful verify)
+        - Short-lived (5 minute TTL)
+        - Bound to the original session
+        
+        Returns the verified claims only if token is valid.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyTokenRequest'
+      responses:
+        '200':
+          description: Token verification result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyTokenResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # Production-only endpoints (stubs for now)
+  /callback:
+    post:
+      operationId: handleCallback
+      tags: [Wallet Callbacks]
+      summary: Wallet callback endpoint (production)
+      description: |
+        Receives the Verifiable Presentation from the EUDI Wallet.
+        In production, this is an encrypted JWE (`direct_post.jwt`).
+        
+        **Not called by integrators** — this is the `response_uri` in the
+        OpenID4VP authorization request.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                response:
+                  type: string
+                  description: Encrypted VP (JWE) or plain VP token in demo mode
+              required: [response]
+      responses:
+        '200':
+          description: VP processed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok]
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /request/{requestId}:
+    get:
+      operationId: getRequest
+      tags: [Wallet Callbacks]
+      summary: Get authorization request (production PAR)
+      description: |
+        Serves the OpenID4VP authorization request object.
+        The wallet fetches this URL from the `request_uri` in the QR code.
+        
+        **Not called by integrators** — internal to the OpenID4VP flow.
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Authorization request JWT
+          content:
+            application/oauth-authz-req+jwt:
+              schema:
+                type: string
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  schemas:
+    VerificationRequest:
+      type: object
+      description: |
+        Claims to request from the wallet. Each property set to `true`
+        requests that claim. Uses selective disclosure — only requested
+        claims are shared.
+      properties:
+        age_over_18:
+          type: boolean
+          const: true
+          description: Request age verification (over 18)
+        age_over_21:
+          type: boolean
+          const: true
+          description: Request age verification (over 21)
+        nationality:
+          type: boolean
+          const: true
+          description: Request nationality claim
+        given_name:
+          type: boolean
+          const: true
+          description: Request given name
+        family_name:
+          type: boolean
+          const: true
+          description: Request family name
+        birth_date:
+          type: boolean
+          const: true
+          description: Request birth date
+      additionalProperties:
+        type: boolean
+      example:
+        age_over_18: true
+
+    SessionStatus:
+      type: string
+      enum:
+        - pending
+        - waiting_for_wallet
+        - verified
+        - rejected
+        - expired
+        - cancelled
+        - error
+      description: |
+        Session lifecycle states:
+        - `pending`: Session created, waiting for wallet scan
+        - `waiting_for_wallet`: QR scanned, waiting for user approval in wallet
+        - `verified`: User approved, claims verified successfully
+        - `rejected`: User rejected the request in wallet
+        - `expired`: Session TTL exceeded (default 5 minutes)
+        - `cancelled`: Cancelled via API
+        - `error`: Verification failed (invalid VP, crypto error, etc.)
+
+    Session:
+      type: object
+      required: [id, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique session identifier
+        status:
+          $ref: '#/components/schemas/SessionStatus'
+        qrUrl:
+          type: string
+          format: uri
+          description: |
+            URL to encode in QR code. Present only when status is `pending`.
+            Contains the OpenID4VP authorization request.
+        token:
+          type: string
+          description: |
+            Opaque verification token. Present only when status is `verified`.
+            Must be validated server-side via `POST /tokens/verify`.
+            Format: `eudi_v1.<base64url-payload>.<hmac>`
+        claims:
+          $ref: '#/components/schemas/VerifiedClaims'
+        error:
+          type: string
+          description: Error message when status is `error`
+        createdAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+          description: Session expiration time (default 5 minutes from creation)
+
+    VerifiedClaims:
+      type: object
+      description: |
+        Claims extracted from the verified presentation.
+        Only includes claims that were requested and disclosed.
+        
+        **Warning:** In demo mode, these are simulated values.
+      properties:
+        age_over_18:
+          type: boolean
+          description: Whether the user is over 18
+        age_over_21:
+          type: boolean
+          description: Whether the user is over 21
+        nationality:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+        given_name:
+          type: string
+        family_name:
+          type: string
+        birth_date:
+          type: string
+          format: date
+      additionalProperties: true
+
+    VerificationToken:
+      type: string
+      pattern: '^eudi_v1\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$'
+      description: |
+        Opaque token proving successful verification.
+        Format: `eudi_v1.<base64url-payload>.<hmac>`
+        
+        Payload contains:
+        - `sid`: Session ID
+        - `kid`: Key ID (for rotation)
+        - `exp`: Expiration timestamp
+        - `hash`: Claims hash
+        
+        Properties:
+        - Single-use (consumed on verify)
+        - Short TTL (5 minutes)
+        - HMAC-signed with server secret
+      example: 'eudi_v1.eyJzaWQiOiJhYmMxMjMiLCJleHAiOjE3MTk2MDAwMDB9.dGVzdC1obWFj'
+
+    CreateSessionRequest:
+      type: object
+      required: [request]
+      properties:
+        request:
+          $ref: '#/components/schemas/VerificationRequest'
+        callbackUrl:
+          type: string
+          format: uri
+          description: Optional webhook URL to POST when verification completes
+
+    VerifyTokenRequest:
+      type: object
+      required: [token]
+      properties:
+        token:
+          $ref: '#/components/schemas/VerificationToken'
+
+    VerifyTokenResponse:
+      type: object
+      required: [valid]
+      properties:
+        valid:
+          type: boolean
+          description: Whether the token is valid
+        claims:
+          $ref: '#/components/schemas/VerifiedClaims'
+        error:
+          type: string
+          description: Error reason if valid is false
+          enum:
+            - invalid_token
+            - expired
+            - already_consumed
+            - invalid_signature
+      example:
+        valid: true
+        claims:
+          age_over_18: true
+
+    Error:
+      type: object
+      required: [error, message]
+      properties:
+        error:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: object
+          additionalProperties: true
+          description: Additional error context
+
+  parameters:
+    SessionId:
+      name: sessionId
+      in: path
+      required: true
+      description: Session ID from createSession response
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: bad_request
+            message: Invalid verification request
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: not_found
+            message: Session not found
+
+    RateLimited:
+      description: Rate limit exceeded
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds until rate limit resets
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: rate_limited
+            message: Too many requests, please retry later

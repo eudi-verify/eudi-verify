@@ -9,9 +9,11 @@
   },
   "scripts": {
     "typecheck": "pnpm -r typecheck",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint:api": "spectral lint openapi/eudi-verifier.yaml"
   },
   "devDependencies": {
+    "@stoplight/spectral-cli": "^6.16.0",
     "typescript": "^5.0.0",
     "vitest": "^2.0.0"
   }
