@@ -1,0 +1,34 @@
+---
+globs:
+  - packages/*/src/**
+  - packages/*/README.md
+  - docs/INTEGRATION.md
+---
+
+# Documentation Sync
+
+## When to Update Docs
+
+After modifying package implementations, check if documentation needs updates:
+
+| Changed | Update |
+|---------|--------|
+| `packages/server/src/**` | `packages/server/README.md` |
+| `packages/client/src/**` | `packages/client/README.md` |
+| `packages/embed/src/**` | `packages/embed/README.md` |
+| Any public API change | `docs/INTEGRATION.md` |
+| New WP or scope change | `docs/PLAN.md` |
+
+## What to Check
+
+- **Exports changed?** → Update API reference section
+- **New config option?** → Add to configuration table
+- **Breaking change?** → Update code examples
+- **New error type?** → Add to error handling section
+
+## Don't Over-Document
+
+- Keep READMEs concise (devs read code)
+- One working example > lengthy explanation
+- Link to OpenAPI spec for full API details
+- Skip obvious changes (internal refactors, test fixes)

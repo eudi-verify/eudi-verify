@@ -69,9 +69,11 @@ pnpm test
 
 | Package | Description | Status |
 |---------|-------------|--------|
-| `@eudi-verify/server` | REST API handlers, token verification, rate limiting | ✅ WP2 complete |
-| `@eudi-verify/client` | Typed API client, state machine, QR generation | 🔜 WP3 |
+| `@eudi-verify/server` | REST API handlers, token verification, rate limiting | ✅ WP2 |
+| `@eudi-verify/client` | Typed API client, state machine, QR generation | ✅ WP3 |
 | `@eudi-verify/embed` | `<eudi-verify>` web component | 🔜 WP4 |
+
+📖 **[Integration Guide](docs/INTEGRATION.md)** — End-to-end setup walkthrough
 
 ## Design Principles
 

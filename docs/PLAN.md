@@ -58,6 +58,12 @@ Four core artifacts only. React/Next/Hono bindings, Auth.js, Vue example, and pr
 - `THREAT_MODEL.md`, `SECURITY.md` (disclosure policy), `DEPENDENCY.md` (license/origin per dep)
 - **Accept:** docs exist; CI license gate enforced; demo labeled not-production everywhere
 
+### WP7 — Integration Docs
+
+- Package READMEs: `packages/{server,client,embed}/README.md`
+- Integration guide: `docs/INTEGRATION.md` (end-to-end walkthrough)
+- **Accept:** each package has README with working examples; integration guide covers full flow
+
 ### Dependency Order
 
 ```mermaid
@@ -69,9 +75,12 @@ flowchart LR
   WP3 --> WP4
   WP4 --> WP5
   WP6 --> WP5
+  WP2 --> WP7
+  WP3 --> WP7
+  WP4 --> WP7
 ```
 
-WP2 and WP3 parallelize after WP1. WP6 can run anytime.
+WP2 and WP3 parallelize after WP1. WP6 and WP7 can run anytime after their dependencies.
 
 ---
 
