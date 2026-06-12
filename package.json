@@ -9,8 +9,10 @@
   },
   "scripts": {
     "typecheck": "pnpm -r typecheck",
-    "test": "vitest run",
-    "lint:api": "spectral lint openapi/eudi-verifier.yaml"
+    "test": "vitest run && pnpm --filter @eudi-verify/embed test",
+    "test:unit": "vitest run",
+    "lint:api": "spectral lint openapi/eudi-verifier.yaml",
+    "build": "pnpm -r build"
   },
   "devDependencies": {
     "@stoplight/spectral-cli": "^6.16.0",

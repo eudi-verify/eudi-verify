@@ -1,15 +1,44 @@
 {
   "name": "@eudi-verify/embed",
   "version": "0.0.0",
+  "description": "<eudi-verify> Custom Element for EUDI Wallet verification",
   "type": "module",
   "engines": {
     "node": ">=22"
   },
+  "main": "./dist/eudi-verify.js",
+  "module": "./dist/eudi-verify.js",
+  "types": "./dist/eudi-verify.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/eudi-verify.d.ts",
+      "import": "./dist/eudi-verify.js",
+      "require": "./dist/eudi-verify.cjs"
+    }
   },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": true,
   "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
-  }
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "node -e \"const p=process.env.EUDI_E2E_PORT||3333;const a=process.env.EUDI_MOCK_API_PORT||3456;console.log('\\n📍 E2E widget:  http://localhost:'+p+'/');console.log('📍 Mock API:    http://localhost:'+a+'/api/eudi\\n');\" && playwright test",
+    "serve:e2e": "node -e \"const p=process.env.EUDI_E2E_PORT||3333;console.log('🚀 E2E widget server: http://localhost:'+p+'/');\" && vite --logLevel info",
+    "serve:mock-api": "node e2e/mock-api-server.mjs"
+  },
+  "dependencies": {
+    "@eudi-verify/client": "workspace:*"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@playwright/test": "^1.48.0",
+    "happy-dom": "^15.7.4",
+    "tsup": "^8.3.0",
+    "vite": "^5.4.0"
+  },
+  "license": "Apache-2.0"
 }

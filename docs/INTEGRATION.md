@@ -136,6 +136,7 @@ pnpm add @eudi-verify/embed
 |-----------|-------------|
 | `api-url` | Base URL of your verifier API |
 | `request` | JSON string of requested claims |
+| `auto-start` | (Optional) Start verification automatically on page load |
 
 ### Widget Events
 
@@ -143,8 +144,9 @@ pnpm add @eudi-verify/embed
 |-------|--------|-------------|
 | `verified` | `{ token, claims }` | User approved, token ready |
 | `rejected` | `{ error? }` | User declined in wallet |
-| `expired` | — | Session timed out |
+| `expired` | `{}` | Session timed out |
 | `error` | `{ error }` | Something went wrong |
+| `state-change` | `{ state }` | Any state change (for custom handling) |
 
 ### Theming
 

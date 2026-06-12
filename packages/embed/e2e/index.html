@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EUDI Verify Widget - E2E Test</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+
+      h1 {
+        color: #003399;
+        margin-bottom: 8px;
+      }
+
+      p {
+        color: #666;
+        margin-bottom: 24px;
+      }
+
+      eudi-verify {
+        display: block;
+        margin: 24px 0;
+      }
+
+      .custom-themed {
+        --eudi-primary: #0052b4;
+        --eudi-border-radius: 12px;
+      }
+
+      #events {
+        margin-top: 24px;
+        padding: 16px;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: monospace;
+        font-size: 12px;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      #events:empty::before {
+        content: 'Events will appear here...';
+        color: #999;
+      }
+
+      .event-line {
+        padding: 4px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .event-line:last-child {
+        border-bottom: none;
+      }
+
+      .event-name {
+        color: #003399;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>EUDI Verify Widget</h1>
+    <p>E2E test page for the <code>&lt;eudi-verify&gt;</code> custom element.</p>
+
+    <eudi-verify
+      id="widget"
+      api-url="/api/eudi"
+      request='{"age_over_18":true}'
+    ></eudi-verify>
+
+    <div id="events"></div>
+
+    <script type="module">
+      import '../src/index.ts';
+
+      const widget = document.getElementById('widget');
+      const eventsDiv = document.getElementById('events');
+
+      function logEvent(name, detail) {
+        const line = document.createElement('div');
+        line.className = 'event-line';
+        line.innerHTML = `<span class="event-name">${name}</span>: ${JSON.stringify(detail)}`;
+        eventsDiv.prepend(line);
+      }
+
+      widget.addEventListener('state-change', (e) => {
+        logEvent('state-change', { status: e.detail.state.status });
+      });
+
+      widget.addEventListener('verified', (e) => {
+        logEvent('verified', e.detail);
+      });
+
+      widget.addEventListener('rejected', (e) => {
+        logEvent('rejected', e.detail);
+      });
+
+      widget.addEventListener('expired', (e) => {
+        logEvent('expired', e.detail);
+      });
+
+      widget.addEventListener('error', (e) => {
+        logEvent('error', e.detail);
+      });
+
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('auto-start') === 'true') {
+        widget.setAttribute('auto-start', '');
+      }
+    </script>
+  </body>
+</html>

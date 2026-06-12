@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Themed widget test</title>
+    <style>
+      eudi-verify {
+        --eudi-primary: #ff0000;
+        --eudi-border-radius: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <eudi-verify
+      api-url="/api/eudi"
+      request='{"age_over_18":true}'
+    ></eudi-verify>
+    <script type="module">
+      import '../../src/index.ts';
+    </script>
+  </body>
+</html>
