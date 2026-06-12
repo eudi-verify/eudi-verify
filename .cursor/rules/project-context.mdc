@@ -1,0 +1,55 @@
+---
+description: Core project context, architecture decisions, and coding standards
+alwaysApply: true
+---
+
+# eudi-verify Project Context
+
+## What This Is
+
+Framework-agnostic EUDI Wallet verifier kit — a "reCAPTCHA for EU digital identity." Three packages:
+
+- `@eudi-verify/server` — REST API handlers (any backend)
+- `@eudi-verify/client` — Vanilla TS API client (any frontend)
+- `@eudi-verify/embed` — `<eudi-verify>` web component (any HTML page)
+
+## Architecture Decisions (Settled)
+
+- **Vanilla Custom Elements** — No Lit, no React in core
+- **pnpm workspaces** — No Turborepo
+- **VerifierEngine interface** — Swappable protocol implementations
+- **Primary engine:** `@openeudi/core` (Luxembourg, Apache-2.0)
+- **Fallback engine:** Sphereon OID4VC (if openeudi has issues)
+
+## Sovereignty Constraints
+
+No US proprietary middleware. Allowed:
+- US-origin OSS (MIT/Apache-2.0): Node, TypeScript, npm packages ✓
+- EU-hosted infrastructure: Hetzner, self-hosted ✓
+
+Avoid:
+- US identity SaaS: Auth0, Clerk, Firebase Auth ✗
+- Vercel-only deployment assumptions ✗
+- Google libraries in core (Lit) ✗
+
+## Coding Standards
+
+- TypeScript strict mode
+- Vitest for testing
+- OpenAPI 3.1 for API contracts
+- Apache-2.0 license; deps must be Apache-2.0/MIT/BSD/ISC
+
+## File Patterns
+
+| Path | Purpose |
+|------|---------|
+| `packages/server/src/` | Server implementation |
+| `packages/client/src/` | Client library |
+| `packages/embed/src/` | Web component |
+| `openapi/*.yaml` | API contract (OpenAPI 3.1) |
+| `docs/PLAN.md` | Technical roadmap |
+| `docs/wp/WP*.md` | Work package acceptance criteria |
+
+## Session Context
+
+For extended project context beyond this technical overview, check for `*.local.md` files if present (gitignored local notes).

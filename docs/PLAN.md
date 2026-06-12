@@ -113,6 +113,39 @@ The **product** is not a React or Next library. It is three stack-independent la
 
 ---
 
+## Dependencies & Risk Mitigation
+
+### Protocol Implementation
+
+This project wraps third-party OpenID4VP implementations behind a swappable `VerifierEngine` interface:
+
+| Engine | Origin | Status | Risk |
+|--------|--------|--------|------|
+| `@openeudi/core` | Luxembourg | **Primary** | Single maintainer (bus factor) |
+| Sphereon OID4VC | Netherlands | Fallback | Company-backed, heavier |
+| MockEngine | This project | Testing | No real verification |
+
+**Mitigation:** The `VerifierEngine` interface isolates protocol details. If `@openeudi/core` becomes unmaintained:
+1. Patch locally (Apache-2.0 allows this)
+2. Swap to Sphereon with minimal code changes
+3. Fork and maintain (last resort)
+
+### EU Infrastructure Status
+
+The EU Digital Identity Wallet ecosystem is still being built:
+
+| Component | Status | Impact |
+|-----------|--------|--------|
+| eIDAS 2.0 Regulation | ✅ Passed | Legal framework exists |
+| Architecture Reference Framework | ✅ Published | Specs available |
+| EU Reference Wallet | 🟡 Development | Can't test against real wallet |
+| National Wallet Apps | 🟡 Pilots only | Limited availability |
+| EU Trust List (production) | 🔴 Not live | Can't verify real credentials |
+
+**Consequence:** Demo mode only for now. Production verification requires EU infrastructure that doesn't exist yet.
+
+---
+
 ## Security: Threat Model Summary
 
 ### Trust Boundaries

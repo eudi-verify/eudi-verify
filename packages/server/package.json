@@ -1,6 +1,6 @@
 {
   "name": "@eudi-verify/server",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "engines": {
     "node": ">=22"
@@ -11,6 +11,9 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
+  },
+  "dependencies": {
+    "@openeudi/core": "^0.8.0"
   },
   "devDependencies": {
     "@types/node": "^25.9.2"

@@ -7,20 +7,27 @@
  * @example
  * ```ts
  * import {
- *   MockEngine,
+ *   createVerifierHandlers,
+ *   OpenEudiEngine,
  *   MemoryKVStore,
- *   type VerifierEngine,
- *   type Session,
+ *   type VerifierConfig,
  * } from '@eudi-verify/server';
  *
- * const engine = new MockEngine();
+ * const engine = new OpenEudiEngine({ mode: 'demo', baseUrl: '/api/eudi' });
  * const store = new MemoryKVStore();
+ * const handlers = createVerifierHandlers({
+ *   engine,
+ *   store,
+ *   baseUrl: '/api/eudi',
+ *   mode: 'demo',
+ *   tokenSecret: process.env.VERIFICATION_SECRET!,
+ * });
  * ```
  *
  * @packageDocumentation
  */
 
-export const VERSION = '0.0.0';
+export const VERSION = '0.1.0';
 
 // Types
 export type {
@@ -70,3 +77,29 @@ export type {
 } from './engine.js';
 
 export { MockEngine } from './engine.js';
+
+// OpenEUDI Engine
+export type { DemoClaimsConfig, OpenEudiEngineOptions } from './engines/openeudi.js';
+export { OpenEudiEngine } from './engines/openeudi.js';
+
+// Token Service
+export type { TokenService, TokenServiceConfig } from './token.js';
+export { createTokenService } from './token.js';
+
+// Rate Limiter
+export type {
+  RateLimiter,
+  RateLimitConfig,
+  RateLimitResult,
+} from './rate-limit.js';
+export { createRateLimiter } from './rate-limit.js';
+
+// Handlers
+export type {
+  VerifierConfig,
+  VerifierHandlers,
+  RequestContext,
+  HandlerResponse,
+  RequestHandler,
+} from './handlers.js';
+export { createVerifierHandlers } from './handlers.js';

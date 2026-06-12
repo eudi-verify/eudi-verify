@@ -23,6 +23,10 @@ importers:
   packages/embed: {}
 
   packages/server:
+    dependencies:
+      '@openeudi/core':
+        specifier: ^0.8.0
+        version: 0.8.0
     devDependencies:
       '@types/node':
         specifier: ^25.9.2
@@ -203,6 +207,14 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
+
+  '@openeudi/core@0.8.0':
+    resolution: {integrity: sha512-Ao3F6OXHUW+uDgQPYjOydGW0AQaXrK0jaBq+7ofUfulj2k1Oq2dRQnls4pN92hHAButQQPJMUdrnvAuaAYDSWg==}
+    peerDependencies:
+      qrcode: ^1.5.0
+    peerDependenciesMeta:
+      qrcode:
+        optional: true
 
   '@rollup/plugin-commonjs@22.0.2':
     resolution: {integrity: sha512-//NdP6iIwPbMTcazYsiBMbJW7gfmpHom33u1beiIoHDEM0Q9clvtQB1T0efvMqHeKsGohiHo97BCPCkBXdscwg==}
@@ -1339,6 +1351,10 @@ packages:
     resolution: {integrity: sha512-6Z7Ma2aVEWisaL6TvBCy7P8rm2LQoPv6dJ7ecIaIixHcwfbJ0x7mWdbcwlIM5IGQxPZSFYeqRCqlOOeKoJYMkw==}
     engines: {node: '>= 4'}
 
+  uuid@11.1.1:
+    resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
+    hasBin: true
+
   validate-npm-package-name@3.0.0:
     resolution: {integrity: sha512-M6w37eVCMMouJ9V/sdPGnC5H4uDr73/+xdq0FBLO3TFFX1+7wiUY6Es328NN+y43tmY+doUdN9g9J21vqB7iLw==}
 
@@ -1549,6 +1565,10 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
+
+  '@openeudi/core@0.8.0':
+    dependencies:
+      uuid: 11.1.1
 
   '@rollup/plugin-commonjs@22.0.2(rollup@2.80.0)':
     dependencies:
@@ -2930,6 +2950,8 @@ snapshots:
   urijs@1.19.11: {}
 
   utility-types@3.11.0: {}
+
+  uuid@11.1.1: {}
 
   validate-npm-package-name@3.0.0:
     dependencies:
