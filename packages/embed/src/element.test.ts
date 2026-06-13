@@ -18,7 +18,7 @@ function createMockFetch() {
     status: 201,
     json: async () => mockSession,
     headers: new Headers(),
-  })) as typeof fetch;
+  })) as unknown as typeof fetch;
 }
 
 beforeAll(() => {
