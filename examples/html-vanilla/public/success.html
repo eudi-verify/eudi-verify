@@ -29,12 +29,47 @@
       The verification token was verified using HMAC signature checking.
       The token is single-use and has now been consumed.
     </div>
+
+    <div id="receipt-missing" class="alert alert-error" hidden>
+      Receipt not found or expired. Complete a fresh verification from the demo page.
+    </div>
+
+    <div id="receipt-panel" class="card" hidden style="text-align: left;">
+      <h3>Server verification receipt</h3>
+      <p class="receipt-note">
+        Claims below were returned by <code>POST /tokens/verify</code> on the server — not from the browser widget.
+      </p>
+      <dl class="receipt-table">
+        <dt>Session ID</dt>
+        <dd><code id="receipt-session-id">—</code></dd>
+        <dt>Verified at (server)</dt>
+        <dd id="receipt-verified-at">—</dd>
+        <dt>Token format</dt>
+        <dd><code id="receipt-token-format">—</code></dd>
+        <dt>Token (truncated)</dt>
+        <dd><code id="receipt-token-preview">—</code></dd>
+        <dt>Claims</dt>
+        <dd><pre id="receipt-claims" class="replay-result">—</pre></dd>
+      </dl>
+    </div>
+
+    <div id="replay-panel" class="card" hidden style="text-align: left;">
+      <h3>Prove single-use enforcement</h3>
+      <p>
+        The token was consumed during checkout. Submitting it again should fail with
+        <code>already_consumed</code>.
+      </p>
+      <button type="button" class="btn btn-outline" id="btn-replay">
+        Try submitting the same token again
+      </button>
+      <pre id="replay-result" class="replay-result" hidden></pre>
+    </div>
     
     <div class="card">
       <h3>What happened?</h3>
       <ol style="text-align: left; padding-left: 1.5rem;">
         <li>Widget displayed QR code for wallet scanning</li>
-        <li>User approved credential disclosure in wallet</li>
+        <li>User approved in the demo wallet (or via curl in developer mode)</li>
         <li>Wallet sent verifiable presentation to callback</li>
         <li>Server minted single-use token</li>
         <li>Widget received token, submitted form</li>
@@ -53,5 +88,7 @@
       Designed for EU-sovereign deployment.
     </p>
   </footer>
+
+  <script type="module" src="/demo-success.js"></script>
 </body>
 </html>

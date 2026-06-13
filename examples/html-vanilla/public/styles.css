@@ -214,3 +214,148 @@ code {
   font-size: 0.875rem;
   color: var(--color-text-muted);
 }
+
+.verification-log {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--color-text);
+}
+
+.verification-log li {
+  margin-bottom: 0.35rem;
+  word-break: break-all;
+}
+
+.verification-log a {
+  color: var(--color-eu-blue);
+}
+
+.demo-wallet-panel {
+  margin-top: 0;
+}
+
+.demo-wallet-hint {
+  margin-bottom: 0.75rem;
+  font-size: 0.9375rem;
+}
+
+.btn-demo-wallet {
+  display: inline-block;
+  background: var(--color-surface);
+  color: var(--color-eu-blue);
+  border: 2px solid var(--color-eu-blue);
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.btn-demo-wallet:hover {
+  background: var(--color-eu-blue);
+  color: white;
+}
+
+.curl-hint {
+  margin: 1rem 0 1.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.curl-hint summary {
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--color-eu-blue);
+}
+
+.curl-hint-note {
+  margin: 0.75rem 0 0.5rem;
+  font-size: 0.875rem;
+}
+
+.demo-wallet-card {
+  background: var(--color-background);
+  border: 2px solid var(--color-eu-blue);
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 360px;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 51, 153, 0.12);
+}
+
+.demo-wallet-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.demo-wallet-header h2 {
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.demo-wallet-icon {
+  font-size: 1.5rem;
+}
+
+.demo-wallet-loading {
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.demo-wallet-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.demo-wallet-actions .btn {
+  flex: 1;
+  text-align: center;
+}
+
+.receipt-table {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 1rem;
+  font-size: 0.9375rem;
+}
+
+.receipt-table dt {
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.receipt-table dd {
+  margin: 0;
+  word-break: break-all;
+}
+
+.receipt-note {
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.replay-result {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8125rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin-top: 0.75rem;
+}
+
+#replay-result {
+  margin-top: 1rem;
+}

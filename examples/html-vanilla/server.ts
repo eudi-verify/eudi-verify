@@ -2,19 +2,41 @@ import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { randomUUID } from 'node:crypto';
 import {
   createVerifierHandlers,
   OpenEudiEngine,
   MemoryKVStore,
   type RequestContext,
   type HandlerResponse,
+  type VerifiedClaims,
 } from '@eudi-verify/server';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}/api/eudi`;
+const DEMO_RECEIPT_TTL_MS = 5 * 60 * 1000;
 
-const engine = new OpenEudiEngine({ mode: 'demo', baseUrl: BASE_URL });
+interface DemoReceipt {
+  sessionId: string;
+  claims: VerifiedClaims;
+  verifiedAt: string;
+  token: string;
+}
+
+interface DemoReceiptDTO {
+  sessionId: string;
+  claims: VerifiedClaims;
+  verifiedAt: string;
+  tokenPreview: string;
+  tokenFormat: string;
+}
+
+const engine = new OpenEudiEngine({
+  mode: 'demo',
+  baseUrl: BASE_URL,
+  demoDelayMs: 1500,
+});
 const store = new MemoryKVStore();
 const handlers = createVerifierHandlers({
   engine,
@@ -24,6 +46,25 @@ const handlers = createVerifierHandlers({
   tokenSecret: process.env.TOKEN_SECRET || 'demo-secret-change-in-production',
   rateLimit: { maxRequests: 10, windowMs: 60_000 },
 });
+
+function demoReceiptKey(rid: string): string {
+  return `demo-receipt:${rid}`;
+}
+
+function truncateToken(token: string): string {
+  if (token.length <= 24) return token;
+  return `${token.slice(0, 12)}…${token.slice(-8)}`;
+}
+
+function receiptToDTO(receipt: DemoReceipt): DemoReceiptDTO {
+  return {
+    sessionId: receipt.sessionId,
+    claims: receipt.claims,
+    verifiedAt: receipt.verifiedAt,
+    tokenPreview: truncateToken(receipt.token),
+    tokenFormat: 'eudi_v1.<payload>.<hmac>',
+  };
+}
 
 const MIME: Record<string, string> = {
   '.html': 'text/html',
@@ -90,6 +131,61 @@ const server = createServer(async (req, res) => {
     return serveEmbedBundle(res);
   }
 
+  // Demo-only API routes
+  if (path.startsWith('/api/demo')) {
+    const demoPath = path.replace('/api/demo', '');
+
+    const receiptMatch = demoPath.match(/^\/receipt\/([^/]+)$/);
+    if (req.method === 'GET' && receiptMatch) {
+      const rid = decodeURIComponent(receiptMatch[1]);
+      const receipt = await store.get<DemoReceipt>(demoReceiptKey(rid));
+      if (!receipt) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'not_found', message: 'Receipt not found or expired' }));
+      }
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'X-Eudi-Mode': 'demo',
+      });
+      return res.end(JSON.stringify(receiptToDTO(receipt)));
+    }
+
+    if (req.method === 'POST' && demoPath === '/replay') {
+      const raw = await parseBody(req);
+      let body: { rid?: string };
+      try {
+        body = JSON.parse(raw);
+      } catch {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'bad_request', message: 'Invalid JSON body' }));
+      }
+
+      const rid = body.rid;
+      if (!rid) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'bad_request', message: 'Missing rid' }));
+      }
+
+      const receipt = await store.get<DemoReceipt>(demoReceiptKey(rid));
+      if (!receipt) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'not_found', message: 'Receipt not found or expired' }));
+      }
+
+      const result = await handlers.verifyToken(
+        buildContext(req, {}, { token: receipt.token }, JSON.stringify({ token: receipt.token }))
+      );
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'X-Eudi-Mode': 'demo',
+      });
+      return res.end(JSON.stringify(result.body));
+    }
+
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ error: 'not_found', message: 'Demo API endpoint not found' }));
+  }
+
   // API routes
   if (path.startsWith('/api/eudi')) {
     const apiPath = path.replace('/api/eudi', '');
@@ -136,6 +232,7 @@ const server = createServer(async (req, res) => {
     const raw = await parseBody(req);
     const params = new URLSearchParams(raw);
     const token = params.get('eudi_token');
+    const sessionId = params.get('eudi_session_id') || '';
 
     if (!token) {
       res.writeHead(302, { Location: '/verify.html?error=missing_token' });
@@ -143,10 +240,18 @@ const server = createServer(async (req, res) => {
     }
 
     const result = await handlers.verifyToken(buildContext(req, {}, { token }, raw));
-    const verifyResult = result.body as { valid: boolean };
+    const verifyResult = result.body as { valid: boolean; claims?: VerifiedClaims };
 
-    if (verifyResult.valid) {
-      res.writeHead(302, { Location: '/success.html' });
+    if (verifyResult.valid && verifyResult.claims) {
+      const rid = randomUUID();
+      const receipt: DemoReceipt = {
+        sessionId,
+        claims: verifyResult.claims,
+        verifiedAt: new Date().toISOString(),
+        token,
+      };
+      await store.set(demoReceiptKey(rid), receipt, DEMO_RECEIPT_TTL_MS);
+      res.writeHead(302, { Location: `/success.html?rid=${encodeURIComponent(rid)}` });
     } else {
       res.writeHead(302, { Location: '/verify.html?error=invalid_token' });
     }

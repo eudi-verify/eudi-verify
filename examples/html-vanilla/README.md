@@ -68,29 +68,64 @@ pnpm start
 
 ## Testing Without a Wallet
 
-No production EUDI Wallets are available yet (see [EU Wallet Status](#eu-wallet-status) below). To test the complete flow manually:
+No production EUDI Wallets are available yet (see [EU Wallet Status](#eu-wallet-status) below). The demo includes a **demo wallet** page and a **verification log** so you can complete the flow without curl or DevTools.
 
-### 1. Start the demo and trigger verification
+Wallet approval is **simulated**; the session lifecycle, callback, HMAC token minting, and server-side token verification are **real**.
+
+### Path A — Visitor / browser demo (primary)
+
+1. Start the demo:
 
 ```bash
 pnpm start
 # Open http://localhost:3000/verify and click "Start Verification"
 ```
 
-### 2. Get the session ID
+2. When the QR appears, click **Open demo wallet →** (or visit `/demo-wallet?state=SESSION_ID` — the session ID is shown in the verification log).
 
-From browser dev tools Network tab, find the `POST /api/eudi/sessions` response. Copy the `id` field, or extract it from the QR URL's `state` parameter.
+3. In the demo wallet tab, click **Approve**. Return to the verification tab — it should transition to Verified and redirect to `/success?rid=…`.
 
-### 3. Simulate wallet callback
+4. On the success page:
+   - **Server verification receipt** — claims returned only from `POST /tokens/verify`
+   - **Replay test** — resubmit the consumed token; expect `{ "valid": false, "error": "already_consumed" }`
+
+5. Optional: open the **inspect** link in the verification log to view raw session JSON (`GET /api/eudi/sessions/{id}`).
+
+### Path B — Local developer / curl
+
+Same flow, but trigger the wallet callback from the terminal instead of the demo wallet.
+
+1. Start the demo and click **Start Verification** on `/verify`.
+
+2. Copy the session ID from the **verification log** on the page (or expand **Developer: simulate wallet with curl** for a pre-filled command). DevTools is not required.
+
+3. Simulate the wallet callback:
 
 ```bash
-# Replace SESSION_ID with your actual session ID
-curl -X POST http://localhost:3000/api/eudi/callback -H "Content-Type: application/x-www-form-urlencoded" -d "response=demo&state=SESSION_ID"
+# Local (default port)
+curl -X POST http://localhost:3000/api/eudi/callback \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "response=demo&state=SESSION_ID"
+
+# Deployed (replace host)
+curl -X POST https://demo.your-domain.eu/api/eudi/callback \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "response=demo&state=SESSION_ID"
 ```
 
-### 4. Observe the result
+4. The widget should transition from "Scan QR" → "Verified", submit the checkout form, and redirect to `/success?rid=…`.
 
-The widget should transition from "Scan QR" → "Verified" and the form will submit automatically, redirecting to `/success`.
+5. Optional: inspect the session via `GET /api/eudi/sessions/SESSION_ID` or use the replay test on the success page.
+
+### Trust features (both paths)
+
+| Feature | Where | What it proves |
+|---------|-------|----------------|
+| Verification log | `/verify` | Timestamped server API steps (session created, verified, checkout) |
+| Session inspect link | Verification log | Raw session JSON from the server |
+| Server receipt | `/success?rid=…` | Claims from server verify, not the widget |
+| Replay test | Success page | Token is single-use (`already_consumed` on reuse) |
+| Demo wallet audit log | `/demo-wallet` | Callback HTTP status when approving |
 
 ## EU Wallet Status (June 2026)
 

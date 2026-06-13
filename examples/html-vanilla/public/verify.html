@@ -31,9 +31,32 @@
       api-url="/api/eudi"
       request='{"age_over_18":true}'
     ></eudi-verify>
+
+    <div id="demo-wallet-panel" class="card demo-wallet-panel" hidden>
+      <p class="demo-wallet-hint">
+        No EUDI Wallet app? Open the demo wallet in a new tab to approve this request.
+      </p>
+      <a id="demo-wallet-link" class="btn btn-demo-wallet" href="#" target="_blank" rel="noopener">
+        Open demo wallet →
+      </a>
+    </div>
+
+    <div class="card">
+      <h3>Verification log</h3>
+      <ol id="verification-log" class="verification-log"></ol>
+    </div>
+
+    <details id="curl-hint" class="curl-hint" hidden>
+      <summary>Developer: simulate wallet with curl</summary>
+      <p class="curl-hint-note">
+        Same effect as the demo wallet Approve button — useful for CI, scripting, and debugging.
+      </p>
+      <pre id="curl-command" class="replay-result"></pre>
+    </details>
     
     <form id="checkout-form" action="/api/checkout" method="POST" hidden>
       <input type="hidden" name="eudi_token" id="eudi-token">
+      <input type="hidden" name="eudi_session_id" id="eudi-session-id">
     </form>
     
     <div class="card">
@@ -54,40 +77,6 @@
     </p>
   </footer>
   
-  <script>
-    const widget = document.querySelector('eudi-verify');
-    const form = document.getElementById('checkout-form');
-    const tokenInput = document.getElementById('eudi-token');
-    const errorAlert = document.getElementById('error-alert');
-    
-    // Show error if redirected back with error param
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('error')) {
-      errorAlert.hidden = false;
-      errorAlert.textContent = params.get('error') === 'invalid_token' 
-        ? 'Token validation failed. Please try again.'
-        : 'Verification failed. Please try again.';
-    }
-    
-    widget.addEventListener('verified', (e) => {
-      tokenInput.value = e.detail.token;
-      form.submit();
-    });
-    
-    widget.addEventListener('rejected', () => {
-      errorAlert.hidden = false;
-      errorAlert.textContent = 'Verification was rejected. Please try again.';
-    });
-    
-    widget.addEventListener('expired', () => {
-      errorAlert.hidden = false;
-      errorAlert.textContent = 'Session expired. Please try again.';
-    });
-    
-    widget.addEventListener('error', (e) => {
-      errorAlert.hidden = false;
-      errorAlert.textContent = `Error: ${e.detail?.message || 'Unknown error'}`;
-    });
-  </script>
+  <script type="module" src="/demo-verify.js"></script>
 </body>
 </html>
