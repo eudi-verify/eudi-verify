@@ -29,11 +29,15 @@ A drop-in verification widget for websites that need to verify EU digital identi
 
 Three independent layers — use what you need:
 
-| Layer | Package | Use Case |
-|-------|---------|----------|
-| **API** | `@eudi-verify/server` | Any backend (Node, PHP, Python, Java) |
-| **Widget** | `@eudi-verify/embed` | Any frontend (plain HTML, Vue, WordPress) |
-| **Client** | `@eudi-verify/client` | Build custom UIs with the typed API client |
+| Layer | Package | Role |
+|-------|---------|------|
+| **API** | `@eudi-verify/server` | Verifier REST handlers (Node.js 22+ today) |
+| **Widget** | `@eudi-verify/embed` | Drop-in `<eudi-verify>` web component |
+| **Client** | `@eudi-verify/client` | Typed client + state machine for custom UIs |
+
+The [OpenAPI spec](openapi/eudi-verifier.yaml) is stack-independent — any backend can implement the same endpoints. Only the Node handler library ships today.
+
+📋 **[Supported platforms & roadmap](docs/SUPPORTED.md)** — what works now vs planned (PHP, Python, WordPress, React bindings, etc.)
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -73,17 +77,29 @@ cd examples/html-vanilla && pnpm start
 
 | Package | Description | Status |
 |---------|-------------|--------|
-| `@eudi-verify/server` | REST API handlers, token verification, rate limiting | ✅ Complete |
-| `@eudi-verify/client` | Typed API client, state machine, QR generation | ✅ Complete |
-| `@eudi-verify/embed` | `<eudi-verify>` web component | ✅ Complete |
+| `@eudi-verify/server` | REST API handlers, token verification, rate limiting | ✅ Demo mode (Node 22+) |
+| `@eudi-verify/client` | Typed API client, state machine, QR generation | ✅ Demo mode |
+| `@eudi-verify/embed` | `<eudi-verify>` web component | ✅ Demo mode |
 
-📖 **[Integration Guide](docs/INTEGRATION.md)** — End-to-end setup walkthrough
+📖 **[Integration Guide](docs/INTEGRATION.md)** — end-to-end setup (Node + HTML)
+
+### Supported today
+
+| Area | What's included |
+|------|-----------------|
+| **Backend** | Node.js 22+ with Express, Hono, or `node:http` |
+| **Frontend** | Plain HTML; React/Vue/Svelte/etc. via web component embed (wrappers on roadmap) |
+| **Demo** | [examples/html-vanilla](examples/html-vanilla/) |
+
+### On the roadmap
+
+React wrapper (first), Vue example, WordPress plugin, PHP/Python/Java guides, production HAIP — **[WP9](./wp/WP9.md)** for React; full matrix in **[docs/SUPPORTED.md](docs/SUPPORTED.md)**.
 
 ## Design Principles
 
 ### Framework Agnostic
 
-No React, Vue, or framework lock-in in the core packages. The widget is a vanilla [Custom Element](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements) that works in any HTML page. Optional framework bindings (React, Next.js) are separate packages.
+Core packages have no React, Vue, or Lit dependency. The widget is a vanilla [Custom Element](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements) you can embed in any HTML page or SPA today. First-class React support is **[WP9](docs/wp/WP9.md)** (`@eudi-verify/react`); other frameworks on the [roadmap](docs/SUPPORTED.md#framework-integrations).
 
 ### EU Sovereignty
 
@@ -160,7 +176,15 @@ pnpm lint:api
 
 ## Roadmap
 
-See [docs/PLAN.md](docs/PLAN.md) for the detailed technical roadmap.
+See [docs/PLAN.md](docs/PLAN.md) for the technical roadmap and [docs/SUPPORTED.md](docs/SUPPORTED.md) for the platform support matrix.
+
+## Support the project
+
+This is independent open source (Apache-2.0). Ways to help:
+
+- **Use it** — try the [html-vanilla demo](examples/html-vanilla/) and open issues for gaps
+- **Contribute** — PRs welcome; see [Contributing](#contributing) and `docs/SUPPORTED.md` before claiming new platform support in docs
+- **Sponsor** — GitHub Sponsors / Open Collective links can be added here once accounts are set up (`.github/FUNDING.yml`)
 
 ## License
 

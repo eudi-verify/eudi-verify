@@ -2,7 +2,7 @@
 
 ## Overview
 
-Create security documentation required for the NLnet grant and responsible open-source release. Documents threats, mitigations, disclosure policy, and dependency analysis.
+Create security documentation for responsible open-source release. Documents threats, mitigations, disclosure policy, and dependency analysis.
 
 ## Prerequisites
 
@@ -281,8 +281,8 @@ Copyleft licenses (GPL, LGPL, AGPL) are excluded from runtime to ensure public-s
 
 | Package | Last Audit | Auditor | Notes |
 |---------|-----------|---------|-------|
-| @openeudi/core | Pending | - | Request via NGI Zero |
-| @eudi-verify/server | Pending | - | Request via NGI Zero |
+| @openeudi/core | Pending | - | Third-party audit TBD |
+| @eudi-verify/server | Pending | - | Third-party audit TBD |
 
 ## Transitive Dependencies
 
@@ -346,6 +346,5 @@ X-Eudi-Mode: demo
 
 ## Notes
 
-- Request ROS (Radically Open Security) audit once NLnet-funded — free for grantees
-- Request HAN accessibility audit once funded — also free via NGI Zero
+- Plan for third-party security and accessibility audits before production release
 - Keep threat model updated as features are added

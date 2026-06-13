@@ -1,0 +1,41 @@
+---
+description: Keep public docs accurate — supported vs roadmap, no aspirational claims
+alwaysApply: true
+---
+
+# Public Documentation Accuracy
+
+## Canonical source
+
+**[docs/SUPPORTED.md](../docs/SUPPORTED.md)** is the single source of truth for what is supported today vs on the roadmap.
+
+When adding features, examples, or integration paths:
+
+1. Update `docs/SUPPORTED.md` first (or in the same change).
+2. Sync [README.md](../README.md) if the support matrix or status badges change.
+3. Follow [docs-sync.mdc](./docs-sync.mdc) for package READMEs and `docs/INTEGRATION.md`.
+
+## Wording rules (public repo)
+
+| Do | Don't |
+|----|-------|
+| "Node.js 22+ (`@eudi-verify/server`)" for backend | "Any backend (PHP, Python, Java)" as if libraries exist |
+| "Embeddable in any HTML page / SPA" for frontend | Imply WordPress plugin or Vue wrapper ships today |
+| "OpenAPI contract — implement in any language" for non-Node backends | Hide that only Node handlers are published |
+| Link to `docs/SUPPORTED.md` for full matrix | Scatter conflicting status in multiple files |
+| Point React integration to `docs/wp/WP9.md` | Claim `@eudi-verify/react` ships before WP9 is done |
+
+**Framework-agnostic** = no lock-in in core packages + OpenAPI contract. It is not a claim that every stack has a guide or npm package.
+
+## Never in public docs
+
+- Grant applications, funders, € amounts (see `PLAN.local.md` — private)
+
+## Release checklist
+
+Before a public release or major README change, verify:
+
+- [ ] `docs/SUPPORTED.md` matches actual packages and examples
+- [ ] README architecture / packages tables match `SUPPORTED.md`
+- [ ] `docs/INTEGRATION.md` examples run (Node + html-vanilla at minimum)
+- [ ] Demo-mode and production limitations are stated

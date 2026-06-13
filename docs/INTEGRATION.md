@@ -2,6 +2,8 @@
 
 Add EU digital identity verification to your website in three steps.
 
+> **Platform support:** This guide covers **Node.js + plain HTML** (the reference path). For PHP, Python, Java, WordPress, and framework bindings, see [SUPPORTED.md](./SUPPORTED.md).
+
 ## Architecture
 
 ```

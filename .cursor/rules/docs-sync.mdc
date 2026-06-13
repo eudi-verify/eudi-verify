@@ -3,9 +3,14 @@ globs:
   - packages/*/src/**
   - packages/*/README.md
   - docs/INTEGRATION.md
+  - docs/SUPPORTED.md
+  - docs/wp/WP9.md
+  - README.md
 ---
 
 # Documentation Sync
+
+See also **[public-docs.mdc](./public-docs.mdc)** — supported vs roadmap accuracy (always applies).
 
 ## When to Update Docs
 
@@ -17,6 +22,8 @@ After modifying package implementations, check if documentation needs updates:
 | `packages/client/src/**` | `packages/client/README.md` |
 | `packages/embed/src/**` | `packages/embed/README.md` |
 | Any public API change | `docs/INTEGRATION.md` |
+| Support matrix (stack, example, package status) | `docs/SUPPORTED.md` + `README.md` |
+| WP9 React package or example | `docs/wp/WP9.md`, `packages/react/README.md`, `docs/INTEGRATION.md` |
 | New WP or scope change | `docs/PLAN.md` |
 
 ## What to Check

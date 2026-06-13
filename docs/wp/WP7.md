@@ -50,3 +50,4 @@ End-to-end walkthrough covering:
 - Keep docs concise — developers read code, not prose
 - Examples should be copy-pasteable
 - Link to OpenAPI spec for full API reference
+- **React integration** is [WP9](./WP9.md) (not WP7 scope)

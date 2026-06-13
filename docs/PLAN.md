@@ -14,7 +14,7 @@
 
 ### MVP Scope
 
-Four core artifacts only. React/Next/Hono bindings, Auth.js, Vue example, and production HAIP are **deferred to a later phase**.
+Four core artifacts in WP0–WP7 (server, client, embed, demo, security docs, integration guide). **WP9 React** is the first post-MVP integration. Vue, WordPress, Next/Hono bindings, Auth.js, and production HAIP remain on the roadmap — see [SUPPORTED.md](./SUPPORTED.md).
 
 ### WP0 — Scaffold ✓
 
@@ -64,6 +64,12 @@ Four core artifacts only. React/Next/Hono bindings, Auth.js, Vue example, and pr
 - Integration guide: `docs/INTEGRATION.md` (end-to-end walkthrough)
 - **Accept:** each package has README with working examples; integration guide covers full flow
 
+### WP9 — React (`@eudi-verify/react`)
+
+- Thin React wrapper over WP4 embed; `examples/react` reference app; React section in `docs/INTEGRATION.md`
+- Brief: [docs/wp/WP9.md](./wp/WP9.md)
+- **Accept:** demo verification flow works; package README; unit tests pass; no React in core packages
+
 ### Dependency Order
 
 ```mermaid
@@ -78,9 +84,12 @@ flowchart LR
   WP2 --> WP7
   WP3 --> WP7
   WP4 --> WP7
+  WP2 --> WP9
+  WP4 --> WP9
+  WP7 --> WP9
 ```
 
-WP2 and WP3 parallelize after WP1. WP6 and WP7 can run anytime after their dependencies.
+WP2 and WP3 parallelize after WP1. WP6 and WP7 can run anytime after their dependencies. **WP9** starts after WP4 + WP2; WP7 docs should land before or with WP9.
 
 ---
 
@@ -88,16 +97,20 @@ WP2 and WP3 parallelize after WP1. WP6 and WP7 can run anytime after their depen
 
 The **product** is not a React or Next library. It is three stack-independent layers:
 
-| Layer               | Package                                | Who uses it                                   |
+| Layer               | Package                                | Design intent                                 |
 | ------------------- | -------------------------------------- | --------------------------------------------- |
-| **1. Verifier API** | `@eudi-verify/server` + OpenAPI spec   | Any backend — Node, PHP, Python, Java         |
-| **2. Embed widget** | `@eudi-verify/embed` (`<eudi-verify>`) | Any frontend — Vue, WordPress, plain HTML     |
+| **1. Verifier API** | `@eudi-verify/server` + OpenAPI spec   | Node handlers today; any backend via OpenAPI  |
+| **2. Embed widget** | `@eudi-verify/embed` (`<eudi-verify>`) | Any HTML page; embeddable in SPAs/CMS         |
 | **3. Client logic** | `@eudi-verify/client` (vanilla TS)     | Shared by embed + optional framework bindings |
 
-**Optional bindings** (convenience, not the product):
+**Shipped vs planned:** see [SUPPORTED.md](./SUPPORTED.md) for the current platform matrix (do not claim PHP/Java/WordPress integrations until documented there).
 
-- `@eudi-verify/react` — thin wrapper for React apps
-- `@eudi-verify/next` — route handler adapter for demo/docs
+**Framework integrations** (post-MVP):
+
+- **React** — [WP9](./wp/WP9.md): `@eudi-verify/react` + `examples/react`
+- **Vue** — reference example (roadmap)
+- **WordPress** — plugin (roadmap)
+- `@eudi-verify/next` — Next.js route adapter (after WP9)
 - `@eudi-verify/hono` — portable Node API mount
 
 ---
