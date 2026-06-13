@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Age Verification - EUDI Demo</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/eudi-verify.js"></script>
+</head>
+<body>
+  <div class="demo-banner">
+    ⚠️ Demo Mode — Credentials are simulated. Not for production use.
+  </div>
+  
+  <header>
+    <span class="eu-stars">★★★★★★★★★★★★</span>
+    <h1>EUDI Verify</h1>
+  </header>
+  
+  <main>
+    <h2>Age Verification Required</h2>
+    <p>
+      This content requires age verification. Please verify you are over 18 using your EU Digital Identity Wallet.
+    </p>
+    
+    <div id="error-alert" class="alert alert-error" hidden>
+      Verification failed. Please try again.
+    </div>
+    
+    <eudi-verify
+      api-url="/api/eudi"
+      request='{"age_over_18":true}'
+    ></eudi-verify>
+    
+    <form id="checkout-form" action="/api/checkout" method="POST" hidden>
+      <input type="hidden" name="eudi_token" id="eudi-token">
+    </form>
+    
+    <div class="card">
+      <h3>What happens next?</h3>
+      <p>
+        After verification, an opaque token is sent to our server which validates it
+        before granting access. Your actual identity data never reaches the browser.
+      </p>
+    </div>
+    
+    <p><a href="/">← Back to home</a></p>
+  </main>
+  
+  <footer>
+    <p>
+      Open source under <a href="https://github.com/eudi-verify/eudi-verify">Apache-2.0</a>.
+      Designed for EU-sovereign deployment.
+    </p>
+  </footer>
+  
+  <script>
+    const widget = document.querySelector('eudi-verify');
+    const form = document.getElementById('checkout-form');
+    const tokenInput = document.getElementById('eudi-token');
+    const errorAlert = document.getElementById('error-alert');
+    
+    // Show error if redirected back with error param
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('error')) {
+      errorAlert.hidden = false;
+      errorAlert.textContent = params.get('error') === 'invalid_token' 
+        ? 'Token validation failed. Please try again.'
+        : 'Verification failed. Please try again.';
+    }
+    
+    widget.addEventListener('verified', (e) => {
+      tokenInput.value = e.detail.token;
+      form.submit();
+    });
+    
+    widget.addEventListener('rejected', () => {
+      errorAlert.hidden = false;
+      errorAlert.textContent = 'Verification was rejected. Please try again.';
+    });
+    
+    widget.addEventListener('expired', () => {
+      errorAlert.hidden = false;
+      errorAlert.textContent = 'Session expired. Please try again.';
+    });
+    
+    widget.addEventListener('error', (e) => {
+      errorAlert.hidden = false;
+      errorAlert.textContent = `Error: ${e.detail?.message || 'Unknown error'}`;
+    });
+  </script>
+</body>
+</html>

@@ -52,4 +52,4 @@ Avoid:
 
 ## Session Context
 
-For extended project context beyond this technical overview, check for `*.local.md` files if present (gitignored local notes).
+For extended project context beyond this technical overview, read `PLAN.local.md` at the repo root if it exists.

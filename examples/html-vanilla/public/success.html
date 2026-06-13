@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verification Successful - EUDI Demo</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="demo-banner">
+    ⚠️ Demo Mode — Credentials are simulated. Not for production use.
+  </div>
+  
+  <header>
+    <span class="eu-stars">★★★★★★★★★★★★</span>
+    <h1>EUDI Verify</h1>
+  </header>
+  
+  <main style="text-align: center;">
+    <div class="success-icon">✅</div>
+    <h2>Age Verified Successfully</h2>
+    <p>
+      Your age has been verified server-side. In a real application,
+      you would now have access to age-restricted content.
+    </p>
+    
+    <div class="alert alert-success">
+      <strong>Token validated on server</strong><br>
+      The verification token was verified using HMAC signature checking.
+      The token is single-use and has now been consumed.
+    </div>
+    
+    <div class="card">
+      <h3>What happened?</h3>
+      <ol style="text-align: left; padding-left: 1.5rem;">
+        <li>Widget displayed QR code for wallet scanning</li>
+        <li>User approved credential disclosure in wallet</li>
+        <li>Wallet sent verifiable presentation to callback</li>
+        <li>Server minted single-use token</li>
+        <li>Widget received token, submitted form</li>
+        <li>Server validated token via <code>/tokens/verify</code></li>
+        <li>Access granted (this page)</li>
+      </ol>
+    </div>
+    
+    <a href="/verify" class="btn btn-outline">Verify Again</a>
+    <a href="/" class="btn" style="margin-left: 0.5rem;">Back to Home</a>
+  </main>
+  
+  <footer>
+    <p>
+      Open source under <a href="https://github.com/eudi-verify/eudi-verify">Apache-2.0</a>.
+      Designed for EU-sovereign deployment.
+    </p>
+  </footer>
+</body>
+</html>

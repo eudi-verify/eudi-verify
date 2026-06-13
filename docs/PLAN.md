@@ -139,19 +139,27 @@ This project wraps third-party OpenID4VP implementations behind a swappable `Ver
 2. Swap to Sphereon with minimal code changes
 3. Fork and maintain (last resort)
 
-### EU Infrastructure Status
+### EU Infrastructure Status (Updated June 2026)
 
-The EU Digital Identity Wallet ecosystem is still being built:
+The EU Digital Identity Wallet ecosystem is in final development phase before mandatory launch:
 
-| Component | Status | Impact |
-|-----------|--------|--------|
-| eIDAS 2.0 Regulation | ✅ Passed | Legal framework exists |
-| Architecture Reference Framework | ✅ Published | Specs available |
-| EU Reference Wallet | 🟡 Development | Can't test against real wallet |
-| National Wallet Apps | 🟡 Pilots only | Limited availability |
-| EU Trust List (production) | 🔴 Not live | Can't verify real credentials |
+| Component | Status | Timeline |
+|-----------|--------|----------|
+| eIDAS 2.0 Regulation | ✅ Passed | May 2024 |
+| Architecture Reference Framework | ✅ v2.8 published | 2026 |
+| Implementing Regulations | ✅ 31 acts published | Through Apr 2026 |
+| Large Scale Pilots | ✅ Active testing | APTITUDE, WE BUILD ongoing |
+| National Sandbox Programs | 🟡 Some countries | Denmark, Ireland have public access |
+| **Certified National Wallets** | 🟡 Development | **Due Dec 24, 2026** |
+| Mandatory Business Acceptance | 🔴 Not yet | Due Dec 2027 |
+| EU Trust List (production) | 🔴 Not live | Tied to wallet launch |
 
-**Consequence:** Demo mode only for now. Production verification requires EU infrastructure that doesn't exist yet.
+**Current situation:** No production wallets available for general public. Developers can use:
+- EU Reference Implementation (GitHub)
+- National sandbox/beta programs (varies by country)
+- Demo mode for integration development
+
+**Consequence:** Demo mode only for now. Production verification requires certified wallets that will launch end of 2026.
 
 ---
 

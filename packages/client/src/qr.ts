@@ -37,6 +37,10 @@ const VERSION_TABLE: Record<ECLevel, VersionInfo[]> = {
     { version: 8, totalCodewords: 194, ecCodewordsPerBlock: 24, numBlocks: 2 },
     { version: 9, totalCodewords: 232, ecCodewordsPerBlock: 30, numBlocks: 2 },
     { version: 10, totalCodewords: 274, ecCodewordsPerBlock: 18, numBlocks: 4 },
+    { version: 11, totalCodewords: 401, ecCodewordsPerBlock: 20, numBlocks: 4 },
+    { version: 12, totalCodewords: 466, ecCodewordsPerBlock: 24, numBlocks: 4 },
+    { version: 13, totalCodewords: 532, ecCodewordsPerBlock: 26, numBlocks: 4 },
+    { version: 14, totalCodewords: 588, ecCodewordsPerBlock: 30, numBlocks: 4 },
   ],
   M: [
     { version: 1, totalCodewords: 16, ecCodewordsPerBlock: 10, numBlocks: 1 },
@@ -123,6 +127,10 @@ const ALIGNMENT_PATTERNS: number[][] = [
   [6, 24, 42],
   [6, 26, 46],
   [6, 28, 50],
+  [6, 30, 54],
+  [6, 32, 58],
+  [6, 34, 62],
+  [6, 26, 46, 66],
 ];
 
 function getVersionInfo(dataLength: number, ecLevel: ECLevel): VersionInfo {
@@ -485,7 +493,7 @@ function generateQRMatrix(data: string, ecLevel: ECLevel): number[][] {
  * Generate a QR code as an SVG string.
  */
 export function generateQRSvg(data: string, options: QRCodeOptions = {}): string {
-  const { size = 200, errorCorrection = 'M', quietZone = 4 } = options;
+  const { size = 200, errorCorrection = 'L', quietZone = 4 } = options;
   const matrix = generateQRMatrix(data, errorCorrection);
   const moduleCount = matrix.length;
   const totalModules = moduleCount + quietZone * 2;

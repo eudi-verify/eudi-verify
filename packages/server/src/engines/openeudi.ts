@@ -299,7 +299,8 @@ export class OpenEudiEngine implements VerifierEngine {
   }
 
   private generateNonce(): string {
-    const array = new Uint8Array(32);
+    // 16 bytes = 32 hex chars; keeps QR URL under 270 byte limit
+    const array = new Uint8Array(16);
     crypto.getRandomValues(array);
     return Array.from(array, (b) => b.toString(16).padStart(2, '0')).join('');
   }

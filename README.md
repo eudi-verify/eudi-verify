@@ -58,20 +58,24 @@ git clone https://github.com/eudi-verify/eudi-verify.git
 cd eudi-verify
 pnpm install
 
+# Build packages
+pnpm build
+
 # Run tests
 pnpm test
 
-# Start demo server (coming in WP5)
-# pnpm demo
+# Start demo server
+cd examples/html-vanilla && pnpm start
+# Open http://localhost:3000
 ```
 
 ## Packages
 
 | Package | Description | Status |
 |---------|-------------|--------|
-| `@eudi-verify/server` | REST API handlers, token verification, rate limiting | ✅ WP2 |
-| `@eudi-verify/client` | Typed API client, state machine, QR generation | ✅ WP3 |
-| `@eudi-verify/embed` | `<eudi-verify>` web component | 🔜 WP4 |
+| `@eudi-verify/server` | REST API handlers, token verification, rate limiting | ✅ Complete |
+| `@eudi-verify/client` | Typed API client, state machine, QR generation | ✅ Complete |
+| `@eudi-verify/embed` | `<eudi-verify>` web component | ✅ Complete |
 
 📖 **[Integration Guide](docs/INTEGRATION.md)** — End-to-end setup walkthrough
 
@@ -108,14 +112,17 @@ This allows swapping implementations:
 
 ## Current Limitations
 
-⚠️ **Demo mode only.** The EU reference wallet and trust infrastructure are still in development. This project provides demo mode for integration testing, with production mode ready when EU infrastructure launches (expected 2026).
+⚠️ **Demo mode only.** No production EUDI Wallets are available yet. All 27 EU Member States must offer certified wallets by **December 24, 2026**.
 
-| Component | Status |
-|-----------|--------|
-| EUDI Wallet apps | National pilots only |
-| EU Trust List | Not yet live |
-| Real credential issuance | Not available |
-| Production crypto verification | Blocked on above |
+| Component | Status | Timeline |
+|-----------|--------|----------|
+| eIDAS 2.0 Regulation | ✅ Passed | May 2024 |
+| Architecture Reference Framework | ✅ Published | v2.8 (2026) |
+| National Wallet Apps | 🟡 Pilots/sandboxes | Denmark, Ireland have public access |
+| **Certified Wallets for Citizens** | 🔴 Not yet | **Due Dec 2026** |
+| Mandatory Business Acceptance | 🔴 Not yet | Due Dec 2027 |
+
+**For developers:** Build and test now using demo mode. See [Testing Without a Wallet](examples/html-vanilla/README.md#testing-without-a-wallet) for manual testing instructions.
 
 ## Security
 

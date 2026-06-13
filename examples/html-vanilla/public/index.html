@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EUDI Verify Demo</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="demo-banner">
+    ⚠️ Demo Mode — Credentials are simulated. Not for production use.
+  </div>
+  
+  <header>
+    <span class="eu-stars">★★★★★★★★★★★★</span>
+    <h1>EUDI Verify</h1>
+  </header>
+  
+  <main>
+    <h2>EU Digital Identity Verification</h2>
+    <p>
+      This demo shows how to integrate EUDI Wallet verification into any website.
+      The <code>&lt;eudi-verify&gt;</code> widget handles the complete verification flow.
+    </p>
+    
+    <div class="card">
+      <h3>How it works</h3>
+      <div class="features">
+        <div class="feature">
+          <span class="feature-icon">📱</span>
+          <div>
+            <strong>Scan QR Code</strong>
+            <p>User scans with their EUDI Wallet app</p>
+          </div>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">✅</span>
+          <div>
+            <strong>Approve in Wallet</strong>
+            <p>User reviews and approves the credential request</p>
+          </div>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">🔒</span>
+          <div>
+            <strong>Server Verification</strong>
+            <p>Your server validates the token — no client trust needed</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <a href="/verify" class="btn">Try Age Verification Demo →</a>
+    
+    <div class="card" style="margin-top: 2rem;">
+      <h3>Get Started</h3>
+      <div class="link-grid">
+        <a href="https://github.com/eudi-verify/eudi-verify" class="link-card">
+          <strong>GitHub</strong>
+          <span>Source code, issues, contributions</span>
+        </a>
+        <a href="https://github.com/eudi-verify/eudi-verify/blob/main/docs/INTEGRATION.md" class="link-card">
+          <strong>Integration Guide</strong>
+          <span>Add to your website in minutes</span>
+        </a>
+        <a href="https://github.com/eudi-verify/eudi-verify/blob/main/docs/deploy-eu.md" class="link-card">
+          <strong>Deployment</strong>
+          <span>EU-sovereign hosting guide</span>
+        </a>
+        <a href="https://github.com/eudi-verify/eudi-verify/blob/main/openapi/eudi-verifier.yaml" class="link-card">
+          <strong>API Reference</strong>
+          <span>OpenAPI 3.1 specification</span>
+        </a>
+      </div>
+    </div>
+  </main>
+  
+  <footer>
+    <p>
+      Open source under <a href="https://github.com/eudi-verify/eudi-verify/blob/main/LICENSE">Apache-2.0</a>.
+      Designed for EU-sovereign deployment.
+    </p>
+    <p style="margin-top: 0.5rem;">
+      <a href="https://github.com/eudi-verify/eudi-verify">GitHub</a> ·
+      <a href="https://github.com/eudi-verify/eudi-verify/issues">Issues</a> ·
+      <a href="https://github.com/eudi-verify/eudi-verify/blob/main/docs/PLAN.md">Roadmap</a>
+    </p>
+  </footer>
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Create the `examples/html-vanilla` demo and document EU-sovereign deployment. The demo is the primary proof-of-concept for the NLnet grant application.
+Create the `examples/html-vanilla` demo and document EU-sovereign deployment.
 
 ## Prerequisites
 
