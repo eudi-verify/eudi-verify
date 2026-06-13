@@ -325,7 +325,7 @@ X-Eudi-Mode: demo
 **UI Banner** (in `<eudi-verify>`):
 ```html
 <div class="eudi-demo-warning" role="alert">
-  ⚠️ Demo Mode - Simulated verification only
+  Simulated verification — credentials are fake. For local testing only.
 </div>
 ```
 

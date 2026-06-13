@@ -152,6 +152,6 @@ curl -X POST https://demo.your-domain.eu/api/eudi/callback \
 
 ## Demo Mode Warning
 
-This demo runs in demo mode with simulated credentials. The UI shows a warning banner and the server logs a warning on startup. **Do not use for production.**
+This demo runs in demo mode with simulated credentials. The UI shows a banner (*Simulated verification — credentials are fake. For local testing only.*) and the server logs a warning on startup. Demo mode provides no real identity verification.
 
 For production deployment, see [docs/deploy-eu.md](../../docs/deploy-eu.md).

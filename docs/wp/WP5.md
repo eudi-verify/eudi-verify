@@ -219,7 +219,7 @@ Requirements:
 
 3. **Demo warnings visible**:
    - Console warning on server start
-   - Banner in UI: "Demo Mode - Not for production"
+   - Banner in UI: "Simulated verification — credentials are fake. For local testing only."
    - `X-Eudi-Mode: demo` header in API responses
 
 4. **Server-side verify works**: Form submission validates token

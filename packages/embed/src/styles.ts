@@ -48,6 +48,7 @@ export function createStyles(): string {
       text-align: center;
       min-width: 280px;
       max-width: 400px;
+      margin-inline: auto;
     }
 
     /* State containers - only one visible at a time */

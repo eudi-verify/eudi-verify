@@ -80,7 +80,11 @@ async function serveStatic(res: ServerResponse, filePath: string): Promise<boole
     const fullPath = join(__dirname, 'public', filePath);
     const content = await readFile(fullPath);
     const ext = extname(filePath);
-    res.writeHead(200, { 'Content-Type': MIME[ext] || 'text/plain' });
+    const headers: Record<string, string> = { 'Content-Type': MIME[ext] || 'text/plain' };
+    if (ext === '.html') {
+      headers['X-Robots-Tag'] = 'noindex';
+    }
+    res.writeHead(200, headers);
     res.end(content);
     return true;
   } catch {
