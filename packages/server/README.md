@@ -127,6 +127,63 @@ interface VerifierConfig {
 | `verifyToken(body)` | `POST /tokens/verify` | Validate verification token |
 | `handleCallback(data)` | `POST /callback` | Wallet callback (internal) |
 
+## Error Boundaries
+
+Handlers return `{ status, headers?, body }` — they **never throw**. Your framework route is the integration boundary.
+
+### Three error shapes
+
+**1. HTTP errors** — returned as `{ error, message, details? }` with 4xx/5xx status:
+
+| Status | `error` code | Typical cause |
+|--------|--------------|---------------|
+| 400 | `bad_request` | Invalid input |
+| 403 | `forbidden` | Origin not in `allowedOrigins` |
+| 404 | `not_found` | Session missing |
+| 409 | `conflict` | Cancel on terminal session |
+| 429 | `rate_limited` | Rate limit exceeded |
+| 500 | `internal_error` | Engine failure on create |
+
+**2. Session outcomes** — HTTP 200, check `body.status`:
+
+| `status` | Meaning |
+|----------|---------|
+| `rejected` | User declined in wallet |
+| `expired` | Session TTL elapsed |
+| `error` | VP validation or engine failure |
+
+These surface to your frontend via `GET /sessions/:id` polling, not via callback HTTP status.
+
+**3. Token soft failures** — `verifyToken` returns HTTP 200 with `{ valid: false, error: 'invalid_token' | 'expired' | 'already_consumed' | ... }`.
+
+### Wallet callback (`POST /callback`)
+
+Called by the wallet during OpenID4VP — **not by your application code**.
+
+- **400** — callback could not be processed (missing body, parse error, unknown session).
+- **200** `{ status: 'ok' }` — callback received; verification outcome is stored on the session.
+
+A verification failure (bad VP, crypto error) still returns **200** to the wallet. The session moves to `status: 'error'` or `'rejected'`. Your page discovers this when polling `getSession`.
+
+To report callback-path failures server-side, inspect the session after handling the callback (or rely on frontend polling to surface `error` state).
+
+### Route adapter pattern
+
+```ts
+app.post('/sessions', async (req, res) => {
+  const result = await handlers.createSession(buildContext(req, {}, req.body));
+
+  if (result.status >= 400 && 'error' in result.body) {
+    // Your error reporting hook
+    reportError({ handler: 'createSession', ...result.body });
+  }
+
+  res.status(result.status).set(result.headers).json(result.body);
+});
+```
+
+Internal failures are logged to `console.error` with a `[eudi-verify]` prefix. There is no built-in logger injection — wrap handler calls for structured reporting.
+
 ## Token Verification
 
 After the widget emits a `verified` event with a token, validate it server-side:

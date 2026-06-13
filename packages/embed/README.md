@@ -103,6 +103,40 @@ widget.addEventListener('state-change', (e) => {
 });
 ```
 
+## Error Boundaries
+
+The widget wraps `@eudi-verify/client`'s state machine. **DOM events are your integration boundary** — there is no separate error-hook API.
+
+| Event | When | Typical handling |
+|-------|------|------------------|
+| `rejected` | User declined in wallet | Retry prompt; not usually an ops alert |
+| `expired` | Session timed out | Offer to restart |
+| `error` | Network/API failure, invalid config | Show message; report to error tracking |
+| `state-change` | Any transition | Escape hatch — full `VerificationState` in `e.detail.state` |
+
+```js
+// Error reporting (Sentry, Datadog browser SDK, etc.)
+widget.addEventListener('error', (e) => {
+  reportError({ source: 'eudi-verify', message: e.detail.error });
+});
+
+widget.addEventListener('rejected', (e) => {
+  reportEvent({ type: 'verification_rejected', detail: e.detail.error });
+});
+
+// Or handle everything via state-change
+widget.addEventListener('state-change', (e) => {
+  const { state } = e.detail;
+  if (state.status === 'error') reportError({ message: state.error });
+});
+```
+
+**Config errors:** invalid JSON in the `request` attribute dispatches `error`. A missing `api-url` logs to the console only (no event) — validate attributes before calling `start()`.
+
+The widget renders built-in UI for `rejected`, `expired`, and `error` states. Events fire in addition to that UI so host pages can react (alerts, analytics, redirects).
+
+See [INTEGRATION.md](../../docs/INTEGRATION.md#error-boundaries) for the full stack overview.
+
 ## Theming
 
 Style the widget using CSS custom properties:
@@ -160,6 +194,7 @@ The widget cycles through these states:
 idle → loading → showQR → waitingForWallet → verified
                                            → rejected
                                            → expired
+                                           → error
 ```
 
 Each state renders different UI:

@@ -59,6 +59,7 @@ verification.destroy();
 idle → loading → showQR → waitingForWallet → verified
                                            → rejected
                                            → expired
+                                           → error
 ```
 
 All states are typed as a discriminated union:
@@ -153,32 +154,69 @@ const svg = generateQRSvg('openid4vp://...', { size: 300 });
 const dataUrl = generateQRDataUrl('openid4vp://...');
 ```
 
-## Error Handling
+## Error Boundaries
 
-Typed errors for different failure modes:
+The client exposes two integration paths with different error models.
+
+### State machine (`createVerification`) — no throws
+
+`start()`, `cancel()`, and polling **do not throw** on failure. Errors become state transitions:
+
+| State | Cause | Action |
+|-------|-------|--------|
+| `rejected` | User declined in wallet | Retry UX; usually not an ops alert |
+| `expired` | Session timed out | Restart flow |
+| `error` | Network failure, API 4xx/5xx, unknown status | Show message; report via `state.error` (string only) |
+
+**Boundary:** `verification.subscribe(callback)`. This is the hook for UI updates and client-side error reporting.
+
+```ts
+verification.subscribe((state) => {
+  if (state.status === 'error') {
+    reportError({ message: state.error });
+  }
+});
+```
+
+Typed error details (`errorCode`, `statusCode`) are **not** preserved in the state machine — only the message string.
+
+### API client (`createApiClient`) — typed throws
+
+For custom flows that need structured HTTP errors, use the API client directly:
 
 ```ts
 import {
+  createApiClient,
   NetworkError,
   ApiResponseError,
   SessionNotFoundError,
   RateLimitError,
 } from '@eudi-verify/client';
 
+const api = createApiClient({ baseUrl: 'https://your-api.example.com' });
+
 try {
   await api.createSession({ age_over_18: true });
 } catch (error) {
   if (error instanceof RateLimitError) {
-    // Wait and retry
-    await sleep(error.retryAfterMs ?? 60000);
+    await sleep(error.retryAfterMs ?? 60_000);
   } else if (error instanceof NetworkError) {
-    // Network issue
+    reportError({ type: 'network', cause: error.cause?.message });
   } else if (error instanceof ApiResponseError) {
-    // Server returned error
-    console.log(error.statusCode, error.errorCode);
+    reportError({ status: error.statusCode, code: error.errorCode });
   }
 }
 ```
+
+Session-level outcomes (`rejected`, `expired`, `error`) come from `getSession()` as `session.status` — not as thrown errors.
+
+### Which path to use
+
+| Need | Use |
+|------|-----|
+| Drop-in flow with QR + polling | `createVerification` + `subscribe` |
+| Rate-limit retry, custom error codes | `createApiClient` + `try/catch` |
+| Both | `createVerification` for UX; `createApiClient` for one-off calls |
 
 ## Bundle Size
 
