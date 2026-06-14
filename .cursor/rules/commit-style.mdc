@@ -1,0 +1,71 @@
+# Commit Message Style
+
+## Format
+
+Use [Conventional Commits](https://www.conventionalcommits.org/) with the following types:
+
+### Types
+
+| Type | Use |
+|------|-----|
+| `feat` | New feature or enhancement |
+| `fix` | Bug fix |
+| `docs` | Documentation changes |
+| `chore` | Maintenance, tooling, dependencies |
+| `test` | Test changes |
+| `refactor` | Code restructuring without behavior change |
+| `requirement` | Grant/compliance requirement implementation |
+
+### Scopes (optional)
+
+Use scopes to indicate the package or area:
+- `feat(server):` — server package
+- `feat(client):` — client package
+- `feat(embed):` — embed package
+- `feat(demo):` — demo/example changes
+
+### Structure
+
+**Single-line:**
+```
+type(scope): brief description in imperative mood
+```
+
+**Multi-line:**
+```
+type(scope): brief summary
+
+- Bullet point detail
+- Another detail
+- More context
+
+AI-assisted: Claude via Cursor
+```
+
+### Examples
+
+```
+feat: add age verification widget
+
+fix(server): correct token TTL validation
+
+requirement: add WP6 security documentation
+
+chore: update dependencies
+```
+
+### AI Attribution
+
+For AI-assisted work, add as the last line:
+```
+AI-assisted: Claude via Cursor
+```
+
+## Rules
+
+1. Use imperative mood ("add feature" not "added feature")
+2. Keep first line under 72 characters
+3. Capitalize first word of description
+4. No period at end of first line
+5. Blank line before bullet points
+6. Add AI attribution for significant AI contributions

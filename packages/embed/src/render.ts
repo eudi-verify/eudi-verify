@@ -67,6 +67,15 @@ const WALLET_ICON = /* html */ `
 `;
 
 /**
+ * SVG icon: warning (demo banner)
+ */
+const WARNING_ICON = /* html */ `
+<svg class="eudi-warning-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  <path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`;
+
+/**
  * Map of status to state container ID.
  */
 type RenderableStatus = VerificationState['status'];
@@ -198,6 +207,18 @@ function renderError(): string {
 }
 
 /**
+ * Render the demo mode banner.
+ */
+function renderDemoBanner(): string {
+  return /* html */ `
+    <div class="eudi-demo-banner" role="status" aria-live="polite" hidden>
+      ${WARNING_ICON}
+      <span>Demo mode — credentials are simulated</span>
+    </div>
+  `;
+}
+
+/**
  * Render the complete widget structure.
  * All states are rendered, only one is visible at a time.
  */
@@ -205,6 +226,7 @@ export function renderWidget(): string {
   return /* html */ `
     <div class="eudi-widget" role="region" aria-label="Identity verification">
       <div class="eudi-sr-only" aria-live="polite" aria-atomic="true"></div>
+      ${renderDemoBanner()}
       ${renderIdle()}
       ${renderLoading()}
       ${renderShowQR()}

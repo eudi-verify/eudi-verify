@@ -77,7 +77,7 @@ export function createTokenService(config: TokenServiceConfig): TokenService {
     async mint(sessionId: string, claims: VerifiedClaims): Promise<string> {
       const tokenId = randomUUID();
       const exp = Math.floor((Date.now() + ttlMs) / 1000);
-      const claimsHash = hashClaims(claims);
+      const claimsHash = hashClaims(claims, secret);
 
       const payload: VerificationTokenPayload = {
         sid: sessionId,
@@ -147,7 +147,7 @@ export function createTokenService(config: TokenServiceConfig): TokenService {
         return { valid: false, error: 'invalid_token' };
       }
 
-      const expectedHash = hashClaims(storedData.claims);
+      const expectedHash = hashClaims(storedData.claims, secret);
       if (payload.hash !== expectedHash) {
         return { valid: false, error: 'invalid_token' };
       }
@@ -207,11 +207,11 @@ function constantTimeCompare(a: string, b: string): boolean {
 }
 
 /**
- * Hash claims for integrity verification.
+ * Hash claims for integrity verification using the server secret.
  */
-function hashClaims(claims: VerifiedClaims): string {
+function hashClaims(claims: VerifiedClaims, secret: string): string {
   const sorted = JSON.stringify(claims, Object.keys(claims).sort());
-  return createHmac('sha256', 'claims')
+  return createHmac('sha256', secret)
     .update(sorted)
     .digest('base64url')
     .slice(0, 16);

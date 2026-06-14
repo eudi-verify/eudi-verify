@@ -1,0 +1,52 @@
+# Threat Model Sync
+
+## Purpose
+
+Keep `/THREAT_MODEL.md` in sync with code changes and GitHub issues.
+
+## When modifying security controls in code
+
+1. Update status in `/THREAT_MODEL.md`:
+   - `[IMPLEMENTED]` — control is fully in place
+   - `[PARTIAL]` — some mitigations done, others planned
+   - `[PLANNED]` — on roadmap, not yet started
+
+2. If adding a new threat, assign the next T-number (T11, T12, etc.)
+
+3. Link to GitHub issue if work remains:
+   ```markdown
+   **Planned Mitigations**:
+   - Referer fallback (issue #XX)
+   ```
+
+## When closing security-related GitHub issues
+
+1. Update corresponding threat status in THREAT_MODEL.md:
+   - Change `[PARTIAL]` to `[IMPLEMENTED]` if fully resolved
+   - Change `[PLANNED]` to `[IMPLEMENTED]` if implemented
+
+2. Remove issue link placeholders like `(issue #XX)` when work is complete
+
+3. Move item from "Future Hardening" section to the threat's "Implemented Mitigations" if applicable
+
+## Labels for security issues
+
+Use these labels on security-related GitHub issues:
+- `security` — Any security-related issue
+- `hardening` — Defense-in-depth improvement (optional extra layer)
+- `audit-blocker` — Must fix before security audit
+
+## Example workflow
+
+1. Create issue: "Implement Referer fallback for CSRF protection" (labels: `security`, `hardening`)
+2. Update THREAT_MODEL.md T7 to reference issue #XX
+3. Implement the control
+4. Update THREAT_MODEL.md T7: change `[PARTIAL]` to `[IMPLEMENTED]`, remove issue link
+5. Close issue
+
+## Consistency checks
+
+Before committing changes to security code:
+- [ ] THREAT_MODEL.md status markers reflect actual state
+- [ ] GitHub issue links are correct or removed if resolved
+- [ ] New threats have been documented with T-number

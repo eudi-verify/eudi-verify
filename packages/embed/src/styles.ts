@@ -282,5 +282,31 @@ export function createStyles(): string {
       white-space: nowrap;
       border: 0;
     }
+
+    /* Demo mode banner */
+    .eudi-demo-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 12px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #7c5c00;
+      background: #fef3cd;
+      border: 1px solid #ffe69c;
+      border-radius: 4px;
+    }
+
+    .eudi-demo-banner[hidden] {
+      display: none;
+    }
+
+    .eudi-warning-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: #7c5c00;
+    }
   `;
 }

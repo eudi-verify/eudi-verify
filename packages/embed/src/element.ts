@@ -65,6 +65,8 @@ export class EudiVerifyElement extends HTMLElement {
   #container: HTMLElement | null = null;
   #liveRegion: HTMLElement | null = null;
   #lastStatus: VerificationState['status'] | null = null;
+  #isDemo: boolean | null = null;
+  #demoBanner: HTMLElement | null = null;
 
   constructor() {
     super();
@@ -194,6 +196,7 @@ export class EudiVerifyElement extends HTMLElement {
 
     this.#container = this.#shadow.querySelector('.eudi-widget');
     this.#liveRegion = this.#shadow.querySelector('[aria-live]');
+    this.#demoBanner = this.#shadow.querySelector('.eudi-demo-banner');
   }
 
   #setupEventListeners(): void {
@@ -228,6 +231,35 @@ export class EudiVerifyElement extends HTMLElement {
     this.#unsubscribe = this.#verification.subscribe((state) => {
       this.#handleStateChange(state);
     });
+
+    // Detect demo mode on first API interaction
+    this.#detectDemoMode();
+  }
+
+  async #detectDemoMode(): Promise<void> {
+    if (this.#isDemo !== null || !this.apiUrl) return;
+
+    try {
+      const response = await fetch(`${this.apiUrl}/sessions`, {
+        method: 'HEAD',
+      });
+      const mode = response.headers.get('X-Eudi-Mode');
+      this.#isDemo = mode === 'demo';
+      this.#updateDemoBanner();
+    } catch {
+      // If detection fails, don't show banner (fail safely)
+      this.#isDemo = false;
+    }
+  }
+
+  #updateDemoBanner(): void {
+    if (!this.#demoBanner) return;
+
+    if (this.#isDemo === true) {
+      this.#demoBanner.removeAttribute('hidden');
+    } else {
+      this.#demoBanner.setAttribute('hidden', '');
+    }
   }
 
   #handleStateChange(state: VerificationState): void {
