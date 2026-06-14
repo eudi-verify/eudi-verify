@@ -196,7 +196,7 @@ payload = { sessionId, claimsHash, exp, singleUse: true }
 | ---------------------------- | ----------------------------------------------------------------------------------------- |
 | Client fakes verified claims | Widget returns opaque token only; merchant server calls `/tokens/verify`                  |
 | Token replay                 | Single-use tokens, short TTL (5 min), bound to sessionId                                  |
-| Token forgery                | HMAC signed with server `VERIFICATION_SECRET`; constant-time compare                      |
+| Token forgery                | HMAC signed with server `TOKEN_SECRET` (Verification Token); constant-time compare        |
 | Session fixation             | Bind session to redirect, validate state/nonce/key-binding JWT                            |
 | CSRF on session create       | Same-origin policy on widget API; Origin/Referer checks                                   |
 | Abuse / DoS                  | Rate limit `POST /sessions` and `POST /callback` per IP; session TTL cleanup              |

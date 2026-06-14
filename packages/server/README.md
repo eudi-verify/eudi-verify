@@ -26,7 +26,7 @@ const handlers = createVerifierHandlers({
   engine,
   store,
   mode: 'demo',
-  tokenSecret: process.env.VERIFICATION_SECRET!, // 32+ chars
+  tokenSecret: process.env.TOKEN_SECRET!, // 32+ chars
 });
 
 // 3. Mount on your framework
@@ -185,6 +185,13 @@ app.post('/sessions', async (req, res) => {
 Internal failures are logged to `console.error` with a `[eudi-verify]` prefix. There is no built-in logger injection — wrap handler calls for structured reporting.
 
 ## Token Verification
+
+**Important:** There are two different tokens in the flow:
+
+1. **VP Token** (Verifiable Presentation) — Comes from the EUDI Wallet, verified by the engine using cryptographic signatures and trust lists
+2. **Verification Token** — Minted by your server after VP verification succeeds, HMAC-signed with `TOKEN_SECRET`, returned to client as proof of successful verification
+
+The `tokenSecret` config parameter is for signing the **Verification Token** only.
 
 After the widget emits a `verified` event with a token, validate it server-side:
 

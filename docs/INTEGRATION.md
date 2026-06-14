@@ -56,7 +56,7 @@ const handlers = createVerifierHandlers({
   engine: new OpenEudiEngine({ mode: 'demo' }),
   store: new MemoryKVStore(),
   mode: 'demo',
-  tokenSecret: process.env.VERIFICATION_SECRET!, // 32+ chars, keep secret
+  tokenSecret: process.env.TOKEN_SECRET!, // 32+ chars, keep secret
 });
 
 // Mount routes
@@ -359,4 +359,4 @@ In demo mode:
 - [Server package documentation](../packages/server/README.md)
 - [Client package documentation](../packages/client/README.md)
 - [OpenAPI specification](../openapi/eudi-verifier.yaml)
-- [Deployment guide](./deploy-eu.md) (coming in WP5)
+- [Deployment guide](./deploy-eu.md)

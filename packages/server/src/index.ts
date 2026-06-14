@@ -20,7 +20,7 @@
  *   store,
  *   baseUrl: '/api/eudi',
  *   mode: 'demo',
- *   tokenSecret: process.env.VERIFICATION_SECRET!,
+ *   tokenSecret: process.env.TOKEN_SECRET!,
  * });
  * ```
  *

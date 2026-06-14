@@ -49,7 +49,7 @@ export function createTokenService(config: TokenServiceConfig): TokenService;
 Requirements:
 - Token format: `eudi_v1.<base64url-payload>.<hmac>`
 - Payload: `{ sid, kid, exp, hash }`
-- HMAC using `VERIFICATION_SECRET` env var
+- HMAC using `TOKEN_SECRET` env var (signs the **Verification Token**, not the VP from wallet)
 - **Constant-time compare** for signature verification
 - Single-use: consume token on successful verify (via `IKVStore.getAndDelete`)
 - Default TTL: 5 minutes
