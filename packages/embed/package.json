@@ -1,6 +1,6 @@
 {
   "name": "@eudi-verify/embed",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "<eudi-verify> Custom Element for EUDI Wallet verification",
   "type": "module",
   "engines": {
@@ -28,8 +28,25 @@
     "test:watch": "vitest",
     "test:e2e": "node -e \"const p=process.env.EUDI_E2E_PORT||3333;const a=process.env.EUDI_MOCK_API_PORT||3456;console.log('\\n📍 E2E widget:  http://localhost:'+p+'/');console.log('📍 Mock API:    http://localhost:'+a+'/api/eudi\\n');\" && playwright test",
     "serve:e2e": "node -e \"const p=process.env.EUDI_E2E_PORT||3333;console.log('🚀 E2E widget server: http://localhost:'+p+'/');\" && vite --logLevel info",
-    "serve:mock-api": "node e2e/mock-api-server.mjs"
+    "serve:mock-api": "node e2e/mock-api-server.mjs",
+    "prepublishOnly": "pnpm build"
   },
+  "keywords": [
+    "eudi",
+    "wallet",
+    "verifier",
+    "web-component",
+    "custom-element",
+    "eu-digital-identity",
+    "widget"
+  ],
+  "author": "eudi-verify contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eudi-verify/eudi-verify.git",
+    "directory": "packages/embed"
+  },
+  "license": "Apache-2.0",
   "dependencies": {
     "@eudi-verify/client": "workspace:*"
   },
@@ -39,6 +56,5 @@
     "happy-dom": "^15.7.4",
     "tsup": "^8.3.0",
     "vite": "^5.4.0"
-  },
-  "license": "Apache-2.0"
+  }
 }

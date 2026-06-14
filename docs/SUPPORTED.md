@@ -24,7 +24,7 @@
 | Stack | Status | How |
 |-------|--------|-----|
 | **Plain HTML** | ✅ Supported | Import `@eudi-verify/embed`; use `<eudi-verify>` |
-| **React** | 🟡 Embeddable | Web component works today; first-class wrapper in [WP9](./wp/WP9.md) |
+| **React** | 🟡 Embeddable | Web component works today; first-class wrapper in [WP9](../.github/internal/wp/WP9.md) |
 | **Custom UI** | ✅ Supported | `@eudi-verify/client` (vanilla TS, zero framework deps) |
 | **WordPress** | 🟡 Manual embed | Add script + element in theme/block; no plugin yet |
 
@@ -59,7 +59,7 @@ Items below are **not shipped** or **not yet documented**. See [PLAN.md](./PLAN.
 
 | Integration | Status | Deliverable |
 |-------------|--------|-------------|
-| **React** | 🔜 [WP9](./wp/WP9.md) | `@eudi-verify/react` + `examples/react` |
+| **React** | 🔜 [WP9](../.github/internal/wp/WP9.md) | `@eudi-verify/react` + `examples/react` |
 | **Vue** | Roadmap | Reference example |
 | **WordPress** | Roadmap | Plugin |
 | **Next.js** | Roadmap | `@eudi-verify/next` (after WP9) |

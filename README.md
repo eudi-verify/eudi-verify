@@ -93,13 +93,13 @@ cd examples/html-vanilla && pnpm start
 
 ### On the roadmap
 
-React wrapper (first), Vue example, WordPress plugin, PHP/Python/Java guides, production HAIP — **[WP9](./wp/WP9.md)** for React; full matrix in **[docs/SUPPORTED.md](docs/SUPPORTED.md)**.
+React wrapper (first), Vue example, WordPress plugin, PHP/Python/Java guides, production HAIP — **[WP9](.github/internal/wp/WP9.md)** for React; full matrix in **[docs/SUPPORTED.md](docs/SUPPORTED.md)**.
 
 ## Design Principles
 
 ### Framework Agnostic
 
-Core packages have no React, Vue, or Lit dependency. The widget is a vanilla [Custom Element](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements) you can embed in any HTML page or SPA today. First-class React support is **[WP9](docs/wp/WP9.md)** (`@eudi-verify/react`); other frameworks on the [roadmap](docs/SUPPORTED.md#framework-integrations).
+Core packages have no React, Vue, or Lit dependency. The widget is a vanilla [Custom Element](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements) you can embed in any HTML page or SPA today. First-class React support is **[WP9](.github/internal/wp/WP9.md)** (`@eudi-verify/react`); other frameworks on the [roadmap](docs/SUPPORTED.md#framework-integrations).
 
 ### EU Sovereignty
 

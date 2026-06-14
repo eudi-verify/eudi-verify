@@ -1,24 +1,44 @@
 {
   "name": "@eudi-verify/client",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "Typed API client and state machine for EUDI Wallet verification",
   "type": "module",
   "engines": {
     "node": ">=22"
   },
   "main": "./dist/index.js",
-  "types": "./src/index.ts",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --clean",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "size": "pnpm build && gzip -c dist/index.js | wc -c"
+    "size": "pnpm build && gzip -c dist/index.js | wc -c",
+    "prepublishOnly": "pnpm build"
+  },
+  "keywords": [
+    "eudi",
+    "wallet",
+    "verifier",
+    "openid4vp",
+    "eu-digital-identity",
+    "client",
+    "api-client"
+  ],
+  "author": "eudi-verify contributors",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eudi-verify/eudi-verify.git",
+    "directory": "packages/client"
   },
   "devDependencies": {
     "tsup": "^8.0.0"

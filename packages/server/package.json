@@ -1,21 +1,49 @@
 {
   "name": "@eudi-verify/server",
   "version": "0.1.0",
+  "description": "Framework-agnostic REST API handlers for EUDI Wallet verification",
   "type": "module",
   "engines": {
     "node": ">=22"
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepublishOnly": "pnpm build"
+  },
+  "keywords": [
+    "eudi",
+    "wallet",
+    "verifier",
+    "openid4vp",
+    "eu-digital-identity",
+    "eidas",
+    "identity-verification"
+  ],
+  "author": "eudi-verify contributors",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eudi-verify/eudi-verify.git",
+    "directory": "packages/server"
   },
   "dependencies": {
     "@openeudi/core": "^0.8.0"
   },
   "devDependencies": {
-    "@types/node": "^25.9.2"
+    "@types/node": "^25.9.2",
+    "tsup": "^8.0.0"
   }
 }

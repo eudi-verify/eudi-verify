@@ -10,7 +10,7 @@
 
 ## Work Package Breakdown
 
-**Execution model:** Contracts first, then independent packages implemented against acceptance criteria in `docs/wp/WPn.md`. WP1 is the keystone — everything else codes against its artifacts.
+**Execution model:** Contracts first, then independent packages implemented against acceptance criteria in `.github/internal/wp/WPn.md`. WP1 is the keystone — everything else codes against its artifacts.
 
 ### MVP Scope
 
@@ -67,7 +67,7 @@ Four core artifacts in WP0–WP7 (server, client, embed, demo, security docs, in
 ### WP9 — React (`@eudi-verify/react`)
 
 - Thin React wrapper over WP4 embed; `examples/react` reference app; React section in `docs/INTEGRATION.md`
-- Brief: [docs/wp/WP9.md](./wp/WP9.md)
+- Brief: [.github/internal/wp/WP9.md](../.github/internal/wp/WP9.md)
 - **Accept:** demo verification flow works; package README; unit tests pass; no React in core packages
 
 ### Dependency Order
@@ -107,7 +107,7 @@ The **product** is not a React or Next library. It is three stack-independent la
 
 **Framework integrations** (post-MVP):
 
-- **React** — [WP9](./wp/WP9.md): `@eudi-verify/react` + `examples/react`
+- **React** — [WP9](../.github/internal/wp/WP9.md): `@eudi-verify/react` + `examples/react`
 - **Vue** — reference example (roadmap)
 - **WordPress** — plugin (roadmap)
 - `@eudi-verify/next` — Next.js route adapter (after WP9)
@@ -229,7 +229,7 @@ The user-facing product is a **captcha-style identity verification widget**:
 
 ## Contributor Handoff
 
-Each work package has a brief in `docs/wp/WPn.md` with acceptance criteria. Implement against WP1 contract files (`openapi/eudi-verifier.yaml`, `packages/server/src/{types,store,engine}.ts`).
+Each work package has a brief in `.github/internal/wp/WPn.md` with acceptance criteria. Implement against WP1 contract files (`openapi/eudi-verifier.yaml`, `packages/server/src/{types,store,engine}.ts`).
 
 **Review gates** (human review before merge):
 
