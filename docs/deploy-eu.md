@@ -1,6 +1,6 @@
 # EU-Sovereign Deployment Guide
 
-Deploy eudi-verify on EU-hosted infrastructure. This guide covers deployment to Hetzner Cloud, but the same approach works for any EU provider (OVH, Scaleway, etc.).
+Deploy eudi-verify on EU-hosted infrastructure.
 
 ## Deployment Options
 
@@ -16,7 +16,7 @@ Deploy eudi-verify on EU-hosted infrastructure. This guide covers deployment to 
 
 Recommended for production deployments where you want full control.
 
-### 1. Create Hetzner Server
+### 1. Create Server
 
 ### 2. Server Setup
 

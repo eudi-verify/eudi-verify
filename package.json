@@ -12,12 +12,14 @@
     "test": "vitest run && pnpm --filter @eudi-verify/embed test",
     "test:unit": "vitest run",
     "lint:api": "spectral lint openapi/eudi-verifier.yaml",
-    "build": "pnpm -r build"
+    "build": "pnpm -r build",
+    "verify": "bash scripts/ci.sh",
+    "hooks:install": "bash scripts/install-git-hooks.sh"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
     "@stoplight/spectral-cli": "^6.16.0",
     "typescript": "^5.0.0",
-    "vitest": "^2.0.0"
+    "vitest": "^3.2.6"
   }
 }

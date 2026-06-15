@@ -23,6 +23,12 @@ pnpm typecheck
 
 # Lint OpenAPI spec
 pnpm lint:api
+
+# Run all CI checks locally (mirrors GitHub Actions)
+pnpm verify
+
+# Optional: install pre-push hook (runs pnpm verify before every push)
+pnpm hooks:install
 ```
 
 ## Project Structure
@@ -74,7 +80,7 @@ AI-assisted: Claude via Cursor
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feat/my-feature`)
 3. Make your changes with tests
-4. Run `pnpm test` and `pnpm typecheck` to ensure everything passes
+4. Run `pnpm verify` to ensure everything passes (or `pnpm test` + `pnpm typecheck` for a quicker check)
 5. Commit your changes following the commit message format above
 6. Push to your fork and submit a pull request
 

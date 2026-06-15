@@ -6,3 +6,5 @@ dist/
 # Local-only files (not committed)
 *.local.md
 *.local.txt
+scripts/deploy.sh
+scripts/provision-server.sh

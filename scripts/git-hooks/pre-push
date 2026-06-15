@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Installed by: pnpm hooks:install
+# Runs the same checks as GitHub Actions CI before every push.
+
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+# shellcheck disable=SC1091
+source "$ROOT/scripts/ensure-node.sh"
+cd "$ROOT"
+
+echo "Running CI checks (pnpm verify)..."
+pnpm verify || {
+  echo ""
+  echo "CI checks failed — push aborted."
+  echo "To push anyway: git push --no-verify"
+  exit 1
+}
