@@ -22,6 +22,25 @@ Open http://localhost:3000
 2. **Server-Side Verification** — Token validation via `/tokens/verify`
 3. **Captcha Pattern** — Form submission gated on verified identity
 
+## Architecture
+
+The demo runs a **single Node.js process** that serves everything:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  http://localhost:3000  (one process)                   │
+│                                                         │
+│  Static pages     /verify, /demo-wallet, /success       │
+│  Widget bundle    /eudi-verify.js                       │
+│  Verifier API     /api/eudi/*  ← real @eudi-verify/server│
+│  Demo checkout    /api/checkout                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**What's real:** The server uses the actual `@eudi-verify/server` handlers — session lifecycle, HMAC token minting, single-use token verification, and rate limiting all work exactly as they would in production.
+
+**What's simulated:** The wallet. When you click "Open demo wallet", it opens a browser tab (same server) that mimics what a real EUDI Wallet app would do: display the request and call the callback endpoint on approve/reject. No production EUDI Wallets exist yet (due December 2026).
+
 ## Files
 
 | File | Purpose |

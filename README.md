@@ -73,6 +73,8 @@ cd examples/html-vanilla && pnpm start
 # Open http://localhost:3000
 ```
 
+The demo runs a **single Node.js server** that includes the full `@eudi-verify/server` implementation — session management, token signing, and verification are all real. Only the wallet side is simulated (via a "demo wallet" page) since no production EUDI Wallets exist yet. See [examples/html-vanilla/README.md](examples/html-vanilla/README.md) for testing instructions.
+
 ## Packages
 
 | Package | Description | Status |
