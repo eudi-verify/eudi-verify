@@ -18,10 +18,6 @@ Recommended for production deployments where you want full control.
 
 ### 1. Create Hetzner Server
 
-- **Location**: Falkenstein (DE) or Helsinki (FI)
-- **Type**: CX22 (2 vCPU, 4GB RAM) — €4.35/month
-- **Image**: Ubuntu 24.04
-
 ### 2. Server Setup
 
 ```bash
