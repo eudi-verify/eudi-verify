@@ -54,13 +54,56 @@ pnpm -r publish --access public --dry-run
 
 ## 4. Tag and push
 
-Replace `0.X.Y` with the new version (use the version from `packages/server/package.json` or the changeset output):
+Replace `0.X.Y` with the new version (from `packages/server/package.json` after `pnpm changeset version`). The tag must point at the **`chore: release`** commit on `main`.
+
+### One-time: enable signed tags (recommended)
+
+GitHub shows a **Verified** badge when tags are signed. Prefer **SSH signing** (simpler on GitHub than GPG):
+
+```bash
+# List keys — use a dedicated signing key if you have one
+ls ~/.ssh/*.pub
+
+git config --global gpg.format ssh
+git config --global user.signingkey ~/.ssh/id_ed25519.pub   # your public key path
+git config --global tag.gpgSign true                        # sign tags by default
+```
+
+Add the **same public key** in GitHub → **Settings** → **SSH and GPG keys** → **New SSH key** → type **Signing key**.
+
+<details>
+<summary>GPG instead of SSH</summary>
+
+```bash
+gpg --full-generate-key
+gpg --list-secret-keys --keyid-format=long
+git config --global user.signingkey <KEY_ID>
+git config --global tag.gpgSign true
+```
+
+Upload the public key to GitHub → **Settings** → **SSH and GPG keys** → **New GPG key**.
+</details>
+
+### Create a signed tag
+
+Annotated + signed (preferred for releases):
+
+```bash
+git tag -s v0.X.Y -m "v0.X.Y"
+git tag -v v0.X.Y    # verify signature locally
+git push origin main
+git push origin v0.X.Y
+```
+
+Unsigned tag (only if signing is not set up yet):
 
 ```bash
 git tag v0.X.Y
 git push origin main
 git push origin v0.X.Y
 ```
+
+**Demo / pre-npm milestone** (no npm publish): same flow — tag the commit you want reviewers to cite, e.g. `v0.1.0-demo`, and create a GitHub release. Skip [§3 Publish packages](#3-publish-packages) if packages are not on npm yet.
 
 ## 5. GitHub release
 
@@ -76,5 +119,6 @@ Or create the release in the GitHub UI from the tag.
 - [ ] `pnpm verify` passes on the release commit
 - [ ] `pnpm changeset version` committed as `chore: release`
 - [ ] Packages published to npm (`@eudi-verify/server`, `@eudi-verify/client`, `@eudi-verify/embed`)
-- [ ] Git tag `v0.X.Y` pushed
-- [ ] GitHub release created with changelog notes
+- [ ] Git tag `v0.X.Y` pushed (**signed** with `git tag -s` when signing is configured)
+- [ ] `git tag -v v0.X.Y` passes locally
+- [ ] GitHub release created with changelog notes; tag shows **Verified** on GitHub

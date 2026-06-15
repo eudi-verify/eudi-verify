@@ -37,7 +37,8 @@ Three independent layers — use what you need:
 
 The [OpenAPI spec](openapi/eudi-verifier.yaml) is stack-independent — any backend can implement the same endpoints. Only the Node handler library ships today.
 
-📋 **[Supported platforms & roadmap](docs/SUPPORTED.md)** — what works now vs planned (PHP, Python, WordPress, React bindings, etc.)
+📋 **[Supported platforms & roadmap](docs/SUPPORTED.md)** — what works now vs planned (PHP, Python, WordPress, React bindings, etc.)  
+🔗 **[ARF Alignment](docs/ARF_ALIGNMENT.md)** — mapping to EU Architecture Reference Framework v2.8
 
 ```
 ┌─────────────────────────────────────────────────────────┐

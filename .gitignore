@@ -8,3 +8,4 @@ dist/
 *.local.txt
 scripts/deploy.sh
 scripts/provision-server.sh
+.cursor/rules/ponytail.mdc

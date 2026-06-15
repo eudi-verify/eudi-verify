@@ -38,8 +38,6 @@ type(scope): brief summary
 - Bullet point detail
 - Another detail
 - More context
-
-AI-assisted: Claude via Cursor
 ```
 
 ### Examples
@@ -56,10 +54,26 @@ chore: update dependencies
 
 ### AI Attribution
 
-For AI-assisted work, add as the last line:
+For substantive AI-assisted work, add metadata after the commit body. Model/version is required; prompt summary is optional:
+
 ```
-AI-assisted: Claude via Cursor
+feat(embed): add keyboard trap for modal focus
+
+- Trap focus inside verification dialog
+- Restore focus on close
+
+AI-assisted: <model-name> <version>
+Prompt: <brief summary> (optional)
 ```
+
+If you edited AI-generated code manually, add `(edited)`:
+
+```
+AI-assisted: <model-name> <version> (edited)
+Prompt: Generate unit tests for TTL validation; manually verified (optional)
+```
+
+See [CONTRIBUTING.md](../../../CONTRIBUTING.md) for full AI-assisted development policy.
 
 ## Rules
 
@@ -68,4 +82,4 @@ AI-assisted: Claude via Cursor
 3. Capitalize first word of description
 4. No period at end of first line
 5. Blank line before bullet points
-6. Add AI attribution for significant AI contributions
+6. Add AI attribution metadata for substantive AI contributions (see above)

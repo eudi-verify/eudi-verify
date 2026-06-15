@@ -71,9 +71,63 @@ feat(server): add rate limiting per session endpoint
 - Add per-IP rate limiter for POST /sessions
 - Add configurable threshold (default 10/min)
 - Add 429 response with Retry-After header
-
-AI-assisted: Claude via Cursor
 ```
+
+## AI tooling (optional)
+
+Cursor and other AI assistants are optional. You do not need them to contribute.
+
+This repository includes [`.cursor/rules/`](.cursor/rules/) — Cursor-side copies of project conventions for agents using that editor. **The conventions themselves are required** (commit message format, documentation sync, public-docs accuracy, etc.); they are documented in this file and `docs/`. You can ignore the `.cursor/rules` files if you do not use Cursor.
+
+- **Required (automated):** `pnpm verify` passes — mirrors CI (build, types, tests, OpenAPI lint, licenses, audit).
+- **Required (review):** Commit message format and documentation guidelines in this file; human review for security-sensitive changes.
+- **Optional:** Using Cursor, an AI assistant, or reading `.cursor/rules/` directly.
+- **Public docs:** Do not add unevaluated third-party agent plugins or rulesets to `README.md`, `docs/`, or package READMEs.
+
+## AI-assisted Development
+
+This project uses AI-assisted tooling under human review. Contributors remain responsible for correctness, security, and integration of all changes, whether AI-assisted or not.
+
+### When to Add Commit Metadata
+
+| Situation | Action |
+|-----------|--------|
+| Substantive code/logic generated or heavily shaped by AI | Add metadata footer (required) |
+| Docs/tests/scaffolding with minor AI help (spellcheck, formatting) | Optional footer; this policy is sufficient |
+| Purely human-authored change | No footer |
+
+### Commit Metadata Format
+
+For AI-assisted work, add metadata after the commit body, separated by a blank line. The model name and version are required; the prompt summary is optional but recommended:
+
+```
+feat(embed): add keyboard trap for modal focus
+
+- Trap focus inside verification dialog
+- Restore focus on close
+
+AI-assisted: <model-name> <version>
+Prompt: <brief summary of what you asked> (optional)
+```
+
+If you edited AI-generated code manually, add `(edited)`:
+
+```
+fix(client): handle session timeout edge case
+
+- Add retry logic for expired sessions
+- Update state machine transitions
+
+AI-assisted: <model-name> <version> (edited)
+Prompt: Generate session timeout handling; manually verified state transitions (optional)
+```
+
+### Human Review Expectations
+
+- Security-sensitive areas (`server` tokens, crypto, auth flows) require explicit human review before merge
+- Contributors must understand and be able to explain design decisions in their PRs
+
+See [.cursor/rules/commit-style.mdc](.cursor/rules/commit-style.mdc) for full conventional commit conventions.
 
 ## Pull Request Process
 
@@ -125,11 +179,11 @@ Maintainers: see [docs/RELEASING.md](docs/RELEASING.md) for version bumps, npm p
 
 ## Security
 
-Please report security vulnerabilities to [security@eudi-verify.org](mailto:security@eudi-verify.org) (not via public issues). See [SECURITY.md](SECURITY.md) for our disclosure policy.
+Please report security vulnerabilities via [GitHub Security Advisories](https://github.com/eudi-verify/eudi-verify/security/advisories/new) (not via public issues). See [SECURITY.md](SECURITY.md) for our disclosure policy.
 
 ## Code of Conduct
 
-This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold this code.
+This project follows our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold it.
 
 ## License
 

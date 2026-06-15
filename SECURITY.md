@@ -29,7 +29,9 @@ We take security seriously even during development.
 
 ### How to Report
 
-**Email**: mkasceldev@gmail.com
+**Preferred**: [GitHub Security Advisories](https://github.com/eudi-verify/eudi-verify/security/advisories/new)
+
+**Alternative**: mkasceldev@gmail.com
 
 Please include:
 - Description of the vulnerability
@@ -37,8 +39,6 @@ Please include:
 - Potential impact assessment
 - Affected versions
 - Suggested fixes (if any)
-
-**Note**: GitHub Security Advisories will be enabled once the repository is public.
 
 ### Response Timeline
 
@@ -92,7 +92,7 @@ Subscribe to repository notifications to stay informed.
 Before production release, we plan to:
 - Commission an independent security audit
 - Establish a formal security response process
-- Set up a dedicated security contact (security@eudi-verify.eu)
+- Set up dedicated security email (security@eudi-verify.eu or .org)
 - Define and publish SLAs for vulnerability response
 
 ## Additional Resources

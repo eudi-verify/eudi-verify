@@ -56,7 +56,8 @@ Four core artifacts in WP0–WP7 (server, client, embed, demo, security docs, in
 ### WP6 — Security Docs
 
 - `THREAT_MODEL.md`, `SECURITY.md` (disclosure policy), `DEPENDENCY.md` (license/origin per dep)
-- **Accept:** docs exist; CI license gate enforced; demo labeled not-production everywhere
+- `docs/ARF_ALIGNMENT.md` (mapping to EU Architecture Reference Framework v2.8)
+- **Accept:** docs exist; CI license gate enforced; demo labeled not-production everywhere; ARF alignment covers OpenID4VP + trust boundaries
 
 ### WP7 — Integration Docs
 

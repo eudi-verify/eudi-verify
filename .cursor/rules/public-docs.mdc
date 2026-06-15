@@ -30,6 +30,7 @@ When adding features, examples, or integration paths:
 ## Never in public docs
 
 - Grant applications, funders, € amounts (see `PLAN.local.md` — private)
+- Unevaluated third-party AI/agent tooling endorsements (see [ai-tooling.mdc](./ai-tooling.mdc))
 
 ## Release checklist
 

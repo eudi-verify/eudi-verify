@@ -205,7 +205,7 @@ Create security documentation for responsible open-source release. Documents thr
 
 ### Disclosure Process
 
-1. **Email**: security@eudi-verify.eu (or maintainer email)
+1. **Report via**: GitHub Security Advisories or mkasceldev@gmail.com
 2. **Include**:
    - Description of the vulnerability
    - Steps to reproduce
