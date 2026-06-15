@@ -111,11 +111,9 @@ Before proposing major changes, please review:
 
 The project maintains strict framework-agnostic design: no React/Vue/Lit in core packages (`server`, `client`, `embed`). Framework bindings go in separate packages (e.g., `@eudi-verify/react` in WP9).
 
-## Releasing (Maintainers Only)
+## Changesets
 
-This project uses [Changesets](https://github.com/changesets/changesets) for version management.
-
-### After merging a PR
+This project uses [Changesets](https://github.com/changesets/changesets) for version management. Include a changeset with PRs that change published packages.
 
 1. Run `pnpm changeset` to add a changeset describing the change
 2. Select which packages are affected
@@ -123,15 +121,7 @@ This project uses [Changesets](https://github.com/changesets/changesets) for ver
 4. Write a brief description for the changelog
 5. Commit the changeset file
 
-### Publishing a release
-
-1. Run `pnpm changeset version` to bump versions and update changelogs
-2. Review the generated changes
-3. Commit: `git commit -m "chore: release"`
-4. Authenticate with npm: `npm login`
-5. Publish: `pnpm -r publish --access public`
-6. Tag the release: `git tag v0.X.Y && git push origin v0.X.Y`
-7. Create GitHub release: `gh release create v0.X.Y --title "v0.X.Y" --notes "<changelog>"`
+Maintainers: see [docs/RELEASING.md](docs/RELEASING.md) for version bumps, npm publish, tags, and GitHub releases.
 
 ## Security
 
