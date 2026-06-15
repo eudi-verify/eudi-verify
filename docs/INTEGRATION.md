@@ -52,32 +52,56 @@ const app = express();
 app.use(express.json());
 
 // Initialize
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3000/api/eudi';
+
 const handlers = createVerifierHandlers({
-  engine: new OpenEudiEngine({ mode: 'demo' }),
+  engine: new OpenEudiEngine({ mode: 'demo', baseUrl: BASE_URL }),
   store: new MemoryKVStore(),
+  baseUrl: BASE_URL,
   mode: 'demo',
   tokenSecret: process.env.TOKEN_SECRET!, // 32+ chars, keep secret
 });
 
+// Helper to build request context
+function buildContext(req, params = {}, body = undefined) {
+  return {
+    ip: req.ip ?? '127.0.0.1',
+    origin: req.headers.origin,
+    params,
+    body,
+  };
+}
+
 // Mount routes
 app.post('/api/eudi/sessions', async (req, res) => {
-  const ctx = { ip: req.ip ?? '127.0.0.1' };
-  const result = await handlers.createSession(req.body, ctx);
+  const result = await handlers.createSession(buildContext(req, {}, req.body));
   res.status(result.status).set(result.headers).json(result.body);
 });
 
 app.get('/api/eudi/sessions/:id', async (req, res) => {
-  const result = await handlers.getSession(req.params.id);
+  const result = await handlers.getSession(buildContext(req, { sessionId: req.params.id }));
   res.status(result.status).set(result.headers).json(result.body);
 });
 
 app.post('/api/eudi/sessions/:id/cancel', async (req, res) => {
-  const result = await handlers.cancelSession(req.params.id);
+  const result = await handlers.cancelSession(buildContext(req, { sessionId: req.params.id }));
   res.status(result.status).set(result.headers).json(result.body);
 });
 
 app.post('/api/eudi/tokens/verify', async (req, res) => {
-  const result = await handlers.verifyToken(req.body);
+  const result = await handlers.verifyToken(buildContext(req, {}, req.body));
+  res.status(result.status).json(result.body);
+});
+
+// Callback endpoint (required for wallet integration)
+app.post('/api/eudi/callback', async (req, res) => {
+  const result = await handlers.handleCallback(buildContext(req));
+  res.status(result.status).json(result.body);
+});
+
+// Authorization request endpoint (optional, for PAR flow)
+app.get('/api/eudi/request/:id', async (req, res) => {
+  const result = await handlers.getRequest(buildContext(req, { requestId: req.params.id }));
   res.status(result.status).json(result.body);
 });
 

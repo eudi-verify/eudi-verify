@@ -16,6 +16,9 @@ pnpm build
 echo "==> Typecheck"
 pnpm -r typecheck
 
+echo "==> Lint OpenAPI spec"
+pnpm lint:api
+
 echo "==> Test"
 pnpm test
 

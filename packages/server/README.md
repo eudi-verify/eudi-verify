@@ -18,13 +18,15 @@ import {
 } from '@eudi-verify/server';
 
 // 1. Create engine and store
-const engine = new OpenEudiEngine({ mode: 'demo' });
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3000/api/eudi';
+const engine = new OpenEudiEngine({ mode: 'demo', baseUrl: BASE_URL });
 const store = new MemoryKVStore();
 
 // 2. Create handlers
 const handlers = createVerifierHandlers({
   engine,
   store,
+  baseUrl: BASE_URL,
   mode: 'demo',
   tokenSecret: process.env.TOKEN_SECRET!, // 32+ chars
 });
@@ -40,14 +42,22 @@ const handlers = createVerifierHandlers({
 ```ts
 import http from 'node:http';
 
+function buildContext(req, params = {}, body = undefined) {
+  return {
+    ip: req.socket.remoteAddress ?? '127.0.0.1',
+    origin: req.headers.origin,
+    params,
+    body,
+  };
+}
+
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url!, `http://${req.headers.host}`);
-  const ctx = { ip: req.socket.remoteAddress ?? '127.0.0.1' };
   
   // Route to handlers
   if (url.pathname === '/sessions' && req.method === 'POST') {
     const body = await readBody(req);
-    const result = await handlers.createSession(JSON.parse(body), ctx);
+    const result = await handlers.createSession(buildContext(req, {}, JSON.parse(body)));
     sendJson(res, result.status, result.body, result.headers);
   }
   // ... other routes
@@ -62,24 +72,32 @@ import express from 'express';
 const app = express();
 app.use(express.json());
 
+function buildContext(req, params = {}, body = undefined) {
+  return {
+    ip: req.ip ?? '127.0.0.1',
+    origin: req.headers.origin,
+    params,
+    body,
+  };
+}
+
 app.post('/sessions', async (req, res) => {
-  const ctx = { ip: req.ip ?? '127.0.0.1' };
-  const result = await handlers.createSession(req.body, ctx);
+  const result = await handlers.createSession(buildContext(req, {}, req.body));
   res.status(result.status).set(result.headers).json(result.body);
 });
 
 app.get('/sessions/:id', async (req, res) => {
-  const result = await handlers.getSession(req.params.id);
+  const result = await handlers.getSession(buildContext(req, { sessionId: req.params.id }));
   res.status(result.status).set(result.headers).json(result.body);
 });
 
 app.post('/sessions/:id/cancel', async (req, res) => {
-  const result = await handlers.cancelSession(req.params.id);
+  const result = await handlers.cancelSession(buildContext(req, { sessionId: req.params.id }));
   res.status(result.status).set(result.headers).json(result.body);
 });
 
 app.post('/tokens/verify', async (req, res) => {
-  const result = await handlers.verifyToken(req.body);
+  const result = await handlers.verifyToken(buildContext(req, {}, req.body));
   res.status(result.status).json(result.body);
 });
 ```
@@ -91,9 +109,17 @@ import { Hono } from 'hono';
 
 const app = new Hono();
 
+function buildContext(c, params = {}, body = undefined) {
+  return {
+    ip: c.req.header('x-forwarded-for') ?? '127.0.0.1',
+    origin: c.req.header('origin'),
+    params,
+    body,
+  };
+}
+
 app.post('/sessions', async (c) => {
-  const ctx = { ip: c.req.header('x-forwarded-for') ?? '127.0.0.1' };
-  const result = await handlers.createSession(await c.req.json(), ctx);
+  const result = await handlers.createSession(buildContext(c, {}, await c.req.json()));
   return c.json(result.body, result.status, result.headers);
 });
 
@@ -106,6 +132,7 @@ app.post('/sessions', async (c) => {
 interface VerifierConfig {
   engine: VerifierEngine;     // OpenEudiEngine or MockEngine
   store: IKVStore;            // MemoryKVStore (or Redis for production)
+  baseUrl: string;            // Public callback URL (e.g., https://example.com/api/eudi)
   mode: 'demo' | 'production';
   tokenSecret: string;        // HMAC secret, 32+ characters
   tokenTtlMs?: number;        // Default: 300000 (5 min)
@@ -114,6 +141,7 @@ interface VerifierConfig {
     maxRequests: number;      // Default: 10
     windowMs: number;         // Default: 60000 (1 min)
   };
+  allowedOrigins?: string[];  // CORS/Origin check (empty = allow all)
 }
 ```
 

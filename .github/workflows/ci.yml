@@ -28,6 +28,9 @@ jobs:
       - name: Typecheck
         run: pnpm -r typecheck
 
+      - name: Lint OpenAPI
+        run: pnpm lint:api
+
       - name: Test
         run: pnpm test
 
