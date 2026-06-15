@@ -182,11 +182,11 @@ See [docs/PLAN.md](docs/PLAN.md) for the technical roadmap and [docs/SUPPORTED.m
 
 ## Support the project
 
-This is independent open source (Apache-2.0). Ways to help:
+Independent open source (Apache-2.0). See **[FUNDING.md](FUNDING.md)** to contribute or sponsor.
 
 - **Use it** — try the [html-vanilla demo](examples/html-vanilla/) and open issues for gaps
 - **Contribute** — PRs welcome; see [Contributing](#contributing) and `docs/SUPPORTED.md` before claiming new platform support in docs
-- **Sponsor** — GitHub Sponsors / Open Collective links can be added here once accounts are set up (`.github/FUNDING.yml`)
+- **Sponsor** — via [FUNDING.md](FUNDING.md) (GitHub Sponsors / Open Collective coming soon)
 
 ## License
 

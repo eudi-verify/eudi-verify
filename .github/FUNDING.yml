@@ -1,0 +1,7 @@
+# GitHub "Sponsor" button — add accounts when ready, e.g.:
+# github: your-username-or-org
+# open_collective: eudi-verify
+#
+# Until then, link to the funding guide:
+custom:
+  - 'https://github.com/eudi-verify/eudi-verify/blob/main/FUNDING.md'
