@@ -262,20 +262,26 @@ a:hover {
   position: relative;
 }
 
-.flow-steps::before {
-  display: none;
-}
-
+.flow-step:not(:first-child)::before,
 .flow-step:not(:last-child)::after {
   content: '';
   position: absolute;
   left: var(--step-line-x);
   transform: translateX(-50%);
-  top: calc(50% + var(--step-badge-size) / 2);
-  bottom: calc(-50% + var(--step-badge-size) / 2);
   width: 2px;
   background: var(--color-border-strong);
   z-index: 0;
+}
+
+/* Split connector: each step draws to its own edge so heights can differ. */
+.flow-step:not(:first-child)::before {
+  top: 0;
+  height: calc(50% - var(--step-badge-size) / 2);
+}
+
+.flow-step:not(:last-child)::after {
+  top: calc(50% + var(--step-badge-size) / 2);
+  bottom: 0;
 }
 
 .flow-step {

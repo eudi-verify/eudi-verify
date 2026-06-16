@@ -4,6 +4,8 @@ Framework-agnostic open-source verifier kit for the [EU Digital Identity Wallet]
 
 **Status:** Active development (demo mode)
 
+**Live demo:** [https://demo.eudi-verify.eu/](https://demo.eudi-verify.eu/)
+
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
 ## What is this?

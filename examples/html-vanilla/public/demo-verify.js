@@ -11,6 +11,7 @@ const curlCommand = document.getElementById('curl-command');
 
 let currentSessionId = null;
 let lastLoggedStatus = null;
+let hasActiveSession = false;
 
 function log(message, html) {
   const li = document.createElement('li');
@@ -40,7 +41,20 @@ function updateCurlHint(sessionId) {
 
 function updateDemoWalletLink(sessionId) {
   demoWalletLink.href = `/demo-wallet?state=${encodeURIComponent(sessionId)}`;
+}
+
+function resetSessionUi() {
+  hasActiveSession = false;
+  currentSessionId = null;
+  sessionInput.value = '';
+  demoWalletPanel.hidden = true;
+  curlHint.hidden = true;
+}
+
+function showSessionTools() {
+  if (!hasActiveSession) return;
   demoWalletPanel.hidden = false;
+  curlHint.hidden = false;
 }
 
 const params = new URLSearchParams(window.location.search);
@@ -63,8 +77,7 @@ widget.addEventListener('state-change', (e) => {
   switch (status) {
     case 'loading':
       log('Starting verification…');
-      demoWalletPanel.hidden = true;
-      curlHint.hidden = true;
+      resetSessionUi();
       lastLoggedStatus = status;
       break;
 
@@ -80,6 +93,9 @@ widget.addEventListener('state-change', (e) => {
         );
         updateDemoWalletLink(state.sessionId);
         updateCurlHint(state.sessionId);
+        hasActiveSession = true;
+        // Server stays on pending (showQR) until callback — not waiting_for_wallet
+        showSessionTools();
       }
       lastLoggedStatus = status;
       break;
@@ -88,6 +104,10 @@ widget.addEventListener('state-change', (e) => {
       if ('sessionId' in state) {
         currentSessionId = state.sessionId;
         sessionInput.value = state.sessionId;
+        updateDemoWalletLink(state.sessionId);
+        updateCurlHint(state.sessionId);
+        hasActiveSession = true;
+        showSessionTools();
       }
       log('Status: waiting_for_wallet');
       lastLoggedStatus = status;
@@ -98,27 +118,33 @@ widget.addEventListener('state-change', (e) => {
         log(`GET /sessions/${currentSessionId ?? '?'} → verified (token ${truncateToken(state.token)})`);
       }
       lastLoggedStatus = status;
-      demoWalletPanel.hidden = true;
+      resetSessionUi();
       break;
 
     case 'rejected':
       log(`Verification rejected${state.error ? `: ${state.error}` : ''}`);
+      resetSessionUi();
       lastLoggedStatus = status;
       break;
 
     case 'expired':
       log('Session expired');
+      resetSessionUi();
       lastLoggedStatus = status;
       break;
 
     case 'error':
       log(`Error: ${state.error ?? 'Unknown error'}`);
+      resetSessionUi();
       lastLoggedStatus = status;
       break;
 
     case 'idle':
-      if (lastLoggedStatus === 'loading' || lastLoggedStatus === 'showQR') {
+      if (lastLoggedStatus === 'loading' || lastLoggedStatus === 'showQR' || lastLoggedStatus === 'waitingForWallet') {
         log('Returned to idle');
+      }
+      if (lastLoggedStatus !== 'verified') {
+        resetSessionUi();
       }
       lastLoggedStatus = status;
       break;
@@ -137,14 +163,17 @@ widget.addEventListener('verified', (e) => {
 widget.addEventListener('rejected', () => {
   errorAlert.hidden = false;
   errorAlert.textContent = 'Verification was rejected. Please try again.';
+  resetSessionUi();
 });
 
 widget.addEventListener('expired', () => {
   errorAlert.hidden = false;
   errorAlert.textContent = 'Session expired. Please try again.';
+  resetSessionUi();
 });
 
 widget.addEventListener('error', (e) => {
   errorAlert.hidden = false;
   errorAlert.textContent = `Error: ${e.detail?.message || e.detail?.error || 'Unknown error'}`;
+  resetSessionUi();
 });

@@ -2,6 +2,8 @@
 
 Minimal demo showing `<eudi-verify>` widget integration with a plain Node.js server.
 
+**Live demo:** [https://demo.eudi-verify.eu/](https://demo.eudi-verify.eu/)
+
 ## Quick Start
 
 ```bash

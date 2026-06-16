@@ -2,6 +2,8 @@
 
 Deploy eudi-verify on EU-hosted infrastructure.
 
+Reference deployment: [https://demo.eudi-verify.eu/](https://demo.eudi-verify.eu/)
+
 ## Deployment Options
 
 | Method | Best For | Complexity |
