@@ -41,6 +41,16 @@ Avoid:
 - OpenAPI 3.1 for API contracts
 - Apache-2.0 license; deps must be Apache-2.0/MIT/BSD/ISC
 
+## Local shell (Node 22)
+
+This repo targets **Node.js 22+**. In agent/automation shells that use nvm, prefix terminal commands with:
+
+```bash
+source ~/.nvm/nvm.sh && nvm use 22 &&
+```
+
+(Or ensure the active Node is v22 before `pnpm`, `node`, etc.)
+
 ## File Patterns
 
 | Path | Purpose |
