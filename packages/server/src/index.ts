@@ -27,7 +27,7 @@
  * @packageDocumentation
  */
 
-export const VERSION = '0.1.0';
+export const VERSION = "0.1.0";
 
 // Types
 export type {
@@ -42,7 +42,7 @@ export type {
   VerifyTokenResult,
   ApiError,
   VerifierMode,
-} from './types.js';
+} from "./types.js";
 
 export {
   TERMINAL_STATUSES,
@@ -51,10 +51,10 @@ export {
   TOKEN_VERSION,
   DEFAULT_SESSION_TTL_MS,
   DEFAULT_TOKEN_TTL_MS,
-} from './types.js';
+} from "./types.js";
 
 // Store
-export type { IKVStore } from './store.js';
+export type { IKVStore } from "./store.js";
 
 export {
   MemoryKVStore,
@@ -62,7 +62,7 @@ export {
   sessionKey,
   tokenKey,
   rateLimitKey,
-} from './store.js';
+} from "./store.js";
 
 // Engine
 export type {
@@ -74,25 +74,28 @@ export type {
   MockEngineConfig,
   OpenEudiEngineConfig,
   SphereonEngineConfig,
-} from './engine.js';
+} from "./engine.js";
 
-export { MockEngine } from './engine.js';
+export { MockEngine } from "./engine.js";
 
 // OpenEUDI Engine
-export type { DemoClaimsConfig, OpenEudiEngineOptions } from './engines/openeudi.js';
-export { OpenEudiEngine } from './engines/openeudi.js';
+export type {
+  DemoClaimsConfig,
+  OpenEudiEngineOptions,
+} from "./engines/openeudi.js";
+export { OpenEudiEngine } from "./engines/openeudi.js";
 
 // Token Service
-export type { TokenService, TokenServiceConfig } from './token.js';
-export { createTokenService } from './token.js';
+export type { TokenService, TokenServiceConfig } from "./token.js";
+export { createTokenService } from "./token.js";
 
 // Rate Limiter
 export type {
   RateLimiter,
   RateLimitConfig,
   RateLimitResult,
-} from './rate-limit.js';
-export { createRateLimiter } from './rate-limit.js';
+} from "./rate-limit.js";
+export { createRateLimiter } from "./rate-limit.js";
 
 // Handlers
 export type {
@@ -101,5 +104,5 @@ export type {
   RequestContext,
   HandlerResponse,
   RequestHandler,
-} from './handlers.js';
-export { createVerifierHandlers } from './handlers.js';
+} from "./handlers.js";
+export { createVerifierHandlers } from "./handlers.js";

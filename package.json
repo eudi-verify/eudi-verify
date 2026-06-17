@@ -8,6 +8,8 @@
     "node": ">=22"
   },
   "scripts": {
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run && pnpm --filter @eudi-verify/embed test",
     "test:unit": "vitest run",
@@ -19,6 +21,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
     "@stoplight/spectral-cli": "^6.16.0",
+    "prettier": "^3.8.4",
     "typescript": "^5.0.0",
     "vitest": "^3.2.6"
   }

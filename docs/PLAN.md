@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**Project:** `eudi-verify` — open-source, framework-agnostic EUDI Wallet *verifier* kit (captcha-style `<eudi-verify>` widget + REST API + OpenAPI), built on `@openeudi/*` behind a swappable `VerifierEngine` interface. Apache-2.0. EU-sovereignty constraints: no US proprietary services, no Lit/React in core, pnpm workspaces (no Turborepo).
+**Project:** `eudi-verify` — open-source, framework-agnostic EUDI Wallet _verifier_ kit (captcha-style `<eudi-verify>` widget + REST API + OpenAPI), built on `@openeudi/*` behind a swappable `VerifierEngine` interface. Apache-2.0. EU-sovereignty constraints: no US proprietary services, no Lit/React in core, pnpm workspaces (no Turborepo).
 
 **Key decisions (settled):** name `eudi-verify`; vanilla Custom Elements (no Lit); html-vanilla + Node reference demo (Next deferred); all-public monorepo; Sphereon OID4VC as documented engine fallback; theming = 6 CSS vars via open Shadow DOM.
 
@@ -142,13 +142,14 @@ The **product** is not a React or Next library. It is three stack-independent la
 
 This project wraps third-party OpenID4VP implementations behind a swappable `VerifierEngine` interface:
 
-| Engine | Origin | Status | Risk |
-|--------|--------|--------|------|
-| `@openeudi/core` | Luxembourg | **Primary** | Single maintainer (bus factor) |
-| Sphereon OID4VC | Netherlands | Fallback | Company-backed, heavier |
-| MockEngine | This project | Testing | No real verification |
+| Engine           | Origin       | Status      | Risk                           |
+| ---------------- | ------------ | ----------- | ------------------------------ |
+| `@openeudi/core` | Luxembourg   | **Primary** | Single maintainer (bus factor) |
+| Sphereon OID4VC  | Netherlands  | Fallback    | Company-backed, heavier        |
+| MockEngine       | This project | Testing     | No real verification           |
 
 **Mitigation:** The `VerifierEngine` interface isolates protocol details. If `@openeudi/core` becomes unmaintained:
+
 1. Patch locally (Apache-2.0 allows this)
 2. Swap to Sphereon with minimal code changes
 3. Fork and maintain (last resort)
@@ -157,18 +158,19 @@ This project wraps third-party OpenID4VP implementations behind a swappable `Ver
 
 The EU Digital Identity Wallet ecosystem is in final development phase before mandatory launch:
 
-| Component | Status | Timeline |
-|-----------|--------|----------|
-| eIDAS 2.0 Regulation | ✅ Passed | May 2024 |
-| Architecture Reference Framework | ✅ v2.8 published | 2026 |
-| Implementing Regulations | ✅ 31 acts published | Through Apr 2026 |
-| Large Scale Pilots | ✅ Active testing | APTITUDE, WE BUILD ongoing |
-| National Sandbox Programs | 🟡 Some countries | Denmark, Ireland have public access |
-| **Certified National Wallets** | 🟡 Development | **Due Dec 24, 2026** |
-| Mandatory Business Acceptance | 🔴 Not yet | Due Dec 2027 |
-| EU Trust List (production) | 🔴 Not live | Tied to wallet launch |
+| Component                        | Status               | Timeline                            |
+| -------------------------------- | -------------------- | ----------------------------------- |
+| eIDAS 2.0 Regulation             | ✅ Passed            | May 2024                            |
+| Architecture Reference Framework | ✅ v2.8 published    | 2026                                |
+| Implementing Regulations         | ✅ 31 acts published | Through Apr 2026                    |
+| Large Scale Pilots               | ✅ Active testing    | APTITUDE, WE BUILD ongoing          |
+| National Sandbox Programs        | 🟡 Some countries    | Denmark, Ireland have public access |
+| **Certified National Wallets**   | 🟡 Development       | **Due Dec 24, 2026**                |
+| Mandatory Business Acceptance    | 🔴 Not yet           | Due Dec 2027                        |
+| EU Trust List (production)       | 🔴 Not live          | Tied to wallet launch               |
 
 **Current situation:** No production wallets available for general public. Developers can use:
+
 - EU Reference Implementation (GitHub)
 - National sandbox/beta programs (varies by country)
 - Demo mode for integration development
@@ -193,14 +195,14 @@ payload = { sessionId, claimsHash, exp, singleUse: true }
 
 ### Key Mitigations
 
-| Threat                       | Mitigation                                                                                |
-| ---------------------------- | ----------------------------------------------------------------------------------------- |
-| Client fakes verified claims | Widget returns opaque token only; merchant server calls `/tokens/verify`                  |
-| Token replay                 | Single-use tokens, short TTL (5 min), bound to sessionId                                  |
-| Token forgery                | HMAC signed with server `TOKEN_SECRET` (Verification Token); constant-time compare        |
-| Session fixation             | Bind session to redirect, validate state/nonce/key-binding JWT                            |
-| CSRF on session create       | Same-origin policy on widget API; Origin/Referer checks                                   |
-| Abuse / DoS                  | Rate limit `POST /sessions` and `POST /callback` per IP; session TTL cleanup              |
+| Threat                       | Mitigation                                                                         |
+| ---------------------------- | ---------------------------------------------------------------------------------- |
+| Client fakes verified claims | Widget returns opaque token only; merchant server calls `/tokens/verify`           |
+| Token replay                 | Single-use tokens, short TTL (5 min), bound to sessionId                           |
+| Token forgery                | HMAC signed with server `TOKEN_SECRET` (Verification Token); constant-time compare |
+| Session fixation             | Bind session to redirect, validate state/nonce/key-binding JWT                     |
+| CSRF on session create       | Same-origin policy on widget API; Origin/Referer checks                            |
+| Abuse / DoS                  | Rate limit `POST /sessions` and `POST /callback` per IP; session TTL cleanup       |
 
 ---
 
@@ -208,12 +210,12 @@ payload = { sessionId, claimsHash, exp, singleUse: true }
 
 The user-facing product is a **captcha-style identity verification widget**:
 
-| reCAPTCHA / Turnstile                    | EUDI Widget                                                 |
-| ---------------------------------------- | ----------------------------------------------------------- |
-| Embed captcha on checkout form           | Embed `<eudi-verify request='{"age_over_18":true}'>`        |
-| User solves challenge                    | User scans QR / approves in wallet app                      |
-| Widget yields `captchaToken`             | Widget yields `eudiVerificationToken` (opaque, short-lived) |
-| **Your server** calls Google/CF to verify| **Your server** calls `/tokens/verify` on verifier API      |
+| reCAPTCHA / Turnstile                     | EUDI Widget                                                 |
+| ----------------------------------------- | ----------------------------------------------------------- |
+| Embed captcha on checkout form            | Embed `<eudi-verify request='{"age_over_18":true}'>`        |
+| User solves challenge                     | User scans QR / approves in wallet app                      |
+| Widget yields `captchaToken`              | Widget yields `eudiVerificationToken` (opaque, short-lived) |
+| **Your server** calls Google/CF to verify | **Your server** calls `/tokens/verify` on verifier API      |
 
 ### Theming: 6 CSS Variables via Open Shadow DOM
 

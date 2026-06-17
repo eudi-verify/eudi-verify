@@ -9,7 +9,7 @@ export interface QRCodeOptions {
   /** Size in pixels (default: 200) */
   size?: number;
   /** Error correction level (default: 'M') */
-  errorCorrection?: 'L' | 'M' | 'Q' | 'H';
+  errorCorrection?: "L" | "M" | "Q" | "H";
   /** Quiet zone modules (default: 4) */
   quietZone?: number;
 }
@@ -136,13 +136,16 @@ const ALIGNMENT_PATTERNS: number[][] = [
 function getVersionInfo(dataLength: number, ecLevel: ECLevel): VersionInfo {
   const table = VERSION_TABLE[ecLevel];
   for (const info of table) {
-    const dataCodewords = info.totalCodewords - info.ecCodewordsPerBlock * info.numBlocks;
+    const dataCodewords =
+      info.totalCodewords - info.ecCodewordsPerBlock * info.numBlocks;
     const maxBytes = dataCodewords - (info.version < 10 ? 2 : 3);
     if (maxBytes >= dataLength) {
       return info;
     }
   }
-  throw new Error(`Data too long for QR code (max ~270 bytes with ${ecLevel} EC)`);
+  throw new Error(
+    `Data too long for QR code (max ~270 bytes with ${ecLevel} EC)`,
+  );
 }
 
 function createByteData(data: string, version: number): number[] {
@@ -240,7 +243,8 @@ function interleaveBlocks(
   let offset = 0;
 
   for (let i = 0; i < numBlocks; i++) {
-    const blockSize = smallBlockSize + (i >= numBlocks - largeBlockCount ? 1 : 0);
+    const blockSize =
+      smallBlockSize + (i >= numBlocks - largeBlockCount ? 1 : 0);
     const block = dataCodewords.slice(offset, offset + blockSize);
     offset += blockSize;
     dataBlocks.push(block);
@@ -331,7 +335,11 @@ function placeData(matrix: (number | null)[][], codewords: number[]): void {
   while (col > 0) {
     if (col === 6) col--;
 
-    for (let row = goingUp ? size - 1 : 0; goingUp ? row >= 0 : row < size; row += goingUp ? -1 : 1) {
+    for (
+      let row = goingUp ? size - 1 : 0;
+      goingUp ? row >= 0 : row < size;
+      row += goingUp ? -1 : 1
+    ) {
       for (const offset of [0, -1]) {
         const c = col + offset;
         if (c < 0 || matrix[row][c] !== null) continue;
@@ -466,7 +474,7 @@ function generateQRMatrix(data: string, ecLevel: ECLevel): number[][] {
 
   const codewords = interleaveBlocks(dataCodewords, info);
   const baseMatrix = createMatrix(info.version);
-  
+
   placeData(baseMatrix, codewords);
 
   let bestMatrix: number[][] | null = null;
@@ -492,14 +500,17 @@ function generateQRMatrix(data: string, ecLevel: ECLevel): number[][] {
 /**
  * Generate a QR code as an SVG string.
  */
-export function generateQRSvg(data: string, options: QRCodeOptions = {}): string {
-  const { size = 200, errorCorrection = 'L', quietZone = 4 } = options;
+export function generateQRSvg(
+  data: string,
+  options: QRCodeOptions = {},
+): string {
+  const { size = 200, errorCorrection = "L", quietZone = 4 } = options;
   const matrix = generateQRMatrix(data, errorCorrection);
   const moduleCount = matrix.length;
   const totalModules = moduleCount + quietZone * 2;
   const moduleSize = size / totalModules;
 
-  let paths = '';
+  let paths = "";
   for (let r = 0; r < moduleCount; r++) {
     for (let c = 0; c < moduleCount; c++) {
       if (matrix[r][c] === 1) {
@@ -522,7 +533,7 @@ export function generateQRDataUrl(
 ): string {
   const svg = generateQRSvg(data, options);
   const encoded = encodeURIComponent(svg)
-    .replace(/'/g, '%27')
-    .replace(/"/g, '%22');
+    .replace(/'/g, "%27")
+    .replace(/"/g, "%22");
   return `data:image/svg+xml,${encoded}`;
 }

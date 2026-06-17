@@ -24,12 +24,18 @@ pnpm typecheck
 # Lint OpenAPI spec
 pnpm lint:api
 
+# Format (fix) / format check (CI)
+pnpm format
+pnpm format:check
+
 # Run all CI checks locally (mirrors GitHub Actions)
 pnpm verify
 
 # Optional: install pre-push hook (runs pnpm verify before every push)
 pnpm hooks:install
 ```
+
+If `pnpm verify` fails on formatting, run `pnpm format`, then re-run `pnpm verify`.
 
 ## Project Structure
 
@@ -65,6 +71,7 @@ eudi-verify/
 Types: `feat`, `fix`, `chore`, `docs`, `test`, `refactor`
 
 Example:
+
 ```
 feat(server): add rate limiting per session endpoint
 
@@ -79,7 +86,7 @@ Cursor and other AI assistants are optional. You do not need them to contribute.
 
 This repository includes [`.cursor/rules/`](.cursor/rules/) — Cursor-side copies of project conventions for agents using that editor. **The conventions themselves are required** (commit message format, documentation sync, public-docs accuracy, etc.); they are documented in this file and `docs/`. You can ignore the `.cursor/rules` files if you do not use Cursor.
 
-- **Required (automated):** `pnpm verify` passes — mirrors CI (build, types, tests, OpenAPI lint, licenses, audit).
+- **Required (automated):** `pnpm verify` passes — mirrors CI (build, types, format, tests, OpenAPI lint, licenses, audit).
 - **Required (review):** Commit message format and documentation guidelines in this file; human review for security-sensitive changes.
 - **Optional:** Using Cursor, an AI assistant, or reading `.cursor/rules/` directly.
 - **Public docs:** Do not add unevaluated third-party agent plugins or rulesets to `README.md`, `docs/`, or package READMEs.
@@ -90,11 +97,11 @@ This project uses AI-assisted tooling under human review. Contributors remain re
 
 ### When to Add Commit Metadata
 
-| Situation | Action |
-|-----------|--------|
-| Substantive code/logic generated or heavily shaped by AI | Add metadata footer (required) |
+| Situation                                                          | Action                                     |
+| ------------------------------------------------------------------ | ------------------------------------------ |
+| Substantive code/logic generated or heavily shaped by AI           | Add metadata footer (required)             |
 | Docs/tests/scaffolding with minor AI help (spellcheck, formatting) | Optional footer; this policy is sufficient |
-| Purely human-authored change | No footer |
+| Purely human-authored change                                       | No footer                                  |
 
 ### Commit Metadata Format
 
@@ -134,7 +141,7 @@ See [.cursor/rules/commit-style.mdc](.cursor/rules/commit-style.mdc) for full co
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feat/my-feature`)
 3. Make your changes with tests
-4. Run `pnpm verify` to ensure everything passes (or `pnpm test` + `pnpm typecheck` for a quicker check)
+4. Run `pnpm verify` to ensure everything passes (or `pnpm test` + `pnpm typecheck` + `pnpm format:check` for a quicker check). If format check fails, run `pnpm format`.
 5. Commit your changes following the commit message format above
 6. Push to your fork and submit a pull request
 

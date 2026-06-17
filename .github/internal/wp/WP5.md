@@ -14,6 +14,7 @@ Create the `examples/html-vanilla` demo and document EU-sovereign deployment.
 ### 1. HTML-Vanilla Demo (`examples/html-vanilla/`)
 
 Structure:
+
 ```
 examples/html-vanilla/
 ├── public/
@@ -28,17 +29,21 @@ examples/html-vanilla/
 #### `server.ts` (~50 lines)
 
 ```ts
-import { createServer } from 'node:http';
-import { createVerifierHandlers, MockEngine, MemoryKVStore } from '@eudi-verify/server';
+import { createServer } from "node:http";
+import {
+  createVerifierHandlers,
+  MockEngine,
+  MemoryKVStore,
+} from "@eudi-verify/server";
 
 const engine = new MockEngine();
 const store = new MemoryKVStore();
 const handlers = createVerifierHandlers({
   engine,
   store,
-  baseUrl: 'http://localhost:3000/api/eudi',
-  mode: 'demo',
-  tokenSecret: process.env.TOKEN_SECRET || 'demo-secret-change-in-production',
+  baseUrl: "http://localhost:3000/api/eudi",
+  mode: "demo",
+  tokenSecret: process.env.TOKEN_SECRET || "demo-secret-change-in-production",
 });
 
 const server = createServer(async (req, res) => {
@@ -46,8 +51,8 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(3000, () => {
-  console.log('Demo running at http://localhost:3000');
-  console.warn('⚠️  DEMO MODE - Do not use in production');
+  console.log("Demo running at http://localhost:3000");
+  console.warn("⚠️  DEMO MODE - Do not use in production");
 });
 ```
 
@@ -56,42 +61,42 @@ server.listen(3000, () => {
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Age Verification - EUDI Demo</title>
-  <script type="module" src="/eudi-verify.js"></script>
-  <style>
-    eudi-verify {
-      --eudi-primary: #003399;
-      max-width: 400px;
-      margin: 2rem auto;
-    }
-  </style>
-</head>
-<body>
-  <main>
-    <h1>Age Verification Required</h1>
-    <p>Please verify you are over 18 to continue.</p>
-    
-    <eudi-verify
-      api-url="/api/eudi"
-      request='{"age_over_18":true}'
-    ></eudi-verify>
-    
-    <form id="checkout" action="/api/checkout" method="POST" hidden>
-      <input type="hidden" name="eudi_token" id="token">
-    </form>
-  </main>
-  
-  <script>
-    const widget = document.querySelector('eudi-verify');
-    
-    widget.addEventListener('verified', (e) => {
-      document.getElementById('token').value = e.detail.token;
-      document.getElementById('checkout').submit();
-    });
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Age Verification - EUDI Demo</title>
+    <script type="module" src="/eudi-verify.js"></script>
+    <style>
+      eudi-verify {
+        --eudi-primary: #003399;
+        max-width: 400px;
+        margin: 2rem auto;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Age Verification Required</h1>
+      <p>Please verify you are over 18 to continue.</p>
+
+      <eudi-verify
+        api-url="/api/eudi"
+        request='{"age_over_18":true}'
+      ></eudi-verify>
+
+      <form id="checkout" action="/api/checkout" method="POST" hidden>
+        <input type="hidden" name="eudi_token" id="token" />
+      </form>
+    </main>
+
+    <script>
+      const widget = document.querySelector("eudi-verify");
+
+      widget.addEventListener("verified", (e) => {
+        document.getElementById("token").value = e.detail.token;
+        document.getElementById("checkout").submit();
+      });
+    </script>
+  </body>
 </html>
 ```
 
@@ -101,16 +106,16 @@ Server-side token verification (captcha pattern):
 
 ```ts
 // In server.ts
-if (req.method === 'POST' && req.url === '/api/checkout') {
+if (req.method === "POST" && req.url === "/api/checkout") {
   const token = body.eudi_token;
   const result = await handlers.verifyToken(token);
-  
+
   if (result.valid) {
     // Redirect to success page
-    res.writeHead(302, { Location: '/success.html' });
+    res.writeHead(302, { Location: "/success.html" });
   } else {
     // Redirect back with error
-    res.writeHead(302, { Location: '/verify.html?error=invalid' });
+    res.writeHead(302, { Location: "/verify.html?error=invalid" });
   }
 }
 ```
@@ -130,11 +135,13 @@ docker run -p 3000:3000 -e TOKEN_SECRET=your-secret eudi-verify-demo
 ## Hetzner Cloud Deployment
 
 ### 1. Create Server
+
 - Location: Falkenstein (DE) or Helsinki (FI)
 - Type: CX11 (€3.29/month)
 - Image: Ubuntu 24.04
 
 ### 2. Setup
+
 \`\`\`bash
 ssh root@your-server
 apt update && apt install -y docker.io docker-compose
@@ -144,20 +151,23 @@ docker-compose up -d
 \`\`\`
 
 ### 3. SSL with Caddy
+
 \`\`\`
+
 # Caddyfile
+
 demo.eudi-verify.eu {
-  reverse_proxy localhost:3000
+reverse_proxy localhost:3000
 }
 \`\`\`
 
 ## Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `TOKEN_SECRET` | Yes | HMAC secret for token signing |
-| `PORT` | No | Server port (default: 3000) |
-| `NODE_ENV` | No | Set to `production` for production |
+| Variable       | Required | Description                        |
+| -------------- | -------- | ---------------------------------- |
+| `TOKEN_SECRET` | Yes      | HMAC secret for token signing      |
+| `PORT`         | No       | Server port (default: 3000)        |
+| `NODE_ENV`     | No       | Set to `production` for production |
 
 ## Security Checklist
 
@@ -170,6 +180,7 @@ demo.eudi-verify.eu {
 ### 4. Docker Configuration
 
 `examples/html-vanilla/Dockerfile`:
+
 ```dockerfile
 FROM node:22-alpine
 WORKDIR /app
@@ -181,8 +192,9 @@ CMD ["node", "server.js"]
 ```
 
 `examples/html-vanilla/docker-compose.yml`:
+
 ```yaml
-version: '3.8'
+version: "3.8"
 services:
   demo:
     build: .
@@ -199,6 +211,7 @@ services:
 Deploy to: `https://demo.eudi-verify.eu` (or similar EU domain)
 
 Requirements:
+
 - EU-hosted (Hetzner Falkenstein recommended)
 - HTTPS (Let's Encrypt via Caddy)
 - Visible demo mode warning banner
@@ -206,6 +219,7 @@ Requirements:
 ## Acceptance Criteria
 
 1. **Clone-to-verified < 10 minutes**:
+
    ```bash
    git clone https://github.com/eudi-verify/eudi-verify
    cd eudi-verify

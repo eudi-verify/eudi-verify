@@ -45,13 +45,13 @@ The demo runs a **single Node.js process** that serves everything:
 
 ## Files
 
-| File | Purpose |
-|------|---------|
-| `server.ts` | Node HTTP server mounting verifier handlers |
-| `public/index.html` | Landing page |
-| `public/verify.html` | Age verification with widget |
-| `public/success.html` | Post-verification page |
-| `public/styles.css` | EU-themed styling |
+| File                  | Purpose                                     |
+| --------------------- | ------------------------------------------- |
+| `server.ts`           | Node HTTP server mounting verifier handlers |
+| `public/index.html`   | Landing page                                |
+| `public/verify.html`  | Age verification with widget                |
+| `public/success.html` | Post-verification page                      |
+| `public/styles.css`   | EU-themed styling                           |
 
 ## Running with Docker
 
@@ -81,11 +81,11 @@ pnpm start
 
 ## Environment Variables
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `TOKEN_SECRET` | Yes (prod) | `demo-secret-...` | HMAC secret for token signing |
-| `PORT` | No | `3000` | Server port |
-| `BASE_URL` | No | `http://localhost:3000/api/eudi` | Public URL for callbacks |
+| Variable       | Required   | Default                          | Description                   |
+| -------------- | ---------- | -------------------------------- | ----------------------------- |
+| `TOKEN_SECRET` | Yes (prod) | `demo-secret-...`                | HMAC secret for token signing |
+| `PORT`         | No         | `3000`                           | Server port                   |
+| `BASE_URL`     | No         | `http://localhost:3000/api/eudi` | Public URL for callbacks      |
 
 ## Testing Without a Wallet
 
@@ -140,32 +140,34 @@ curl -X POST https://demo.your-domain.eu/api/eudi/callback \
 
 ### Trust features (both paths)
 
-| Feature | Where | What it proves |
-|---------|-------|----------------|
-| Verification log | `/verify` | Timestamped server API steps (session created, verified, checkout) |
-| Session inspect link | Verification log | Raw session JSON from the server |
-| Server receipt | `/success?rid=…` | Claims from server verify, not the widget |
-| Replay test | Success page | Token is single-use (`already_consumed` on reuse) |
-| Demo wallet audit log | `/demo-wallet` | Callback HTTP status when approving |
+| Feature               | Where            | What it proves                                                     |
+| --------------------- | ---------------- | ------------------------------------------------------------------ |
+| Verification log      | `/verify`        | Timestamped server API steps (session created, verified, checkout) |
+| Session inspect link  | Verification log | Raw session JSON from the server                                   |
+| Server receipt        | `/success?rid=…` | Claims from server verify, not the widget                          |
+| Replay test           | Success page     | Token is single-use (`already_consumed` on reuse)                  |
+| Demo wallet audit log | `/demo-wallet`   | Callback HTTP status when approving                                |
 
 ## EU Wallet Status (June 2026)
 
 **You cannot download a real EUDI Wallet yet.** Here's where things stand:
 
-| Milestone | Status | Date |
-|-----------|--------|------|
-| eIDAS 2.0 Regulation | ✅ Passed | May 2024 |
-| Architecture Reference Framework | ✅ v2.8 published | 2026 |
-| Large Scale Pilots | ✅ Testing | 2023-2026 |
-| **Member State Wallets** | 🟡 Development | **Due Dec 2026** |
-| Mandatory Business Acceptance | 🔴 Not yet | Due Dec 2027 |
+| Milestone                        | Status            | Date             |
+| -------------------------------- | ----------------- | ---------------- |
+| eIDAS 2.0 Regulation             | ✅ Passed         | May 2024         |
+| Architecture Reference Framework | ✅ v2.8 published | 2026             |
+| Large Scale Pilots               | ✅ Testing        | 2023-2026        |
+| **Member State Wallets**         | 🟡 Development    | **Due Dec 2026** |
+| Mandatory Business Acceptance    | 🔴 Not yet        | Due Dec 2027     |
 
 **What exists now:**
+
 - EU Reference Implementation (GitHub, for developers)
 - National sandbox/beta programs (Denmark, Ireland, others)
 - Closed pilot programs (POTENTIAL, NOBID, DC4EU, EWC, APTITUDE, WE BUILD)
 
 **What's coming:**
+
 - All 27 EU Member States must offer at least one certified wallet by **December 24, 2026**
 - Banks, telecoms, and other regulated entities must accept wallets by **end of 2027**
 
@@ -173,6 +175,6 @@ curl -X POST https://demo.your-domain.eu/api/eudi/callback \
 
 ## Demo Mode Warning
 
-This demo runs in demo mode with simulated credentials. The UI shows a banner (*Simulated verification — credentials are fake. For local testing only.*) and the server logs a warning on startup. Demo mode provides no real identity verification.
+This demo runs in demo mode with simulated credentials. The UI shows a banner (_Simulated verification — credentials are fake. For local testing only._) and the server logs a warning on startup. Demo mode provides no real identity verification.
 
 For production deployment, see [docs/deploy-eu.md](../../docs/deploy-eu.md).

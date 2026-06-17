@@ -20,7 +20,7 @@ import type {
   VerifiedClaims,
   SessionStatus,
   VerifierMode,
-} from './types.js';
+} from "./types.js";
 
 /**
  * Configuration for creating a verification session.
@@ -223,8 +223,8 @@ export interface MockEngineConfig {
  * ```
  */
 export class MockEngine implements VerifierEngine {
-  readonly name = 'mock';
-  readonly mode: VerifierMode = 'demo';
+  readonly name = "mock";
+  readonly mode: VerifierMode = "demo";
 
   private config: Required<MockEngineConfig>;
 
@@ -236,12 +236,18 @@ export class MockEngine implements VerifierEngine {
     };
   }
 
-  async createSession(config: CreateSessionConfig): Promise<CreateSessionResult> {
+  async createSession(
+    config: CreateSessionConfig,
+  ): Promise<CreateSessionResult> {
     const requestedClaims = Object.keys(config.request).filter(
-      (k) => config.request[k] === true
+      (k) => config.request[k] === true,
     );
 
-    const qrUrl = this.buildMockQrUrl(config.sessionId, config.baseUrl, requestedClaims);
+    const qrUrl = this.buildMockQrUrl(
+      config.sessionId,
+      config.baseUrl,
+      requestedClaims,
+    );
 
     return {
       qrUrl,
@@ -254,17 +260,20 @@ export class MockEngine implements VerifierEngine {
 
   async parseCallback(rawBody: string): Promise<CallbackData> {
     const params = new URLSearchParams(rawBody);
-    const response = params.get('response');
-    const sessionId = params.get('session_id') || params.get('state');
+    const response = params.get("response");
+    const sessionId = params.get("session_id") || params.get("state");
 
     if (!response || !sessionId) {
-      throw new Error('Invalid callback: missing response or session_id');
+      throw new Error("Invalid callback: missing response or session_id");
     }
 
     return { sessionId, response };
   }
 
-  async handleCallback(data: CallbackData, session: Session): Promise<CallbackResult> {
+  async handleCallback(
+    data: CallbackData,
+    session: Session,
+  ): Promise<CallbackResult> {
     if (this.config.verificationDelayMs > 0) {
       await this.delay(this.config.verificationDelayMs);
     }
@@ -274,8 +283,8 @@ export class MockEngine implements VerifierEngine {
     if (!shouldSucceed) {
       return {
         success: false,
-        error: 'Simulated verification failure',
-        status: 'rejected',
+        error: "Simulated verification failure",
+        status: "rejected",
       };
     }
 
@@ -284,13 +293,13 @@ export class MockEngine implements VerifierEngine {
     return {
       success: true,
       claims,
-      status: 'verified',
+      status: "verified",
     };
   }
 
   async getAuthorizationRequest(session: Session): Promise<string> {
     return JSON.stringify({
-      type: 'mock_authorization_request',
+      type: "mock_authorization_request",
       sessionId: session.id,
       request: session.request,
     });
@@ -300,11 +309,15 @@ export class MockEngine implements VerifierEngine {
     // No cleanup needed for mock engine
   }
 
-  private buildMockQrUrl(sessionId: string, baseUrl: string, claims: string[]): string {
+  private buildMockQrUrl(
+    sessionId: string,
+    baseUrl: string,
+    claims: string[],
+  ): string {
     const params = new URLSearchParams({
       session_id: sessionId,
-      claims: claims.join(','),
-      mock: 'true',
+      claims: claims.join(","),
+      mock: "true",
     });
 
     return `${baseUrl}/mock-wallet?${params.toString()}`;
@@ -315,10 +328,10 @@ export class MockEngine implements VerifierEngine {
 
     if (request.age_over_18) claims.age_over_18 = true;
     if (request.age_over_21) claims.age_over_21 = true;
-    if (request.nationality) claims.nationality = 'LU';
-    if (request.given_name) claims.given_name = 'Max';
-    if (request.family_name) claims.family_name = 'Mustermann';
-    if (request.birth_date) claims.birth_date = '1990-01-15';
+    if (request.nationality) claims.nationality = "LU";
+    if (request.given_name) claims.given_name = "Max";
+    if (request.family_name) claims.family_name = "Mustermann";
+    if (request.birth_date) claims.birth_date = "1990-01-15";
 
     return claims;
   }

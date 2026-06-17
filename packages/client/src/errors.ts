@@ -2,7 +2,7 @@
  * @eudi-verify/client - Error Types
  */
 
-import type { ApiError } from './types.js';
+import type { ApiError } from "./types.js";
 
 /**
  * Base error class for EUDI client errors.
@@ -10,7 +10,7 @@ import type { ApiError } from './types.js';
 export class EudiClientError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'EudiClientError';
+    this.name = "EudiClientError";
   }
 }
 
@@ -22,7 +22,7 @@ export class NetworkError extends EudiClientError {
 
   constructor(message: string, cause?: Error) {
     super(message);
-    this.name = 'NetworkError';
+    this.name = "NetworkError";
     this.cause = cause;
   }
 }
@@ -37,7 +37,7 @@ export class ApiResponseError extends EudiClientError {
 
   constructor(statusCode: number, response: ApiError) {
     super(response.message);
-    this.name = 'ApiResponseError';
+    this.name = "ApiResponseError";
     this.statusCode = statusCode;
     this.errorCode = response.error;
     this.details = response.details;
@@ -51,8 +51,11 @@ export class SessionNotFoundError extends ApiResponseError {
   readonly sessionId: string;
 
   constructor(sessionId: string) {
-    super(404, { error: 'not_found', message: `Session ${sessionId} not found` });
-    this.name = 'SessionNotFoundError';
+    super(404, {
+      error: "not_found",
+      message: `Session ${sessionId} not found`,
+    });
+    this.name = "SessionNotFoundError";
     this.sessionId = sessionId;
   }
 }
@@ -64,8 +67,8 @@ export class RateLimitError extends ApiResponseError {
   readonly retryAfterMs?: number;
 
   constructor(retryAfterMs?: number) {
-    super(429, { error: 'rate_limit', message: 'Rate limit exceeded' });
-    this.name = 'RateLimitError';
+    super(429, { error: "rate_limit", message: "Rate limit exceeded" });
+    this.name = "RateLimitError";
     this.retryAfterMs = retryAfterMs;
   }
 }
@@ -75,8 +78,8 @@ export class RateLimitError extends ApiResponseError {
  */
 export class VerificationCancelledError extends EudiClientError {
   constructor() {
-    super('Verification was cancelled');
-    this.name = 'VerificationCancelledError';
+    super("Verification was cancelled");
+    this.name = "VerificationCancelledError";
   }
 }
 
@@ -85,7 +88,7 @@ export class VerificationCancelledError extends EudiClientError {
  */
 export class SessionExpiredError extends EudiClientError {
   constructor() {
-    super('Session expired');
-    this.name = 'SessionExpiredError';
+    super("Session expired");
+    this.name = "SessionExpiredError";
   }
 }

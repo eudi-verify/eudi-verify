@@ -25,6 +25,7 @@ export function createApiClient(baseUrl: string): EudiApiClient;
 ```
 
 Requirements:
+
 - Use native `fetch` (no axios/ky)
 - Proper error handling with typed errors
 - Request/response validation
@@ -35,14 +36,14 @@ State machine managing the verification flow:
 
 ```ts
 export type VerificationState =
-  | { status: 'idle' }
-  | { status: 'loading' }
-  | { status: 'showQR'; qrUrl: string; sessionId: string }
-  | { status: 'waitingForWallet'; sessionId: string }
-  | { status: 'verified'; token: string; claims: VerifiedClaims }
-  | { status: 'rejected'; error?: string }
-  | { status: 'expired' }
-  | { status: 'error'; error: string };
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "showQR"; qrUrl: string; sessionId: string }
+  | { status: "waitingForWallet"; sessionId: string }
+  | { status: "verified"; token: string; claims: VerifiedClaims }
+  | { status: "rejected"; error?: string }
+  | { status: "expired" }
+  | { status: "error"; error: string };
 
 export interface Verification {
   readonly state: VerificationState;
@@ -56,6 +57,7 @@ export function createVerification(config: VerificationConfig): Verification;
 ```
 
 Requirements:
+
 - State transitions: `idle → loading → showQR → waitingForWallet → verified|rejected|expired`
 - Polling with exponential backoff (1s → 2s → 4s → max 10s)
 - Automatic cleanup on destroy
@@ -68,14 +70,18 @@ Minimal QR code generation:
 ```ts
 export interface QRCodeOptions {
   size?: number;
-  errorCorrection?: 'L' | 'M' | 'Q' | 'H';
+  errorCorrection?: "L" | "M" | "Q" | "H";
 }
 
-export function generateQRDataUrl(data: string, options?: QRCodeOptions): string;
+export function generateQRDataUrl(
+  data: string,
+  options?: QRCodeOptions,
+): string;
 export function generateQRSvg(data: string, options?: QRCodeOptions): string;
 ```
 
 Requirements:
+
 - Vendor small audited QR library OR implement from scratch
 - Support SVG and Data URL output
 - EU-institutional sizing defaults (min 150x150px)
@@ -86,14 +92,14 @@ Exponential backoff polling:
 
 ```ts
 export interface PollingConfig {
-  initialIntervalMs: number;  // default: 1000
-  maxIntervalMs: number;      // default: 10000
-  backoffMultiplier: number;  // default: 2
+  initialIntervalMs: number; // default: 1000
+  maxIntervalMs: number; // default: 10000
+  backoffMultiplier: number; // default: 2
 }
 
 export function createPoller(
   fn: () => Promise<boolean>, // returns true to stop
-  config?: PollingConfig
+  config?: PollingConfig,
 ): { start: () => void; stop: () => void };
 ```
 
@@ -107,7 +113,7 @@ export type {
   SessionStatus,
   VerifiedClaims,
   Session,
-} from './types.js';
+} from "./types.js";
 ```
 
 ## Acceptance Criteria
@@ -121,12 +127,14 @@ export type {
 ## Testing
 
 Run tests:
+
 ```bash
 cd packages/client
 pnpm test
 ```
 
 Test files to create:
+
 - `src/api.test.ts` - API client with mocked fetch
 - `src/verification.test.ts` - State machine transitions
 - `src/qr.test.ts` - QR generation
@@ -135,6 +143,7 @@ Test files to create:
 ## Bundle Analysis
 
 Add script to check bundle size:
+
 ```json
 {
   "scripts": {

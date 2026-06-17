@@ -4,13 +4,13 @@
  * Typed HTTP client for the EUDI Verifier API using native fetch.
  */
 
-import type { Session, VerificationRequest, ApiError } from './types.js';
+import type { Session, VerificationRequest, ApiError } from "./types.js";
 import {
   ApiResponseError,
   NetworkError,
   SessionNotFoundError,
   RateLimitError,
-} from './errors.js';
+} from "./errors.js";
 
 /**
  * Configuration for the API client.
@@ -43,7 +43,7 @@ export function createApiClient(config: ApiClientConfig): EudiApiClient {
   const { baseUrl, timeoutMs = 30_000 } = config;
   const fetchFn = config.fetch ?? fetch;
 
-  const normalizedBaseUrl = baseUrl.replace(/\/$/, '');
+  const normalizedBaseUrl = baseUrl.replace(/\/$/, "");
 
   async function request<T>(
     method: string,
@@ -58,8 +58,8 @@ export function createApiClient(config: ApiClientConfig): EudiApiClient {
       const response = await fetchFn(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
         body: body ? JSON.stringify(body) : undefined,
         signal: controller.signal,
@@ -81,13 +81,16 @@ export function createApiClient(config: ApiClientConfig): EudiApiClient {
       }
 
       if (error instanceof Error) {
-        if (error.name === 'AbortError') {
+        if (error.name === "AbortError") {
           throw new NetworkError(`Request timeout after ${timeoutMs}ms`);
         }
-        throw new NetworkError(`Network request failed: ${error.message}`, error);
+        throw new NetworkError(
+          `Network request failed: ${error.message}`,
+          error,
+        );
       }
 
-      throw new NetworkError('Unknown network error');
+      throw new NetworkError("Unknown network error");
     }
   }
 
@@ -105,8 +108,10 @@ export function createApiClient(config: ApiClientConfig): EudiApiClient {
     }
 
     if (status === 429) {
-      const retryAfter = response.headers.get('Retry-After');
-      const retryAfterMs = retryAfter ? parseInt(retryAfter, 10) * 1000 : undefined;
+      const retryAfter = response.headers.get("Retry-After");
+      const retryAfterMs = retryAfter
+        ? parseInt(retryAfter, 10) * 1000
+        : undefined;
       throw new RateLimitError(retryAfterMs);
     }
 
@@ -115,7 +120,7 @@ export function createApiClient(config: ApiClientConfig): EudiApiClient {
       errorBody = (await response.json()) as ApiError;
     } catch {
       errorBody = {
-        error: 'unknown_error',
+        error: "unknown_error",
         message: `HTTP ${status}`,
       };
     }
@@ -124,17 +129,24 @@ export function createApiClient(config: ApiClientConfig): EudiApiClient {
   }
 
   return {
-    async createSession(verificationRequest: VerificationRequest): Promise<Session> {
-      return request<Session>('POST', '/sessions', { request: verificationRequest });
+    async createSession(
+      verificationRequest: VerificationRequest,
+    ): Promise<Session> {
+      return request<Session>("POST", "/sessions", {
+        request: verificationRequest,
+      });
     },
 
     async getSession(sessionId: string): Promise<Session> {
-      return request<Session>('GET', `/sessions/${encodeURIComponent(sessionId)}`);
+      return request<Session>(
+        "GET",
+        `/sessions/${encodeURIComponent(sessionId)}`,
+      );
     },
 
     async cancelSession(sessionId: string): Promise<Session> {
       return request<Session>(
-        'POST',
+        "POST",
         `/sessions/${encodeURIComponent(sessionId)}/cancel`,
       );
     },

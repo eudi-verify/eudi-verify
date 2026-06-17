@@ -11,14 +11,15 @@ This project is currently in **demo mode** and has not undergone independent sec
 - [ ] This notice removed from documentation
 
 **Current limitations:**
+
 - Demo mode only (simulated credentials)
 - No production EUDI Wallet integration
 - Pre-audit stage
 
 ## Supported Versions
 
-| Version | Supported          | Notes |
-| ------- | ------------------ | ----- |
+| Version | Supported          | Notes          |
+| ------- | ------------------ | -------------- |
 | 0.x.x   | :white_check_mark: | Demo mode only |
 
 ## Reporting a Vulnerability
@@ -34,6 +35,7 @@ We take security seriously even during development.
 **Alternative**: mkasceldev@gmail.com
 
 Please include:
+
 - Description of the vulnerability
 - Steps to reproduce
 - Potential impact assessment
@@ -52,21 +54,23 @@ We cannot guarantee specific SLAs at this stage but will make best efforts to re
 
 ### Severity Classification
 
-| Severity | Examples |
-|----------|----------|
-| Critical | RCE, authentication bypass, token forgery |
+| Severity | Examples                                                 |
+| -------- | -------------------------------------------------------- |
+| Critical | RCE, authentication bypass, token forgery                |
 | High     | XSS, CSRF, significant data leak, cryptographic weakness |
-| Medium   | Rate limit bypass, minor information disclosure |
-| Low      | Best practice violations, configuration recommendations |
+| Medium   | Rate limit bypass, minor information disclosure          |
+| Low      | Best practice violations, configuration recommendations  |
 
 ## Safe Harbor
 
 We consider security research conducted under this policy to be:
+
 - Authorized in accordance with responsible disclosure principles
 - Conducted in good faith
 - Exempt from legal action by this project
 
 We will not pursue legal action against researchers who:
+
 - Follow this disclosure policy
 - Make good faith efforts to avoid privacy violations and service disruption
 - Do not exploit vulnerabilities beyond what is necessary to demonstrate the issue
@@ -74,6 +78,7 @@ We will not pursue legal action against researchers who:
 ## Security Acknowledgments
 
 We will acknowledge security researchers who responsibly disclose valid vulnerabilities (with permission) once we have:
+
 1. Verified and fixed the issue
 2. Established a formal acknowledgment process
 
@@ -82,6 +87,7 @@ If you'd like to be acknowledged, please indicate this in your report.
 ## Security Updates
 
 Security updates are released as patch versions and announced via:
+
 - GitHub releases
 - Repository notifications
 
@@ -90,6 +96,7 @@ Subscribe to repository notifications to stay informed.
 ## Future Security Plans
 
 Before production release, we plan to:
+
 - Commission an independent security audit
 - Establish a formal security response process
 - Set up dedicated security email (security@eudi-verify.eu or .org)

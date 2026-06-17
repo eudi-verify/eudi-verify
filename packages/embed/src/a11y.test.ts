@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import {
   getFocusableElements,
   createFocusTrap,
@@ -7,14 +7,14 @@ import {
   STATE_MESSAGES,
   getAnnouncementPriority,
   prefersReducedMotion,
-} from './a11y.js';
+} from "./a11y.js";
 
-describe('a11y', () => {
-  describe('getFocusableElements', () => {
+describe("a11y", () => {
+  describe("getFocusableElements", () => {
     let container: HTMLElement;
 
     beforeEach(() => {
-      container = document.createElement('div');
+      container = document.createElement("div");
       document.body.appendChild(container);
     });
 
@@ -22,23 +22,23 @@ describe('a11y', () => {
       container.remove();
     });
 
-    it('returns empty array for empty container', () => {
+    it("returns empty array for empty container", () => {
       expect(getFocusableElements(container)).toEqual([]);
     });
 
-    it('finds buttons', () => {
-      container.innerHTML = '<button>Click me</button>';
+    it("finds buttons", () => {
+      container.innerHTML = "<button>Click me</button>";
       const elements = getFocusableElements(container);
       expect(elements).toHaveLength(1);
-      expect(elements[0]?.tagName).toBe('BUTTON');
+      expect(elements[0]?.tagName).toBe("BUTTON");
     });
 
-    it('excludes disabled buttons', () => {
-      container.innerHTML = '<button disabled>Disabled</button>';
+    it("excludes disabled buttons", () => {
+      container.innerHTML = "<button disabled>Disabled</button>";
       expect(getFocusableElements(container)).toHaveLength(0);
     });
 
-    it('finds elements with tabindex', () => {
+    it("finds elements with tabindex", () => {
       container.innerHTML = '<div tabindex="0">Focusable</div>';
       const elements = getFocusableElements(container);
       expect(elements).toHaveLength(1);
@@ -49,13 +49,13 @@ describe('a11y', () => {
       expect(getFocusableElements(container)).toHaveLength(0);
     });
 
-    it('finds links with href', () => {
+    it("finds links with href", () => {
       container.innerHTML = '<a href="#">Link</a>';
       const elements = getFocusableElements(container);
       expect(elements).toHaveLength(1);
     });
 
-    it('finds multiple focusable elements', () => {
+    it("finds multiple focusable elements", () => {
       container.innerHTML = `
         <button>Button 1</button>
         <a href="#">Link</a>
@@ -65,12 +65,12 @@ describe('a11y', () => {
     });
   });
 
-  describe('createFocusTrap', () => {
+  describe("createFocusTrap", () => {
     let container: HTMLElement;
     let deactivate: () => void;
 
     beforeEach(() => {
-      container = document.createElement('div');
+      container = document.createElement("div");
       container.innerHTML = `
         <button id="first">First</button>
         <button id="second">Second</button>
@@ -84,23 +84,23 @@ describe('a11y', () => {
       container.remove();
     });
 
-    it('returns a deactivate function', () => {
+    it("returns a deactivate function", () => {
       deactivate = createFocusTrap(container);
-      expect(typeof deactivate).toBe('function');
+      expect(typeof deactivate).toBe("function");
     });
 
-    it('focuses first element on activation', () => {
+    it("focuses first element on activation", () => {
       deactivate = createFocusTrap(container);
-      expect(document.activeElement?.id).toBe('first');
+      expect(document.activeElement?.id).toBe("first");
     });
   });
 
-  describe('announce', () => {
+  describe("announce", () => {
     let liveRegion: HTMLElement;
 
     beforeEach(() => {
-      liveRegion = document.createElement('div');
-      liveRegion.setAttribute('aria-live', 'polite');
+      liveRegion = document.createElement("div");
+      liveRegion.setAttribute("aria-live", "polite");
       document.body.appendChild(liveRegion);
     });
 
@@ -108,33 +108,33 @@ describe('a11y', () => {
       liveRegion.remove();
     });
 
-    it('sets aria-live attribute', () => {
-      announce(liveRegion, 'Test message', 'assertive');
-      expect(liveRegion.getAttribute('aria-live')).toBe('assertive');
+    it("sets aria-live attribute", () => {
+      announce(liveRegion, "Test message", "assertive");
+      expect(liveRegion.getAttribute("aria-live")).toBe("assertive");
     });
   });
 
-  describe('clearAnnouncement', () => {
-    it('clears text content', () => {
-      const liveRegion = document.createElement('div');
-      liveRegion.textContent = 'Some announcement';
+  describe("clearAnnouncement", () => {
+    it("clears text content", () => {
+      const liveRegion = document.createElement("div");
+      liveRegion.textContent = "Some announcement";
 
       clearAnnouncement(liveRegion);
-      expect(liveRegion.textContent).toBe('');
+      expect(liveRegion.textContent).toBe("");
     });
   });
 
-  describe('STATE_MESSAGES', () => {
-    it('has message for all states', () => {
+  describe("STATE_MESSAGES", () => {
+    it("has message for all states", () => {
       const states = [
-        'idle',
-        'loading',
-        'showQR',
-        'waitingForWallet',
-        'verified',
-        'rejected',
-        'expired',
-        'error',
+        "idle",
+        "loading",
+        "showQR",
+        "waitingForWallet",
+        "verified",
+        "rejected",
+        "expired",
+        "error",
       ] as const;
 
       for (const state of states) {
@@ -142,11 +142,11 @@ describe('a11y', () => {
       }
     });
 
-    it('idle has empty message', () => {
-      expect(STATE_MESSAGES.idle).toBe('');
+    it("idle has empty message", () => {
+      expect(STATE_MESSAGES.idle).toBe("");
     });
 
-    it('terminal states have messages', () => {
+    it("terminal states have messages", () => {
       expect(STATE_MESSAGES.verified).toBeTruthy();
       expect(STATE_MESSAGES.rejected).toBeTruthy();
       expect(STATE_MESSAGES.expired).toBeTruthy();
@@ -154,25 +154,25 @@ describe('a11y', () => {
     });
   });
 
-  describe('getAnnouncementPriority', () => {
-    it('returns polite for non-terminal states', () => {
-      expect(getAnnouncementPriority('idle')).toBe('polite');
-      expect(getAnnouncementPriority('loading')).toBe('polite');
-      expect(getAnnouncementPriority('showQR')).toBe('polite');
-      expect(getAnnouncementPriority('waitingForWallet')).toBe('polite');
+  describe("getAnnouncementPriority", () => {
+    it("returns polite for non-terminal states", () => {
+      expect(getAnnouncementPriority("idle")).toBe("polite");
+      expect(getAnnouncementPriority("loading")).toBe("polite");
+      expect(getAnnouncementPriority("showQR")).toBe("polite");
+      expect(getAnnouncementPriority("waitingForWallet")).toBe("polite");
     });
 
-    it('returns assertive for terminal states', () => {
-      expect(getAnnouncementPriority('verified')).toBe('assertive');
-      expect(getAnnouncementPriority('rejected')).toBe('assertive');
-      expect(getAnnouncementPriority('expired')).toBe('assertive');
-      expect(getAnnouncementPriority('error')).toBe('assertive');
+    it("returns assertive for terminal states", () => {
+      expect(getAnnouncementPriority("verified")).toBe("assertive");
+      expect(getAnnouncementPriority("rejected")).toBe("assertive");
+      expect(getAnnouncementPriority("expired")).toBe("assertive");
+      expect(getAnnouncementPriority("error")).toBe("assertive");
     });
   });
 
-  describe('prefersReducedMotion', () => {
-    it('returns a boolean', () => {
-      expect(typeof prefersReducedMotion()).toBe('boolean');
+  describe("prefersReducedMotion", () => {
+    it("returns a boolean", () => {
+      expect(typeof prefersReducedMotion()).toBe("boolean");
     });
   });
 });

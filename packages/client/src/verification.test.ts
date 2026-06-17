@@ -1,14 +1,12 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createVerification, type VerificationState } from './verification.js';
-import type { Session } from './types.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { createVerification, type VerificationState } from "./verification.js";
+import type { Session } from "./types.js";
 
-function createMockFetch(
-  responses: Array<{ status: number; body?: unknown }>,
-) {
+function createMockFetch(responses: Array<{ status: number; body?: unknown }>) {
   let callIndex = 0;
   return vi.fn(async () => {
     const response = responses[callIndex++];
-    if (!response) throw new Error('No more mock responses');
+    if (!response) throw new Error("No more mock responses");
 
     return {
       ok: response.status >= 200 && response.status < 300,
@@ -19,7 +17,7 @@ function createMockFetch(
   });
 }
 
-describe('createVerification', () => {
+describe("createVerification", () => {
   beforeEach(() => {
     vi.useFakeTimers();
   });
@@ -28,30 +26,30 @@ describe('createVerification', () => {
     vi.useRealTimers();
   });
 
-  describe('initial state', () => {
-    it('starts in idle state', () => {
+  describe("initial state", () => {
+    it("starts in idle state", () => {
       const verification = createVerification({
-        apiUrl: 'https://api.example.com',
+        apiUrl: "https://api.example.com",
         fetch: vi.fn(),
       });
 
-      expect(verification.state).toEqual({ status: 'idle' });
+      expect(verification.state).toEqual({ status: "idle" });
     });
   });
 
-  describe('start()', () => {
-    it('transitions to loading then showQR', async () => {
+  describe("start()", () => {
+    it("transitions to loading then showQR", async () => {
       const mockSession: Session = {
-        id: 'session-123',
-        status: 'pending',
-        qrUrl: 'openid4vp://verify?request_uri=...',
-        createdAt: '2024-01-01T00:00:00Z',
-        expiresAt: '2024-01-01T00:05:00Z',
+        id: "session-123",
+        status: "pending",
+        qrUrl: "openid4vp://verify?request_uri=...",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
       };
 
       const mockFetch = createMockFetch([{ status: 201, body: mockSession }]);
       const verification = createVerification({
-        apiUrl: 'https://api.example.com',
+        apiUrl: "https://api.example.com",
         fetch: mockFetch,
       });
 
@@ -60,22 +58,25 @@ describe('createVerification', () => {
 
       await verification.start({ age_over_18: true });
 
-      expect(states).toContainEqual({ status: 'idle' });
-      expect(states).toContainEqual({ status: 'loading' });
+      expect(states).toContainEqual({ status: "idle" });
+      expect(states).toContainEqual({ status: "loading" });
       expect(states).toContainEqual(
         expect.objectContaining({
-          status: 'showQR',
-          sessionId: 'session-123',
+          status: "showQR",
+          sessionId: "session-123",
         }),
       );
     });
 
-    it('transitions to error on API failure', async () => {
+    it("transitions to error on API failure", async () => {
       const mockFetch = createMockFetch([
-        { status: 500, body: { error: 'server_error', message: 'Internal error' } },
+        {
+          status: 500,
+          body: { error: "server_error", message: "Internal error" },
+        },
       ]);
       const verification = createVerification({
-        apiUrl: 'https://api.example.com',
+        apiUrl: "https://api.example.com",
         fetch: mockFetch,
       });
 
@@ -85,62 +86,62 @@ describe('createVerification', () => {
       await verification.start({ age_over_18: true });
 
       expect(states[states.length - 1]).toMatchObject({
-        status: 'error',
+        status: "error",
       });
     });
 
-    it('includes QR data URL in showQR state', async () => {
+    it("includes QR data URL in showQR state", async () => {
       const mockSession: Session = {
-        id: 'session-123',
-        status: 'pending',
-        qrUrl: 'openid4vp://test',
-        createdAt: '2024-01-01T00:00:00Z',
-        expiresAt: '2024-01-01T00:05:00Z',
+        id: "session-123",
+        status: "pending",
+        qrUrl: "openid4vp://test",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
       };
 
       const mockFetch = createMockFetch([{ status: 201, body: mockSession }]);
       const verification = createVerification({
-        apiUrl: 'https://api.example.com',
+        apiUrl: "https://api.example.com",
         fetch: mockFetch,
       });
 
       await verification.start({ age_over_18: true });
 
       const state = verification.state;
-      expect(state.status).toBe('showQR');
-      if (state.status === 'showQR') {
-        expect(state.qrDataUrl).toContain('data:image/svg+xml');
-        expect(state.qrUrl).toBe('openid4vp://test');
+      expect(state.status).toBe("showQR");
+      if (state.status === "showQR") {
+        expect(state.qrDataUrl).toContain("data:image/svg+xml");
+        expect(state.qrUrl).toBe("openid4vp://test");
       }
 
       verification.destroy();
     });
   });
 
-  describe('polling', () => {
-    it('polls and updates state when session status changes', async () => {
+  describe("polling", () => {
+    it("polls and updates state when session status changes", async () => {
       const pendingSession: Session = {
-        id: 'session-123',
-        status: 'pending',
-        qrUrl: 'openid4vp://test',
-        createdAt: '2024-01-01T00:00:00Z',
-        expiresAt: '2024-01-01T00:05:00Z',
+        id: "session-123",
+        status: "pending",
+        qrUrl: "openid4vp://test",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
       };
 
       const waitingSession: Session = {
-        id: 'session-123',
-        status: 'waiting_for_wallet',
-        createdAt: '2024-01-01T00:00:00Z',
-        expiresAt: '2024-01-01T00:05:00Z',
+        id: "session-123",
+        status: "waiting_for_wallet",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
       };
 
       const verifiedSession: Session = {
-        id: 'session-123',
-        status: 'verified',
-        token: 'eudi_v1.abc.xyz',
+        id: "session-123",
+        status: "verified",
+        token: "eudi_v1.abc.xyz",
         claims: { age_over_18: true },
-        createdAt: '2024-01-01T00:00:00Z',
-        expiresAt: '2024-01-01T00:05:00Z',
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
       };
 
       const mockFetch = createMockFetch([
@@ -150,7 +151,7 @@ describe('createVerification', () => {
       ]);
 
       const verification = createVerification({
-        apiUrl: 'https://api.example.com',
+        apiUrl: "https://api.example.com",
         fetch: mockFetch,
         polling: { initialIntervalMs: 100 },
       });
@@ -163,31 +164,31 @@ describe('createVerification', () => {
       await vi.advanceTimersByTimeAsync(200);
 
       expect(states).toContainEqual(
-        expect.objectContaining({ status: 'waitingForWallet' }),
+        expect.objectContaining({ status: "waitingForWallet" }),
       );
       expect(states).toContainEqual(
         expect.objectContaining({
-          status: 'verified',
-          token: 'eudi_v1.abc.xyz',
+          status: "verified",
+          token: "eudi_v1.abc.xyz",
           claims: { age_over_18: true },
         }),
       );
     });
 
-    it('stops polling on terminal state', async () => {
+    it("stops polling on terminal state", async () => {
       const pendingSession: Session = {
-        id: 'session-123',
-        status: 'pending',
-        qrUrl: 'openid4vp://test',
-        createdAt: '2024-01-01T00:00:00Z',
-        expiresAt: '2024-01-01T00:05:00Z',
+        id: "session-123",
+        status: "pending",
+        qrUrl: "openid4vp://test",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
       };
 
       const expiredSession: Session = {
-        id: 'session-123',
-        status: 'expired',
-        createdAt: '2024-01-01T00:00:00Z',
-        expiresAt: '2024-01-01T00:05:00Z',
+        id: "session-123",
+        status: "expired",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
       };
 
       const mockFetch = createMockFetch([
@@ -196,7 +197,7 @@ describe('createVerification', () => {
       ]);
 
       const verification = createVerification({
-        apiUrl: 'https://api.example.com',
+        apiUrl: "https://api.example.com",
         fetch: mockFetch,
         polling: { initialIntervalMs: 100 },
       });
@@ -206,24 +207,24 @@ describe('createVerification', () => {
       await vi.advanceTimersByTimeAsync(1000);
 
       expect(mockFetch).toHaveBeenCalledTimes(2);
-      expect(verification.state.status).toBe('expired');
+      expect(verification.state.status).toBe("expired");
     });
 
-    it('handles rejected status', async () => {
+    it("handles rejected status", async () => {
       const pendingSession: Session = {
-        id: 'session-123',
-        status: 'pending',
-        qrUrl: 'openid4vp://test',
-        createdAt: '2024-01-01T00:00:00Z',
-        expiresAt: '2024-01-01T00:05:00Z',
+        id: "session-123",
+        status: "pending",
+        qrUrl: "openid4vp://test",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
       };
 
       const rejectedSession: Session = {
-        id: 'session-123',
-        status: 'rejected',
-        error: 'User declined',
-        createdAt: '2024-01-01T00:00:00Z',
-        expiresAt: '2024-01-01T00:05:00Z',
+        id: "session-123",
+        status: "rejected",
+        error: "User declined",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
       };
 
       const mockFetch = createMockFetch([
@@ -232,7 +233,7 @@ describe('createVerification', () => {
       ]);
 
       const verification = createVerification({
-        apiUrl: 'https://api.example.com',
+        apiUrl: "https://api.example.com",
         fetch: mockFetch,
         polling: { initialIntervalMs: 100 },
       });
@@ -241,32 +242,37 @@ describe('createVerification', () => {
       await vi.advanceTimersByTimeAsync(200);
 
       expect(verification.state).toMatchObject({
-        status: 'rejected',
-        error: 'User declined',
+        status: "rejected",
+        error: "User declined",
       });
     });
   });
 
-  describe('cancel()', () => {
-    it('cancels the session and returns to idle', async () => {
+  describe("cancel()", () => {
+    it("cancels the session and returns to idle", async () => {
       const pendingSession: Session = {
-        id: 'session-123',
-        status: 'pending',
-        qrUrl: 'openid4vp://test',
-        createdAt: '2024-01-01T00:00:00Z',
-        expiresAt: '2024-01-01T00:05:00Z',
+        id: "session-123",
+        status: "pending",
+        qrUrl: "openid4vp://test",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
       };
 
       const cancelledSession: Session = {
-        id: 'session-123',
-        status: 'cancelled',
-        createdAt: '2024-01-01T00:00:00Z',
-        expiresAt: '2024-01-01T00:05:00Z',
+        id: "session-123",
+        status: "cancelled",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
       };
 
       const mockFetch = vi.fn(async (input: string | URL | Request) => {
-        const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
-        const isCancel = url.endsWith('/cancel');
+        const url =
+          typeof input === "string"
+            ? input
+            : input instanceof URL
+              ? input.href
+              : input.url;
+        const isCancel = url.endsWith("/cancel");
         const body = isCancel ? cancelledSession : pendingSession;
         return {
           ok: true,
@@ -277,46 +283,46 @@ describe('createVerification', () => {
       });
 
       const verification = createVerification({
-        apiUrl: 'https://api.example.com',
+        apiUrl: "https://api.example.com",
         fetch: mockFetch,
       });
 
       await verification.start({ age_over_18: true });
       verification.destroy();
-      
+
       const verification2 = createVerification({
-        apiUrl: 'https://api.example.com',
+        apiUrl: "https://api.example.com",
         fetch: mockFetch,
       });
-      
+
       await verification2.start({ age_over_18: true });
       await verification2.cancel();
 
-      expect(verification2.state.status).toBe('idle');
+      expect(verification2.state.status).toBe("idle");
     });
 
-    it('does nothing if no session active', async () => {
+    it("does nothing if no session active", async () => {
       const mockFetch = vi.fn();
       const verification = createVerification({
-        apiUrl: 'https://api.example.com',
+        apiUrl: "https://api.example.com",
         fetch: mockFetch,
       });
 
       await verification.cancel();
 
       expect(mockFetch).not.toHaveBeenCalled();
-      expect(verification.state.status).toBe('idle');
+      expect(verification.state.status).toBe("idle");
     });
   });
 
-  describe('destroy()', () => {
-    it('stops polling and clears subscribers', async () => {
+  describe("destroy()", () => {
+    it("stops polling and clears subscribers", async () => {
       const mockSession: Session = {
-        id: 'session-123',
-        status: 'pending',
-        qrUrl: 'openid4vp://test',
-        createdAt: '2024-01-01T00:00:00Z',
-        expiresAt: '2024-01-01T00:05:00Z',
+        id: "session-123",
+        status: "pending",
+        qrUrl: "openid4vp://test",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
       };
 
       const mockFetch = createMockFetch([
@@ -326,7 +332,7 @@ describe('createVerification', () => {
       ]);
 
       const verification = createVerification({
-        apiUrl: 'https://api.example.com',
+        apiUrl: "https://api.example.com",
         fetch: mockFetch,
         polling: { initialIntervalMs: 100 },
       });
@@ -345,31 +351,31 @@ describe('createVerification', () => {
     });
   });
 
-  describe('subscribe()', () => {
-    it('calls callback immediately with current state', () => {
+  describe("subscribe()", () => {
+    it("calls callback immediately with current state", () => {
       const verification = createVerification({
-        apiUrl: 'https://api.example.com',
+        apiUrl: "https://api.example.com",
         fetch: vi.fn(),
       });
 
       const callback = vi.fn();
       verification.subscribe(callback);
 
-      expect(callback).toHaveBeenCalledWith({ status: 'idle' });
+      expect(callback).toHaveBeenCalledWith({ status: "idle" });
     });
 
-    it('returns unsubscribe function', async () => {
+    it("returns unsubscribe function", async () => {
       const mockSession: Session = {
-        id: 'session-123',
-        status: 'pending',
-        qrUrl: 'openid4vp://test',
-        createdAt: '2024-01-01T00:00:00Z',
-        expiresAt: '2024-01-01T00:05:00Z',
+        id: "session-123",
+        status: "pending",
+        qrUrl: "openid4vp://test",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
       };
 
       const mockFetch = createMockFetch([{ status: 201, body: mockSession }]);
       const verification = createVerification({
-        apiUrl: 'https://api.example.com',
+        apiUrl: "https://api.example.com",
         fetch: mockFetch,
       });
 
@@ -385,23 +391,23 @@ describe('createVerification', () => {
       verification.destroy();
     });
 
-    it('handles callback errors gracefully', async () => {
+    it("handles callback errors gracefully", async () => {
       const mockSession: Session = {
-        id: 'session-123',
-        status: 'pending',
-        qrUrl: 'openid4vp://test',
-        createdAt: '2024-01-01T00:00:00Z',
-        expiresAt: '2024-01-01T00:05:00Z',
+        id: "session-123",
+        status: "pending",
+        qrUrl: "openid4vp://test",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
       };
 
       const mockFetch = createMockFetch([{ status: 201, body: mockSession }]);
       const verification = createVerification({
-        apiUrl: 'https://api.example.com',
+        apiUrl: "https://api.example.com",
         fetch: mockFetch,
       });
 
       const errorCallback = vi.fn().mockImplementation(() => {
-        throw new Error('Callback error');
+        throw new Error("Callback error");
       });
       const goodCallback = vi.fn();
 
@@ -416,32 +422,39 @@ describe('createVerification', () => {
     });
   });
 
-  describe('state transitions', () => {
-    it('maps all session statuses correctly', async () => {
-      const statuses: Array<{ sessionStatus: Session['status']; expectedState: string }> = [
-        { sessionStatus: 'pending', expectedState: 'showQR' },
-        { sessionStatus: 'waiting_for_wallet', expectedState: 'waitingForWallet' },
-        { sessionStatus: 'verified', expectedState: 'verified' },
-        { sessionStatus: 'rejected', expectedState: 'rejected' },
-        { sessionStatus: 'expired', expectedState: 'expired' },
-        { sessionStatus: 'cancelled', expectedState: 'idle' },
-        { sessionStatus: 'error', expectedState: 'error' },
+  describe("state transitions", () => {
+    it("maps all session statuses correctly", async () => {
+      const statuses: Array<{
+        sessionStatus: Session["status"];
+        expectedState: string;
+      }> = [
+        { sessionStatus: "pending", expectedState: "showQR" },
+        {
+          sessionStatus: "waiting_for_wallet",
+          expectedState: "waitingForWallet",
+        },
+        { sessionStatus: "verified", expectedState: "verified" },
+        { sessionStatus: "rejected", expectedState: "rejected" },
+        { sessionStatus: "expired", expectedState: "expired" },
+        { sessionStatus: "cancelled", expectedState: "idle" },
+        { sessionStatus: "error", expectedState: "error" },
       ];
 
       for (const { sessionStatus, expectedState } of statuses) {
         const session: Session = {
-          id: 'session-123',
+          id: "session-123",
           status: sessionStatus,
-          qrUrl: sessionStatus === 'pending' ? 'openid4vp://test' : undefined,
-          token: sessionStatus === 'verified' ? 'token' : undefined,
-          claims: sessionStatus === 'verified' ? { age_over_18: true } : undefined,
-          createdAt: '2024-01-01T00:00:00Z',
-          expiresAt: '2024-01-01T00:05:00Z',
+          qrUrl: sessionStatus === "pending" ? "openid4vp://test" : undefined,
+          token: sessionStatus === "verified" ? "token" : undefined,
+          claims:
+            sessionStatus === "verified" ? { age_over_18: true } : undefined,
+          createdAt: "2024-01-01T00:00:00Z",
+          expiresAt: "2024-01-01T00:05:00Z",
         };
 
         const mockFetch = createMockFetch([{ status: 201, body: session }]);
         const verification = createVerification({
-          apiUrl: 'https://api.example.com',
+          apiUrl: "https://api.example.com",
           fetch: mockFetch,
         });
 

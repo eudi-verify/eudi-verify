@@ -33,31 +33,31 @@ Wraps the registered `<eudi-verify>` element. Side-effect import of `@eudi-verif
 
 **Props:**
 
-| Prop | Type | Required | Maps to |
-|------|------|----------|---------|
-| `apiUrl` | `string` | Yes | `api-url` attribute |
-| `request` | `VerificationRequest` or JSON string | Yes | `request` attribute |
-| `autoStart` | `boolean` | No | `auto-start` attribute |
-| `className` | `string` | No | host element class |
-| `style` | `CSSProperties` | No | host element style |
+| Prop        | Type                                 | Required | Maps to                |
+| ----------- | ------------------------------------ | -------- | ---------------------- |
+| `apiUrl`    | `string`                             | Yes      | `api-url` attribute    |
+| `request`   | `VerificationRequest` or JSON string | Yes      | `request` attribute    |
+| `autoStart` | `boolean`                            | No       | `auto-start` attribute |
+| `className` | `string`                             | No       | host element class     |
+| `style`     | `CSSProperties`                      | No       | host element style     |
 
 **Callback props** (wire via `ref` + `addEventListener` internally — do not rely on React synthetic events on custom elements):
 
-| Callback | Payload |
-|----------|---------|
-| `onVerified` | `{ token: string; claims: Record<string, unknown> }` |
-| `onRejected` | `{ error?: string }` |
-| `onExpired` | `{}` |
-| `onError` | `{ error: string }` |
-| `onStateChange` | `{ state: VerificationState }` |
+| Callback        | Payload                                              |
+| --------------- | ---------------------------------------------------- |
+| `onVerified`    | `{ token: string; claims: Record<string, unknown> }` |
+| `onRejected`    | `{ error?: string }`                                 |
+| `onExpired`     | `{}`                                                 |
+| `onError`       | `{ error: string }`                                  |
+| `onStateChange` | `{ state: VerificationState }`                       |
 
 **Ref handle (optional):**
 
-| Method | Description |
-|--------|-------------|
-| `start()` | Start verification |
+| Method     | Description           |
+| ---------- | --------------------- |
+| `start()`  | Start verification    |
 | `cancel()` | Cancel active session |
-| `reset()` | Reset to idle |
+| `reset()`  | Reset to idle         |
 
 #### Dependencies
 

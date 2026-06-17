@@ -13,32 +13,32 @@ Create security documentation for responsible open-source release. Documents thr
 
 ### 1. Threat Model (`THREAT_MODEL.md`)
 
-```markdown
+````markdown
 # EUDI Verifier Threat Model
 
 ## Trust Boundaries
 
 \`\`\`
 ┌─────────────────────────────────────────────────────────────┐
-│                    UNTRUSTED                                 │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │
-│  │   Browser   │  │  Wallet UI  │  │   Network   │          │
-│  │   Widget    │  │   Display   │  │   Traffic   │          │
-│  └─────────────┘  └─────────────┘  └─────────────┘          │
+│ UNTRUSTED │
+│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│ │ Browser │ │ Wallet UI │ │ Network │ │
+│ │ Widget │ │ Display │ │ Traffic │ │
+│ └─────────────┘ └─────────────┘ └─────────────┘ │
 └─────────────────────────────────────────────────────────────┘
-                           │
-                           ▼
+│
+▼
 ┌─────────────────────────────────────────────────────────────┐
-│                    TRUST BOUNDARY                            │
+│ TRUST BOUNDARY │
 └─────────────────────────────────────────────────────────────┘
-                           │
-                           ▼
+│
+▼
 ┌─────────────────────────────────────────────────────────────┐
-│                    TRUSTED (after verification)             │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │
-│  │  Verifier   │  │  OpenEUDI   │  │  Merchant   │          │
-│  │   Server    │  │   Library   │  │   Backend   │          │
-│  └─────────────┘  └─────────────┘  └─────────────┘          │
+│ TRUSTED (after verification) │
+│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│ │ Verifier │ │ OpenEUDI │ │ Merchant │ │
+│ │ Server │ │ Library │ │ Backend │ │
+│ └─────────────┘ └─────────────┘ └─────────────┘ │
 └─────────────────────────────────────────────────────────────┘
 \`\`\`
 
@@ -48,7 +48,8 @@ Create security documentation for responsible open-source release. Documents thr
 
 **Threat**: Malicious JavaScript modifies `onVerified` event to inject fake claims.
 
-**Mitigation**: 
+**Mitigation**:
+
 - Widget returns opaque token only, never raw claims to client
 - Merchant server MUST call `POST /tokens/verify`
 - Claims only returned from server-side verify endpoint
@@ -62,6 +63,7 @@ Create security documentation for responsible open-source release. Documents thr
 **Threat**: Attacker captures valid token and reuses it.
 
 **Mitigation**:
+
 - Tokens are single-use (consumed on verify via `IKVStore.getAndDelete`)
 - Short TTL (5 minutes default)
 - Token bound to session ID
@@ -75,6 +77,7 @@ Create security documentation for responsible open-source release. Documents thr
 **Threat**: Attacker creates fake token without completing verification.
 
 **Mitigation**:
+
 - HMAC-SHA256 signature with server secret
 - Constant-time signature comparison (`crypto.timingSafeEqual`)
 - Secret rotation support via `kid` field
@@ -88,6 +91,7 @@ Create security documentation for responsible open-source release. Documents thr
 **Threat**: Attacker pre-creates session and tricks user into verifying it.
 
 **Mitigation**:
+
 - Sessions bound to cryptographic nonce (via OpenEUDI)
 - State parameter validated on callback
 - Session expires after 5 minutes
@@ -101,6 +105,7 @@ Create security documentation for responsible open-source release. Documents thr
 **Threat**: Attacker modifies Verifiable Presentation in transit.
 
 **Mitigation**:
+
 - VP signature verification (delegated to @openeudi/openid4vp)
 - Selective disclosure hash validation
 - EU trust list verification (production)
@@ -114,6 +119,7 @@ Create security documentation for responsible open-source release. Documents thr
 **Threat**: Attacker intercepts wallet callback.
 
 **Mitigation**:
+
 - HTTPS required (enforced in production)
 - Callback URL pinned to configured `baseUrl`
 - JWE encryption in production mode
@@ -127,6 +133,7 @@ Create security documentation for responsible open-source release. Documents thr
 **Threat**: Attacker triggers verification on victim's behalf.
 
 **Mitigation**:
+
 - Origin header validation on `POST /sessions`
 - Referer check as fallback
 - Optional CSRF token for cookie-auth sites
@@ -140,6 +147,7 @@ Create security documentation for responsible open-source release. Documents thr
 **Threat**: Attacker floods session creation endpoint.
 
 **Mitigation**:
+
 - Per-IP rate limiting (10/min default)
 - Session TTL limits memory growth
 - Configurable rate limit thresholds
@@ -153,6 +161,7 @@ Create security documentation for responsible open-source release. Documents thr
 **Threat**: Token signing secret exposed.
 
 **Mitigation**:
+
 - Secret from environment variable only
 - Never in client bundle (verified at build)
 - Key rotation via `kid` field
@@ -167,6 +176,7 @@ Create security documentation for responsible open-source release. Documents thr
 **Threat**: Vulnerable dependency compromises server.
 
 **Mitigation**:
+
 - `npm audit` in CI
 - Dependabot enabled
 - Minimal dependency surface
@@ -178,14 +188,15 @@ Create security documentation for responsible open-source release. Documents thr
 
 ## Security by Mode
 
-| Control | Demo Mode | Production Mode |
-|---------|-----------|-----------------|
-| VP Verification | Simulated | Full crypto |
-| Trust Lists | None | EU trust list |
-| HTTPS Required | No | Yes |
-| Rate Limiting | Yes | Yes |
-| Token Security | Full | Full |
-| Audit Logging | Basic | Full |
+| Control         | Demo Mode | Production Mode |
+| --------------- | --------- | --------------- |
+| VP Verification | Simulated | Full crypto     |
+| Trust Lists     | None      | EU trust list   |
+| HTTPS Required  | No        | Yes             |
+| Rate Limiting   | Yes       | Yes             |
+| Token Security  | Full      | Full            |
+| Audit Logging   | Basic     | Full            |
+
 \`\`\`
 
 ### 2. Security Policy (`SECURITY.md`)
@@ -219,16 +230,17 @@ Create security documentation for responsible open-source release. Documents thr
 
 ### Severity Classification
 
-| Severity | Response Time | Examples |
-|----------|--------------|----------|
-| Critical | 24 hours | RCE, auth bypass, token forgery |
-| High | 7 days | XSS, CSRF, significant data leak |
-| Medium | 30 days | Rate limit bypass, minor info leak |
-| Low | 90 days | Best practice violations |
+| Severity | Response Time | Examples                           |
+| -------- | ------------- | ---------------------------------- |
+| Critical | 24 hours      | RCE, auth bypass, token forgery    |
+| High     | 7 days        | XSS, CSRF, significant data leak   |
+| Medium   | 30 days       | Rate limit bypass, minor info leak |
+| Low      | 90 days       | Best practice violations           |
 
 ### Safe Harbor
 
 We consider security research conducted under this policy to be:
+
 - Authorized under anti-hacking laws
 - Exempt from DMCA restrictions
 - Conducted in good faith
@@ -243,6 +255,7 @@ We maintain a list of security researchers who have responsibly disclosed vulner
 
 Security updates are released as patch versions. Subscribe to GitHub releases for notifications.
 ```
+````
 
 ### 3. Dependency Documentation (`DEPENDENCY.md`)
 
@@ -253,22 +266,23 @@ Security updates are released as patch versions. Subscribe to GitHub releases fo
 
 ### Runtime Dependencies
 
-| Package | License | Origin | Purpose | Security Critical |
-|---------|---------|--------|---------|-------------------|
-| @openeudi/core | Apache-2.0 | Luxembourg | VP verification | Yes |
-| @openeudi/openid4vp | Apache-2.0 | Luxembourg | OpenID4VP protocol | Yes |
+| Package             | License    | Origin     | Purpose            | Security Critical |
+| ------------------- | ---------- | ---------- | ------------------ | ----------------- |
+| @openeudi/core      | Apache-2.0 | Luxembourg | VP verification    | Yes               |
+| @openeudi/openid4vp | Apache-2.0 | Luxembourg | OpenID4VP protocol | Yes               |
 
 ### Development Dependencies
 
-| Package | License | Origin | Purpose |
-|---------|---------|--------|---------|
+| Package    | License    | Origin    | Purpose       |
+| ---------- | ---------- | --------- | ------------- |
 | typescript | Apache-2.0 | Microsoft | Type checking |
-| vitest | MIT | Community | Testing |
-| tsup | MIT | Community | Bundling |
+| vitest     | MIT        | Community | Testing       |
+| tsup       | MIT        | Community | Bundling      |
 
 ## License Allowlist
 
 Only these licenses are permitted in runtime dependencies:
+
 - Apache-2.0
 - MIT
 - BSD-2-Clause
@@ -279,16 +293,17 @@ Copyleft licenses (GPL, LGPL, AGPL) are excluded from runtime to ensure public-s
 
 ## Security Audit Status
 
-| Package | Last Audit | Auditor | Notes |
-|---------|-----------|---------|-------|
-| @openeudi/core | Pending | - | Third-party audit TBD |
-| @eudi-verify/server | Pending | - | Third-party audit TBD |
+| Package             | Last Audit | Auditor | Notes                 |
+| ------------------- | ---------- | ------- | --------------------- |
+| @openeudi/core      | Pending    | -       | Third-party audit TBD |
+| @eudi-verify/server | Pending    | -       | Third-party audit TBD |
 
 ## Transitive Dependencies
 
 Run `pnpm ls --depth=10` for full dependency tree.
 
 Critical transitive dependencies are reviewed for:
+
 - Known vulnerabilities (npm audit)
 - License compliance
 - Maintenance status
@@ -311,6 +326,7 @@ Critical transitive dependencies are reviewed for:
 Ensure visible in all contexts:
 
 **Server Console**:
+
 ```
 ⚠️  WARNING: Running in DEMO MODE
     Demo credentials are simulated and NOT cryptographically verified.
@@ -318,11 +334,13 @@ Ensure visible in all contexts:
 ```
 
 **API Response Header**:
+
 ```
 X-Eudi-Mode: demo
 ```
 
 **UI Banner** (in `<eudi-verify>`):
+
 ```html
 <div class="eudi-demo-warning" role="alert">
   Simulated verification — credentials are fake. For local testing only.

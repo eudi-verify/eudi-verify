@@ -6,11 +6,11 @@ Reference deployment: [https://demo.eudi-verify.eu/](https://demo.eudi-verify.eu
 
 ## Deployment Options
 
-| Method | Best For | Complexity |
-|--------|----------|------------|
-| [Node + nginx](#option-1-node--nginx) | Production, full control | Medium |
-| [Docker](#option-2-docker) | Quick setup, reproducible | Low |
-| [Docker Compose](#option-3-docker-compose) | Multi-container setups | Low |
+| Method                                     | Best For                  | Complexity |
+| ------------------------------------------ | ------------------------- | ---------- |
+| [Node + nginx](#option-1-node--nginx)      | Production, full control  | Medium     |
+| [Docker](#option-2-docker)                 | Quick setup, reproducible | Low        |
+| [Docker Compose](#option-3-docker-compose) | Multi-container setups    | Low        |
 
 ---
 
@@ -166,12 +166,12 @@ docker-compose up -d
 
 ## Environment Variables
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `TOKEN_SECRET` | **Yes** | — | HMAC secret for token signing (min 32 bytes) |
-| `PORT` | No | `3000` | Server listening port |
-| `BASE_URL` | No | Auto-detected | Public callback URL |
-| `NODE_ENV` | No | `development` | Set to `production` in production |
+| Variable       | Required | Default       | Description                                  |
+| -------------- | -------- | ------------- | -------------------------------------------- |
+| `TOKEN_SECRET` | **Yes**  | —             | HMAC secret for token signing (min 32 bytes) |
+| `PORT`         | No       | `3000`        | Server listening port                        |
+| `BASE_URL`     | No       | Auto-detected | Public callback URL                          |
+| `NODE_ENV`     | No       | `development` | Set to `production` in production            |
 
 ---
 
@@ -232,11 +232,11 @@ docker logs -f eudi-verify
 
 This deployment guide prioritizes EU-hosted infrastructure:
 
-| Component | Recommended | Alternatives |
-|-----------|-------------|--------------|
-| Compute | Hetzner Cloud (DE/FI) | OVH (FR), Scaleway (FR), Exoscale (CH) |
-| Domain | EU registrar | — |
-| DNS | Hetzner DNS, Cloudflare (edge only) | Self-hosted |
-| TLS | Let's Encrypt | — |
+| Component | Recommended                         | Alternatives                           |
+| --------- | ----------------------------------- | -------------------------------------- |
+| Compute   | Hetzner Cloud (DE/FI)               | OVH (FR), Scaleway (FR), Exoscale (CH) |
+| Domain    | EU registrar                        | —                                      |
+| DNS       | Hetzner DNS, Cloudflare (edge only) | Self-hosted                            |
+| TLS       | Let's Encrypt                       | —                                      |
 
 Avoid US-hosted middleware (Auth0, Clerk, Firebase) in production deployments.

@@ -24,7 +24,7 @@
  * ```
  */
 
-export const VERSION = '0.1.0';
+export const VERSION = "0.1.0";
 
 export {
   createVerification,
@@ -32,21 +32,17 @@ export {
   type VerificationConfig,
   type VerificationState,
   type StateCallback,
-} from './verification.js';
+} from "./verification.js";
 
 export {
   createApiClient,
   type EudiApiClient,
   type ApiClientConfig,
-} from './api.js';
+} from "./api.js";
 
-export { createPoller, type Poller, type PollingConfig } from './polling.js';
+export { createPoller, type Poller, type PollingConfig } from "./polling.js";
 
-export {
-  generateQRSvg,
-  generateQRDataUrl,
-  type QRCodeOptions,
-} from './qr.js';
+export { generateQRSvg, generateQRDataUrl, type QRCodeOptions } from "./qr.js";
 
 export type {
   VerificationRequest,
@@ -54,9 +50,9 @@ export type {
   VerifiedClaims,
   Session,
   ApiError,
-} from './types.js';
+} from "./types.js";
 
-export { isTerminalStatus, TERMINAL_STATUSES } from './types.js';
+export { isTerminalStatus, TERMINAL_STATUSES } from "./types.js";
 
 export {
   EudiClientError,
@@ -66,4 +62,4 @@ export {
   RateLimitError,
   VerificationCancelledError,
   SessionExpiredError,
-} from './errors.js';
+} from "./errors.js";

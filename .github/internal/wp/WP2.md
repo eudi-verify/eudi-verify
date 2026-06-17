@@ -24,10 +24,13 @@ export interface VerifierHandlers {
   getRequest: RequestHandler;
 }
 
-export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers;
+export function createVerifierHandlers(
+  config: VerifierConfig,
+): VerifierHandlers;
 ```
 
 Each handler should:
+
 - Parse and validate request input
 - Call appropriate engine/store methods
 - Return proper HTTP responses per OpenAPI spec
@@ -47,6 +50,7 @@ export function createTokenService(config: TokenServiceConfig): TokenService;
 ```
 
 Requirements:
+
 - Token format: `eudi_v1.<base64url-payload>.<hmac>`
 - Payload: `{ sid, kid, exp, hash }`
 - HMAC using `TOKEN_SECRET` env var (signs the **Verification Token**, not the VP from wallet)
@@ -66,6 +70,7 @@ export interface RateLimiter {
 ```
 
 Requirements:
+
 - Default: 10 requests per minute per IP
 - Use `IKVStore` for counters
 - Return `Retry-After` header when limited
@@ -75,7 +80,7 @@ Requirements:
 Implement `VerifierEngine` wrapping `@openeudi/core`:
 
 ```ts
-import { DemoMode } from '@openeudi/core';
+import { DemoMode } from "@openeudi/core";
 
 export class OpenEudiEngine implements VerifierEngine {
   // Demo mode implementation using @openeudi/core DemoMode
@@ -83,6 +88,7 @@ export class OpenEudiEngine implements VerifierEngine {
 ```
 
 Requirements:
+
 - Demo mode only for now (production deferred)
 - Wrap `@openeudi/core` DemoMode for simulated wallet responses
 - Generate proper OpenID4VP authorization request URLs
@@ -95,7 +101,7 @@ export interface VerifierConfig {
   engine: VerifierEngine;
   store: IKVStore;
   baseUrl: string;
-  mode: 'demo' | 'production';
+  mode: "demo" | "production";
   sessionTtlMs?: number;
   tokenSecret: string;
   rateLimit?: {
@@ -127,12 +133,14 @@ export interface VerifierConfig {
 ## Testing
 
 Run tests:
+
 ```bash
 cd packages/server
 pnpm test
 ```
 
 Key test files to create:
+
 - `src/handlers.test.ts` - HTTP handler tests
 - `src/token.test.ts` - Token mint/verify security tests
 - `src/rate-limit.test.ts` - Rate limiter tests

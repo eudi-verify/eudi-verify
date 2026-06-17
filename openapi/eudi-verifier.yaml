@@ -3,12 +3,12 @@ info:
   title: EUDI Verifier API
   description: |
     Framework-agnostic REST API for EUDI Wallet verification.
-    
+
     This API enables any backend (Node, PHP, Python, Java) to integrate EUDI Wallet
     identity verification without framework lock-in. Built on OpenEUDI protocol libraries.
-    
+
     ## Integration Flow (captcha-style)
-    
+
     1. Client creates session via `POST /sessions` with verification request
     2. Client displays QR code from `qrUrl` to user
     3. User scans QR with EUDI Wallet and approves
@@ -16,9 +16,9 @@ info:
     5. Client polls `GET /sessions/:id` until status is terminal
     6. On `verified`, client receives opaque token
     7. **Merchant server** validates token via `POST /tokens/verify` (never trust client)
-    
+
     ## Demo Mode Warning
-    
+
     Demo mode returns simulated credentials. Never use in production.
     Demo responses include `X-Eudi-Mode: demo` header.
   version: 0.1.0
@@ -50,14 +50,14 @@ paths:
       description: |
         Creates a new verification session with the requested claims.
         Returns a session ID and QR URL for the widget to display.
-        
+
         Rate limited per IP to prevent abuse.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateSessionRequest'
+              $ref: "#/components/schemas/CreateSessionRequest"
             examples:
               ageVerification:
                 summary: Age verification only
@@ -71,7 +71,7 @@ paths:
                     age_over_18: true
                     nationality: true
       responses:
-        '201':
+        "201":
           description: Session created
           headers:
             X-Eudi-Mode:
@@ -82,11 +82,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Session'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '429':
-          $ref: '#/components/responses/RateLimited'
+                $ref: "#/components/schemas/Session"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/RateLimited"
 
   /sessions/{sessionId}:
     get:
@@ -96,13 +96,13 @@ paths:
       description: |
         Poll this endpoint to check verification status.
         Use exponential backoff (e.g., 1s, 2s, 4s, max 10s).
-        
+
         When status is `verified`, response includes an opaque `token`
         that must be validated server-side via `POST /tokens/verify`.
       parameters:
-        - $ref: '#/components/parameters/SessionId'
+        - $ref: "#/components/parameters/SessionId"
       responses:
-        '200':
+        "200":
           description: Session status
           headers:
             X-Eudi-Mode:
@@ -112,9 +112,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Session'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: "#/components/schemas/Session"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
   /sessions/{sessionId}/cancel:
     post:
@@ -125,22 +125,22 @@ paths:
         Cancels an active session. Use when user navigates away
         or explicitly cancels the verification flow.
       parameters:
-        - $ref: '#/components/parameters/SessionId'
+        - $ref: "#/components/parameters/SessionId"
       responses:
-        '200':
+        "200":
           description: Session cancelled
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Session'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '409':
+                $ref: "#/components/schemas/Session"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
           description: Session already in terminal state
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /tokens/verify:
     post:
@@ -149,31 +149,31 @@ paths:
       summary: Verify token (server-side only)
       description: |
         **Call this from your server, never from the browser.**
-        
+
         Validates the opaque token received from the widget's `verified` event.
         Like reCAPTCHA's siteverify endpoint — the final trust anchor.
-        
+
         Tokens are:
         - Single-use (consumed on successful verify)
         - Short-lived (5 minute TTL)
         - Bound to the original session
-        
+
         Returns the verified claims only if token is valid.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VerifyTokenRequest'
+              $ref: "#/components/schemas/VerifyTokenRequest"
       responses:
-        '200':
+        "200":
           description: Token verification result
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VerifyTokenResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
+                $ref: "#/components/schemas/VerifyTokenResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
 
   # Production-only endpoints (stubs for now)
   /callback:
@@ -184,7 +184,7 @@ paths:
       description: |
         Receives the Verifiable Presentation from the EUDI Wallet.
         In production, this is an encrypted JWE (`direct_post.jwt`).
-        
+
         **Not called by integrators** — this is the `response_uri` in the
         OpenID4VP authorization request.
       requestBody:
@@ -199,7 +199,7 @@ paths:
                   description: Encrypted VP (JWE) or plain VP token in demo mode
               required: [response]
       responses:
-        '200':
+        "200":
           description: VP processed
           content:
             application/json:
@@ -209,8 +209,8 @@ paths:
                   status:
                     type: string
                     enum: [ok]
-        '400':
-          $ref: '#/components/responses/BadRequest'
+        "400":
+          $ref: "#/components/responses/BadRequest"
 
   /request/{requestId}:
     get:
@@ -220,7 +220,7 @@ paths:
       description: |
         Serves the OpenID4VP authorization request object.
         The wallet fetches this URL from the `request_uri` in the QR code.
-        
+
         **Not called by integrators** — internal to the OpenID4VP flow.
       parameters:
         - name: requestId
@@ -230,14 +230,14 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: Authorization request JWT
           content:
             application/oauth-authz-req+jwt:
               schema:
                 type: string
-        '404':
-          $ref: '#/components/responses/NotFound'
+        "404":
+          $ref: "#/components/responses/NotFound"
 
 components:
   schemas:
@@ -306,7 +306,7 @@ components:
           format: uuid
           description: Unique session identifier
         status:
-          $ref: '#/components/schemas/SessionStatus'
+          $ref: "#/components/schemas/SessionStatus"
         qrUrl:
           type: string
           format: uri
@@ -320,7 +320,7 @@ components:
             Must be validated server-side via `POST /tokens/verify`.
             Format: `eudi_v1.<base64url-payload>.<hmac>`
         claims:
-          $ref: '#/components/schemas/VerifiedClaims'
+          $ref: "#/components/schemas/VerifiedClaims"
         error:
           type: string
           description: Error message when status is `error`
@@ -337,7 +337,7 @@ components:
       description: |
         Claims extracted from the verified presentation.
         Only includes claims that were requested and disclosed.
-        
+
         **Warning:** In demo mode, these are simulated values.
       properties:
         age_over_18:
@@ -364,25 +364,25 @@ components:
       description: |
         Opaque token proving successful verification.
         Format: `eudi_v1.<base64url-payload>.<hmac>`
-        
+
         Payload contains:
         - `sid`: Session ID
         - `kid`: Key ID (for rotation)
         - `exp`: Expiration timestamp
         - `hash`: Claims hash
-        
+
         Properties:
         - Single-use (consumed on verify)
         - Short TTL (5 minutes)
         - HMAC-signed with server secret
-      example: 'eudi_v1.eyJzaWQiOiJhYmMxMjMiLCJleHAiOjE3MTk2MDAwMDB9.dGVzdC1obWFj'
+      example: "eudi_v1.eyJzaWQiOiJhYmMxMjMiLCJleHAiOjE3MTk2MDAwMDB9.dGVzdC1obWFj"
 
     CreateSessionRequest:
       type: object
       required: [request]
       properties:
         request:
-          $ref: '#/components/schemas/VerificationRequest'
+          $ref: "#/components/schemas/VerificationRequest"
         callbackUrl:
           type: string
           format: uri
@@ -393,7 +393,7 @@ components:
       required: [token]
       properties:
         token:
-          $ref: '#/components/schemas/VerificationToken'
+          $ref: "#/components/schemas/VerificationToken"
 
     VerifyTokenResponse:
       type: object
@@ -403,7 +403,7 @@ components:
           type: boolean
           description: Whether the token is valid
         claims:
-          $ref: '#/components/schemas/VerifiedClaims'
+          $ref: "#/components/schemas/VerifiedClaims"
         error:
           type: string
           description: Error reason if valid is false
@@ -448,7 +448,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             error: bad_request
             message: Invalid verification request
@@ -458,7 +458,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             error: not_found
             message: Session not found
@@ -473,7 +473,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             error: rate_limited
             message: Too many requests, please retry later

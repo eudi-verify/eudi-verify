@@ -10,12 +10,12 @@
  * These can be set on the host element or any ancestor.
  */
 export const CSS_VARIABLES = {
-  '--eudi-primary': '#003399',
-  '--eudi-text': '#1a1a1a',
-  '--eudi-background': '#ffffff',
-  '--eudi-border-radius': '8px',
-  '--eudi-font-family': 'system-ui, sans-serif',
-  '--eudi-error': '#d32f2f',
+  "--eudi-primary": "#003399",
+  "--eudi-text": "#1a1a1a",
+  "--eudi-background": "#ffffff",
+  "--eudi-border-radius": "8px",
+  "--eudi-font-family": "system-ui, sans-serif",
+  "--eudi-error": "#d32f2f",
 } as const;
 
 /**
@@ -26,8 +26,8 @@ export function createStyles(): string {
   return /* css */ `
     :host {
       display: block;
-      font-family: var(--eudi-font-family, ${CSS_VARIABLES['--eudi-font-family']});
-      color: var(--eudi-text, ${CSS_VARIABLES['--eudi-text']});
+      font-family: var(--eudi-font-family, ${CSS_VARIABLES["--eudi-font-family"]});
+      color: var(--eudi-text, ${CSS_VARIABLES["--eudi-text"]});
     }
 
     :host([hidden]) {
@@ -41,9 +41,9 @@ export function createStyles(): string {
     }
 
     .eudi-widget {
-      background: var(--eudi-background, ${CSS_VARIABLES['--eudi-background']});
-      border: 1px solid color-mix(in srgb, var(--eudi-text, ${CSS_VARIABLES['--eudi-text']}) 20%, transparent);
-      border-radius: var(--eudi-border-radius, ${CSS_VARIABLES['--eudi-border-radius']});
+      background: var(--eudi-background, ${CSS_VARIABLES["--eudi-background"]});
+      border: 1px solid color-mix(in srgb, var(--eudi-text, ${CSS_VARIABLES["--eudi-text"]}) 20%, transparent);
+      border-radius: var(--eudi-border-radius, ${CSS_VARIABLES["--eudi-border-radius"]});
       padding: 24px;
       text-align: center;
       min-width: 280px;
@@ -71,19 +71,19 @@ export function createStyles(): string {
       font-weight: 500;
       font-family: inherit;
       color: #ffffff;
-      background: var(--eudi-primary, ${CSS_VARIABLES['--eudi-primary']});
+      background: var(--eudi-primary, ${CSS_VARIABLES["--eudi-primary"]});
       border: none;
-      border-radius: var(--eudi-border-radius, ${CSS_VARIABLES['--eudi-border-radius']});
+      border-radius: var(--eudi-border-radius, ${CSS_VARIABLES["--eudi-border-radius"]});
       cursor: pointer;
       transition: background-color 0.2s ease, transform 0.1s ease;
     }
 
     .eudi-start-btn:hover {
-      background: color-mix(in srgb, var(--eudi-primary, ${CSS_VARIABLES['--eudi-primary']}) 85%, black);
+      background: color-mix(in srgb, var(--eudi-primary, ${CSS_VARIABLES["--eudi-primary"]}) 85%, black);
     }
 
     .eudi-start-btn:focus-visible {
-      outline: 2px solid var(--eudi-primary, ${CSS_VARIABLES['--eudi-primary']});
+      outline: 2px solid var(--eudi-primary, ${CSS_VARIABLES["--eudi-primary"]});
       outline-offset: 2px;
     }
 
@@ -110,8 +110,8 @@ export function createStyles(): string {
     .eudi-spinner {
       width: 40px;
       height: 40px;
-      border: 3px solid color-mix(in srgb, var(--eudi-primary, ${CSS_VARIABLES['--eudi-primary']}) 20%, transparent);
-      border-top-color: var(--eudi-primary, ${CSS_VARIABLES['--eudi-primary']});
+      border: 3px solid color-mix(in srgb, var(--eudi-primary, ${CSS_VARIABLES["--eudi-primary"]}) 20%, transparent);
+      border-top-color: var(--eudi-primary, ${CSS_VARIABLES["--eudi-primary"]});
       border-radius: 50%;
       animation: eudi-spin 0.8s linear infinite;
     }
@@ -126,8 +126,8 @@ export function createStyles(): string {
     @media (prefers-reduced-motion: reduce) {
       .eudi-spinner {
         animation: none;
-        border-top-color: var(--eudi-primary, ${CSS_VARIABLES['--eudi-primary']});
-        border-right-color: var(--eudi-primary, ${CSS_VARIABLES['--eudi-primary']});
+        border-top-color: var(--eudi-primary, ${CSS_VARIABLES["--eudi-primary"]});
+        border-right-color: var(--eudi-primary, ${CSS_VARIABLES["--eudi-primary"]});
       }
 
       .eudi-start-btn {
@@ -146,14 +146,14 @@ export function createStyles(): string {
     .eudi-qr-img {
       width: 200px;
       height: 200px;
-      border: 1px solid color-mix(in srgb, var(--eudi-text, ${CSS_VARIABLES['--eudi-text']}) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--eudi-text, ${CSS_VARIABLES["--eudi-text"]}) 15%, transparent);
       border-radius: 4px;
     }
 
     .eudi-qr-text {
       margin: 0;
       font-size: 14px;
-      color: color-mix(in srgb, var(--eudi-text, ${CSS_VARIABLES['--eudi-text']}) 80%, transparent);
+      color: color-mix(in srgb, var(--eudi-text, ${CSS_VARIABLES["--eudi-text"]}) 80%, transparent);
     }
 
     .eudi-cancel-btn {
@@ -161,20 +161,20 @@ export function createStyles(): string {
       padding: 8px 16px;
       font-size: 14px;
       font-family: inherit;
-      color: var(--eudi-text, ${CSS_VARIABLES['--eudi-text']});
+      color: var(--eudi-text, ${CSS_VARIABLES["--eudi-text"]});
       background: transparent;
-      border: 1px solid color-mix(in srgb, var(--eudi-text, ${CSS_VARIABLES['--eudi-text']}) 30%, transparent);
-      border-radius: var(--eudi-border-radius, ${CSS_VARIABLES['--eudi-border-radius']});
+      border: 1px solid color-mix(in srgb, var(--eudi-text, ${CSS_VARIABLES["--eudi-text"]}) 30%, transparent);
+      border-radius: var(--eudi-border-radius, ${CSS_VARIABLES["--eudi-border-radius"]});
       cursor: pointer;
       transition: background-color 0.2s ease;
     }
 
     .eudi-cancel-btn:hover {
-      background: color-mix(in srgb, var(--eudi-text, ${CSS_VARIABLES['--eudi-text']}) 5%, transparent);
+      background: color-mix(in srgb, var(--eudi-text, ${CSS_VARIABLES["--eudi-text"]}) 5%, transparent);
     }
 
     .eudi-cancel-btn:focus-visible {
-      outline: 2px solid var(--eudi-primary, ${CSS_VARIABLES['--eudi-primary']});
+      outline: 2px solid var(--eudi-primary, ${CSS_VARIABLES["--eudi-primary"]});
       outline-offset: 2px;
     }
 
@@ -190,7 +190,7 @@ export function createStyles(): string {
     .eudi-waiting-icon {
       width: 48px;
       height: 48px;
-      color: var(--eudi-primary, ${CSS_VARIABLES['--eudi-primary']});
+      color: var(--eudi-primary, ${CSS_VARIABLES["--eudi-primary"]});
     }
 
     .eudi-waiting-text {
@@ -210,14 +210,14 @@ export function createStyles(): string {
     .eudi-success-icon {
       width: 48px;
       height: 48px;
-      color: var(--eudi-primary, ${CSS_VARIABLES['--eudi-primary']});
+      color: var(--eudi-primary, ${CSS_VARIABLES["--eudi-primary"]});
     }
 
     .eudi-success-text {
       margin: 0;
       font-size: 18px;
       font-weight: 500;
-      color: var(--eudi-primary, ${CSS_VARIABLES['--eudi-primary']});
+      color: var(--eudi-primary, ${CSS_VARIABLES["--eudi-primary"]});
     }
 
     /* Error/rejected/expired states */
@@ -232,19 +232,19 @@ export function createStyles(): string {
     .eudi-error-icon {
       width: 48px;
       height: 48px;
-      color: var(--eudi-error, ${CSS_VARIABLES['--eudi-error']});
+      color: var(--eudi-error, ${CSS_VARIABLES["--eudi-error"]});
     }
 
     .eudi-error-text {
       margin: 0;
       font-size: 16px;
-      color: var(--eudi-error, ${CSS_VARIABLES['--eudi-error']});
+      color: var(--eudi-error, ${CSS_VARIABLES["--eudi-error"]});
     }
 
     .eudi-error-detail {
       margin: 0;
       font-size: 14px;
-      color: color-mix(in srgb, var(--eudi-text, ${CSS_VARIABLES['--eudi-text']}) 70%, transparent);
+      color: color-mix(in srgb, var(--eudi-text, ${CSS_VARIABLES["--eudi-text"]}) 70%, transparent);
     }
 
     .eudi-retry-btn {
@@ -254,19 +254,19 @@ export function createStyles(): string {
       font-weight: 500;
       font-family: inherit;
       color: #ffffff;
-      background: var(--eudi-primary, ${CSS_VARIABLES['--eudi-primary']});
+      background: var(--eudi-primary, ${CSS_VARIABLES["--eudi-primary"]});
       border: none;
-      border-radius: var(--eudi-border-radius, ${CSS_VARIABLES['--eudi-border-radius']});
+      border-radius: var(--eudi-border-radius, ${CSS_VARIABLES["--eudi-border-radius"]});
       cursor: pointer;
       transition: background-color 0.2s ease;
     }
 
     .eudi-retry-btn:hover {
-      background: color-mix(in srgb, var(--eudi-primary, ${CSS_VARIABLES['--eudi-primary']}) 85%, black);
+      background: color-mix(in srgb, var(--eudi-primary, ${CSS_VARIABLES["--eudi-primary"]}) 85%, black);
     }
 
     .eudi-retry-btn:focus-visible {
-      outline: 2px solid var(--eudi-primary, ${CSS_VARIABLES['--eudi-primary']});
+      outline: 2px solid var(--eudi-primary, ${CSS_VARIABLES["--eudi-primary"]});
       outline-offset: 2px;
     }
 

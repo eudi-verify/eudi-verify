@@ -10,15 +10,15 @@ import {
   type Verification,
   type VerificationState,
   type VerificationRequest,
-} from '@eudi-verify/client';
-import { createStyles } from './styles.js';
-import { renderWidget, updateWidgetState } from './render.js';
+} from "@eudi-verify/client";
+import { createStyles } from "./styles.js";
+import { renderWidget, updateWidgetState } from "./render.js";
 import {
   announce,
   clearAnnouncement,
   STATE_MESSAGES,
   getAnnouncementPriority,
-} from './a11y.js';
+} from "./a11y.js";
 
 /**
  * Events dispatched by EudiVerifyElement.
@@ -28,13 +28,13 @@ export interface EudiVerifyEventMap {
   rejected: CustomEvent<{ error?: string }>;
   expired: CustomEvent<Record<string, never>>;
   error: CustomEvent<{ error: string }>;
-  'state-change': CustomEvent<{ state: VerificationState }>;
+  "state-change": CustomEvent<{ state: VerificationState }>;
 }
 
 /**
  * Observed attributes for the custom element.
  */
-const OBSERVED_ATTRIBUTES = ['api-url', 'request', 'auto-start'] as const;
+const OBSERVED_ATTRIBUTES = ["api-url", "request", "auto-start"] as const;
 type ObservedAttribute = (typeof OBSERVED_ATTRIBUTES)[number];
 
 /**
@@ -64,48 +64,48 @@ export class EudiVerifyElement extends HTMLElement {
   #unsubscribe: (() => void) | null = null;
   #container: HTMLElement | null = null;
   #liveRegion: HTMLElement | null = null;
-  #lastStatus: VerificationState['status'] | null = null;
+  #lastStatus: VerificationState["status"] | null = null;
   #isDemo: boolean | null = null;
   #demoBanner: HTMLElement | null = null;
 
   constructor() {
     super();
-    this.#shadow = this.attachShadow({ mode: 'open' });
+    this.#shadow = this.attachShadow({ mode: "open" });
   }
 
   /**
    * Get the API URL attribute.
    */
   get apiUrl(): string {
-    return this.getAttribute('api-url') ?? '';
+    return this.getAttribute("api-url") ?? "";
   }
 
   /**
    * Set the API URL attribute.
    */
   set apiUrl(value: string) {
-    this.setAttribute('api-url', value);
+    this.setAttribute("api-url", value);
   }
 
   /**
    * Get the request attribute (JSON string).
    */
   get request(): string {
-    return this.getAttribute('request') ?? '';
+    return this.getAttribute("request") ?? "";
   }
 
   /**
    * Set the request attribute (JSON string).
    */
   set request(value: string) {
-    this.setAttribute('request', value);
+    this.setAttribute("request", value);
   }
 
   /**
    * Check if auto-start is enabled.
    */
   get autoStart(): boolean {
-    return this.hasAttribute('auto-start');
+    return this.hasAttribute("auto-start");
   }
 
   /**
@@ -113,9 +113,9 @@ export class EudiVerifyElement extends HTMLElement {
    */
   set autoStart(value: boolean) {
     if (value) {
-      this.setAttribute('auto-start', '');
+      this.setAttribute("auto-start", "");
     } else {
-      this.removeAttribute('auto-start');
+      this.removeAttribute("auto-start");
     }
   }
 
@@ -142,11 +142,11 @@ export class EudiVerifyElement extends HTMLElement {
   attributeChangedCallback(
     name: string,
     oldValue: string | null,
-    newValue: string | null
+    newValue: string | null,
   ): void {
     if (oldValue === newValue) return;
 
-    if (name === 'api-url' && this.#verification) {
+    if (name === "api-url" && this.#verification) {
       this.#cleanup();
     }
   }
@@ -156,7 +156,7 @@ export class EudiVerifyElement extends HTMLElement {
    */
   start(): void {
     if (!this.apiUrl) {
-      console.error('[eudi-verify] api-url attribute is required');
+      console.error("[eudi-verify] api-url attribute is required");
       return;
     }
 
@@ -164,8 +164,8 @@ export class EudiVerifyElement extends HTMLElement {
     try {
       requestObj = this.request ? JSON.parse(this.request) : {};
     } catch {
-      console.error('[eudi-verify] Invalid JSON in request attribute');
-      this.#dispatchError('Invalid verification request');
+      console.error("[eudi-verify] Invalid JSON in request attribute");
+      this.#dispatchError("Invalid verification request");
       return;
     }
 
@@ -185,7 +185,7 @@ export class EudiVerifyElement extends HTMLElement {
    */
   reset(): void {
     this.#cleanup();
-    this.#updateState({ status: 'idle' });
+    this.#updateState({ status: "idle" });
   }
 
   #render(): void {
@@ -194,26 +194,26 @@ export class EudiVerifyElement extends HTMLElement {
       ${renderWidget()}
     `;
 
-    this.#container = this.#shadow.querySelector('.eudi-widget');
-    this.#liveRegion = this.#shadow.querySelector('[aria-live]');
-    this.#demoBanner = this.#shadow.querySelector('.eudi-demo-banner');
+    this.#container = this.#shadow.querySelector(".eudi-widget");
+    this.#liveRegion = this.#shadow.querySelector("[aria-live]");
+    this.#demoBanner = this.#shadow.querySelector(".eudi-demo-banner");
   }
 
   #setupEventListeners(): void {
-    this.#shadow.addEventListener('click', (event) => {
+    this.#shadow.addEventListener("click", (event) => {
       const target = event.target as HTMLElement;
-      const button = target.closest<HTMLElement>('[data-action]');
+      const button = target.closest<HTMLElement>("[data-action]");
       if (!button) return;
 
       const action = button.dataset.action;
       switch (action) {
-        case 'start':
+        case "start":
           this.start();
           break;
-        case 'cancel':
+        case "cancel":
           this.cancel();
           break;
-        case 'reset':
+        case "reset":
           this.reset();
           this.start();
           break;
@@ -241,10 +241,10 @@ export class EudiVerifyElement extends HTMLElement {
 
     try {
       const response = await fetch(`${this.apiUrl}/sessions`, {
-        method: 'HEAD',
+        method: "HEAD",
       });
-      const mode = response.headers.get('X-Eudi-Mode');
-      this.#isDemo = mode === 'demo';
+      const mode = response.headers.get("X-Eudi-Mode");
+      this.#isDemo = mode === "demo";
       this.#updateDemoBanner();
     } catch {
       // If detection fails, don't show banner (fail safely)
@@ -256,9 +256,9 @@ export class EudiVerifyElement extends HTMLElement {
     if (!this.#demoBanner) return;
 
     if (this.#isDemo === true) {
-      this.#demoBanner.removeAttribute('hidden');
+      this.#demoBanner.removeAttribute("hidden");
     } else {
-      this.#demoBanner.setAttribute('hidden', '');
+      this.#demoBanner.setAttribute("hidden", "");
     }
   }
 
@@ -267,19 +267,19 @@ export class EudiVerifyElement extends HTMLElement {
     this.#dispatchStateChange(state);
 
     switch (state.status) {
-      case 'verified':
-        if ('token' in state && 'claims' in state) {
+      case "verified":
+        if ("token" in state && "claims" in state) {
           this.#dispatchVerified(state.token, state.claims);
         }
         break;
-      case 'rejected':
-        this.#dispatchRejected('error' in state ? state.error : undefined);
+      case "rejected":
+        this.#dispatchRejected("error" in state ? state.error : undefined);
         break;
-      case 'expired':
+      case "expired":
         this.#dispatchExpired();
         break;
-      case 'error':
-        if ('error' in state) {
+      case "error":
+        if ("error" in state) {
           this.#dispatchError(state.error);
         }
         break;
@@ -308,18 +308,19 @@ export class EudiVerifyElement extends HTMLElement {
     if (!this.#container) return;
 
     switch (state.status) {
-      case 'showQR': {
-        const cancelBtn =
-          this.#container.querySelector<HTMLElement>('#eudi-state-showQR .eudi-cancel-btn');
+      case "showQR": {
+        const cancelBtn = this.#container.querySelector<HTMLElement>(
+          "#eudi-state-showQR .eudi-cancel-btn",
+        );
         cancelBtn?.focus();
         break;
       }
-      case 'verified':
-      case 'rejected':
-      case 'expired':
-      case 'error': {
+      case "verified":
+      case "rejected":
+      case "expired":
+      case "error": {
         const retryBtn = this.#container.querySelector<HTMLElement>(
-          `#eudi-state-${state.status} .eudi-retry-btn`
+          `#eudi-state-${state.status} .eudi-retry-btn`,
         );
         retryBtn?.focus();
         break;
@@ -329,51 +330,51 @@ export class EudiVerifyElement extends HTMLElement {
 
   #dispatchVerified(token: string, claims: Record<string, unknown>): void {
     this.dispatchEvent(
-      new CustomEvent('verified', {
+      new CustomEvent("verified", {
         bubbles: true,
         composed: true,
         detail: { token, claims },
-      })
+      }),
     );
   }
 
   #dispatchRejected(error?: string): void {
     this.dispatchEvent(
-      new CustomEvent('rejected', {
+      new CustomEvent("rejected", {
         bubbles: true,
         composed: true,
         detail: { error },
-      })
+      }),
     );
   }
 
   #dispatchExpired(): void {
     this.dispatchEvent(
-      new CustomEvent('expired', {
+      new CustomEvent("expired", {
         bubbles: true,
         composed: true,
         detail: {},
-      })
+      }),
     );
   }
 
   #dispatchError(error: string): void {
     this.dispatchEvent(
-      new CustomEvent('error', {
+      new CustomEvent("error", {
         bubbles: true,
         composed: true,
         detail: { error },
-      })
+      }),
     );
   }
 
   #dispatchStateChange(state: VerificationState): void {
     this.dispatchEvent(
-      new CustomEvent('state-change', {
+      new CustomEvent("state-change", {
         bubbles: true,
         composed: true,
         detail: { state },
-      })
+      }),
     );
   }
 
@@ -398,7 +399,7 @@ export class EudiVerifyElement extends HTMLElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'eudi-verify': EudiVerifyElement;
+    "eudi-verify": EudiVerifyElement;
   }
 
   interface HTMLElementEventMap extends EudiVerifyEventMap {}

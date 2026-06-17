@@ -4,7 +4,7 @@
  * Renders the widget UI based on verification state.
  */
 
-import type { VerificationState } from '@eudi-verify/client';
+import type { VerificationState } from "@eudi-verify/client";
 
 /**
  * SVG icon: EU stars (simplified)
@@ -78,7 +78,7 @@ const WARNING_ICON = /* html */ `
 /**
  * Map of status to state container ID.
  */
-type RenderableStatus = VerificationState['status'];
+type RenderableStatus = VerificationState["status"];
 
 /**
  * Get the state container ID for a status.
@@ -92,7 +92,7 @@ export function getStateId(status: RenderableStatus): string {
  */
 function renderIdle(): string {
   return /* html */ `
-    <div id="${getStateId('idle')}" class="eudi-state" data-active>
+    <div id="${getStateId("idle")}" class="eudi-state" data-active>
       <button class="eudi-start-btn" type="button" data-action="start">
         ${EU_STARS_ICON}
         <span>Verify with EU Wallet</span>
@@ -106,7 +106,7 @@ function renderIdle(): string {
  */
 function renderLoading(): string {
   return /* html */ `
-    <div id="${getStateId('loading')}" class="eudi-state">
+    <div id="${getStateId("loading")}" class="eudi-state">
       <div class="eudi-loading">
         <div class="eudi-spinner" aria-hidden="true"></div>
         <p>Loading...</p>
@@ -120,7 +120,7 @@ function renderLoading(): string {
  */
 function renderShowQR(): string {
   return /* html */ `
-    <div id="${getStateId('showQR')}" class="eudi-state">
+    <div id="${getStateId("showQR")}" class="eudi-state">
       <div class="eudi-qr">
         <img class="eudi-qr-img" src="" alt="Scan with EUDI Wallet" />
         <p class="eudi-qr-text">Scan with your EU Digital Identity Wallet</p>
@@ -135,7 +135,7 @@ function renderShowQR(): string {
  */
 function renderWaitingForWallet(): string {
   return /* html */ `
-    <div id="${getStateId('waitingForWallet')}" class="eudi-state">
+    <div id="${getStateId("waitingForWallet")}" class="eudi-state">
       <div class="eudi-waiting">
         ${WALLET_ICON}
         <p class="eudi-waiting-text">Waiting for wallet approval...</p>
@@ -150,7 +150,7 @@ function renderWaitingForWallet(): string {
  */
 function renderVerified(): string {
   return /* html */ `
-    <div id="${getStateId('verified')}" class="eudi-state">
+    <div id="${getStateId("verified")}" class="eudi-state">
       <div class="eudi-success">
         ${SUCCESS_ICON}
         <p class="eudi-success-text">Verified</p>
@@ -164,7 +164,7 @@ function renderVerified(): string {
  */
 function renderRejected(): string {
   return /* html */ `
-    <div id="${getStateId('rejected')}" class="eudi-state">
+    <div id="${getStateId("rejected")}" class="eudi-state">
       <div class="eudi-error">
         ${ERROR_ICON}
         <p class="eudi-error-text">Verification declined</p>
@@ -180,7 +180,7 @@ function renderRejected(): string {
  */
 function renderExpired(): string {
   return /* html */ `
-    <div id="${getStateId('expired')}" class="eudi-state">
+    <div id="${getStateId("expired")}" class="eudi-state">
       <div class="eudi-error">
         ${EXPIRED_ICON}
         <p class="eudi-error-text">Session expired</p>
@@ -195,7 +195,7 @@ function renderExpired(): string {
  */
 function renderError(): string {
   return /* html */ `
-    <div id="${getStateId('error')}" class="eudi-state">
+    <div id="${getStateId("error")}" class="eudi-state">
       <div class="eudi-error">
         ${ERROR_ICON}
         <p class="eudi-error-text">Verification failed</p>
@@ -244,34 +244,39 @@ export function renderWidget(): string {
  */
 export function updateWidgetState(
   container: HTMLElement,
-  state: VerificationState
+  state: VerificationState,
 ): void {
-  const stateContainers = container.querySelectorAll<HTMLElement>('.eudi-state');
+  const stateContainers =
+    container.querySelectorAll<HTMLElement>(".eudi-state");
 
   for (const stateEl of stateContainers) {
     if (stateEl.id === getStateId(state.status)) {
-      stateEl.setAttribute('data-active', '');
+      stateEl.setAttribute("data-active", "");
     } else {
-      stateEl.removeAttribute('data-active');
+      stateEl.removeAttribute("data-active");
     }
   }
 
-  if (state.status === 'showQR') {
-    const img = container.querySelector<HTMLImageElement>('.eudi-qr-img');
-    if (img && 'qrDataUrl' in state) {
+  if (state.status === "showQR") {
+    const img = container.querySelector<HTMLImageElement>(".eudi-qr-img");
+    if (img && "qrDataUrl" in state) {
       img.src = state.qrDataUrl;
     }
   }
 
-  if (state.status === 'rejected' && 'error' in state && state.error) {
-    const detail = container.querySelector(`#${getStateId('rejected')} .eudi-error-detail`);
+  if (state.status === "rejected" && "error" in state && state.error) {
+    const detail = container.querySelector(
+      `#${getStateId("rejected")} .eudi-error-detail`,
+    );
     if (detail) {
       detail.textContent = state.error;
     }
   }
 
-  if (state.status === 'error' && 'error' in state) {
-    const detail = container.querySelector(`#${getStateId('error')} .eudi-error-detail`);
+  if (state.status === "error" && "error" in state) {
+    const detail = container.querySelector(
+      `#${getStateId("error")} .eudi-error-detail`,
+    );
     if (detail) {
       detail.textContent = state.error;
     }

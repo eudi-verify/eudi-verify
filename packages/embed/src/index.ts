@@ -16,21 +16,24 @@
  * ```
  */
 
-export const VERSION = '0.1.0';
+export const VERSION = "0.1.0";
 
-export { EudiVerifyElement, type EudiVerifyEventMap } from './element.js';
-export { createStyles, CSS_VARIABLES } from './styles.js';
+export { EudiVerifyElement, type EudiVerifyEventMap } from "./element.js";
+export { createStyles, CSS_VARIABLES } from "./styles.js";
 export {
   announce,
   clearAnnouncement,
   createFocusTrap,
   getFocusableElements,
   STATE_MESSAGES,
-} from './a11y.js';
-export { renderWidget, updateWidgetState, getStateId } from './render.js';
+} from "./a11y.js";
+export { renderWidget, updateWidgetState, getStateId } from "./render.js";
 
-import { EudiVerifyElement } from './element.js';
+import { EudiVerifyElement } from "./element.js";
 
-if (typeof customElements !== 'undefined' && !customElements.get('eudi-verify')) {
-  customElements.define('eudi-verify', EudiVerifyElement);
+if (
+  typeof customElements !== "undefined" &&
+  !customElements.get("eudi-verify")
+) {
+  customElements.define("eudi-verify", EudiVerifyElement);
 }
