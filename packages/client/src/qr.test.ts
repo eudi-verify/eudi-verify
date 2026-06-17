@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { generateQRSvg, generateQRDataUrl } from "./qr.js";
+import { decodeQRDataUrl, decodeQRSvg } from "./qr-decode.js";
+
+/** Representative OpenID4VP authorization request URL (demo-sized). */
+const DEMO_OPENID4VP_URL =
+  "openid4vp://authorize?client_id=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Feudi" +
+  "&response_type=vp_token&state=demo-session-id&nonce=demo-nonce" +
+  "&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Feudi%2Fcallback&mode=demo";
 
 describe("QR Code Generation", () => {
   describe("generateQRSvg", () => {
@@ -65,10 +72,8 @@ describe("QR Code Generation", () => {
       expect(svg).toContain("<svg");
     });
 
-    it("handles empty string", () => {
-      const svg = generateQRSvg("");
-
-      expect(svg).toContain("<svg");
+    it("rejects empty string", () => {
+      expect(() => generateQRSvg("")).toThrow(/No input text/);
     });
   });
 
@@ -122,9 +127,47 @@ describe("QR Code Generation", () => {
       expect(svg).toContain("<svg");
     });
 
-    it("throws for data too long", () => {
-      const tooLong = "a".repeat(500);
-      expect(() => generateQRSvg(tooLong)).toThrow(/Data too long/);
+    it("handles high-capacity payloads", () => {
+      const longUrl = "openid4vp://authorize?" + "a".repeat(200);
+      const svg = generateQRSvg(longUrl, { errorCorrection: "L" });
+      expect(svg).toContain("<svg");
+    });
+  });
+
+  describe("QR code decode (scannable)", () => {
+    it("decodes HTTPS URL from SVG", () => {
+      const payload = "https://example.com";
+      const svg = generateQRSvg(payload, { size: 400, errorCorrection: "L" });
+      expect(decodeQRSvg(svg, 400)).toBe(payload);
+    });
+
+    it("decodes OpenID4VP authorization URL from SVG", () => {
+      const svg = generateQRSvg(DEMO_OPENID4VP_URL, {
+        size: 400,
+        errorCorrection: "L",
+      });
+      expect(decodeQRSvg(svg, 400)).toBe(DEMO_OPENID4VP_URL);
+    });
+
+    it("decodes high-capacity OpenID4VP payload (version 4+)", () => {
+      const payload = "openid4vp://authorize?" + "a".repeat(200);
+      const svg = generateQRSvg(payload, { size: 500, errorCorrection: "L" });
+      expect(decodeQRSvg(svg, 500)).toBe(payload);
+    });
+
+    it("decodes Unicode payload from SVG", () => {
+      const payload = "https://example.com/test?name=测试";
+      const svg = generateQRSvg(payload, { size: 400, errorCorrection: "L" });
+      expect(decodeQRSvg(svg, 400)).toBe(payload);
+    });
+
+    it("decodes payload from generateQRDataUrl output", () => {
+      const payload = DEMO_OPENID4VP_URL;
+      const dataUrl = generateQRDataUrl(payload, {
+        size: 400,
+        errorCorrection: "L",
+      });
+      expect(decodeQRDataUrl(dataUrl, 400)).toBe(payload);
     });
   });
 
