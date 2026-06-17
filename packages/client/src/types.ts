@@ -23,23 +23,23 @@ export interface VerificationRequest {
  * Session lifecycle states.
  */
 export type SessionStatus =
-  | 'pending'
-  | 'waiting_for_wallet'
-  | 'verified'
-  | 'rejected'
-  | 'expired'
-  | 'cancelled'
-  | 'error';
+  | "pending"
+  | "waiting_for_wallet"
+  | "verified"
+  | "rejected"
+  | "expired"
+  | "cancelled"
+  | "error";
 
 /**
  * Terminal states that cannot transition further.
  */
 export const TERMINAL_STATUSES: readonly SessionStatus[] = Object.freeze([
-  'verified',
-  'rejected',
-  'expired',
-  'cancelled',
-  'error',
+  "verified",
+  "rejected",
+  "expired",
+  "cancelled",
+  "error",
 ]);
 
 /**

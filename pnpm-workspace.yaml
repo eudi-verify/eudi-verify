@@ -1,10 +1,10 @@
 packages:
-  - 'packages/*'
-  - 'examples/*'
+  - "packages/*"
+  - "examples/*"
 
 overrides:
-  esbuild: '>=0.28.1'
-  vite: '>=6.4.3'
+  esbuild: ">=0.28.1"
+  vite: ">=6.4.3"
 
 allowBuilds:
   esbuild: true

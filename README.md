@@ -15,20 +15,20 @@ Framework-agnostic verifier kit for the European Digital Identity Wallet.
 
 ## What you can do today
 
-* Run the local demo end-to-end with a simulated wallet.
-* Embed `<eudi-verify>` in any HTML page or SPA.
-* Use the typed client package for a custom UI.
-* Use the Node.js server handlers with Express, Hono, or `node:http`.
-* Implement the same verifier API in another backend using the OpenAPI spec.
+- Run the local demo end-to-end with a simulated wallet.
+- Embed `<eudi-verify>` in any HTML page or SPA.
+- Use the typed client package for a custom UI.
+- Use the Node.js server handlers with Express, Hono, or `node:http`.
+- Implement the same verifier API in another backend using the OpenAPI spec.
 
 ## What this is not yet
 
-* Not production identity verification.
-* Not a certified EUDI Wallet implementation.
-* Not a wallet app.
-* Not a credential issuer.
-* Not a replacement for legal, privacy, or compliance review.
-* Not yet tested against production national EUDI Wallet apps.
+- Not production identity verification.
+- Not a certified EUDI Wallet implementation.
+- Not a wallet app.
+- Not a credential issuer.
+- Not a replacement for legal, privacy, or compliance review.
+- Not yet tested against production national EUDI Wallet apps.
 
 ## What is this?
 
@@ -36,20 +36,18 @@ Think of `eudi-verify` as a reCAPTCHA-style integration pattern for credential v
 
 Example use cases include:
 
-* proving that a user is over 18;
-* verifying possession of a specific credential or entitlement;
-* checking a scoped identity attribute without building the full verifier flow from scratch.
+- proving that a user is over 18;
+- verifying possession of a specific credential or entitlement;
+- checking a scoped identity attribute without building the full verifier flow from scratch.
 
 ```html
 <!-- Add age verification to any website -->
-<eudi-verify
-  api-url="/api/eudi"
-  request='{"age_over_18": true}'
-></eudi-verify>
+<eudi-verify api-url="/api/eudi" request='{"age_over_18": true}'></eudi-verify>
 
 <script type="module">
-  document.querySelector('eudi-verify')
-    .addEventListener('verified', (event) => {
+  document
+    .querySelector("eudi-verify")
+    .addEventListener("verified", (event) => {
       // Send event.detail.token to your backend for validation.
     });
 </script>
@@ -61,11 +59,11 @@ This project is for developers, product teams, and integrators who want to prepa
 
 It is useful if you want to:
 
-* prototype age verification or attribute verification flows;
-* evaluate how EUDI Wallet verification could fit into an existing website;
-* build against a stable verifier API before choosing a final backend stack;
-* experiment with a framework-agnostic web component rather than a React-only integration;
-* study the moving parts of a verifier implementation: session creation, QR generation, wallet callback handling, polling, token issuance, and backend token validation.
+- prototype age verification or attribute verification flows;
+- evaluate how EUDI Wallet verification could fit into an existing website;
+- build against a stable verifier API before choosing a final backend stack;
+- experiment with a framework-agnostic web component rather than a React-only integration;
+- study the moving parts of a verifier implementation: session creation, QR generation, wallet callback handling, polling, token issuance, and backend token validation.
 
 ## Why this exists
 
@@ -73,11 +71,11 @@ The EUDI Wallet ecosystem is still emerging, but websites and service providers 
 
 Most applications will not want to implement wallet protocols, QR/session handling, callback processing, polling, token validation, and frontend state management from scratch. This project provides a small, auditable verifier kit with clear boundaries:
 
-* an OpenAPI verifier contract;
-* a Node.js reference implementation;
-* a typed client for custom frontends;
-* a drop-in web component for simple integrations;
-* a mock/demo engine for development before production wallets are available.
+- an OpenAPI verifier contract;
+- a Node.js reference implementation;
+- a typed client for custom frontends;
+- a drop-in web component for simple integrations;
+- a mock/demo engine for development before production wallets are available.
 
 ## Architecture
 
@@ -91,8 +89,8 @@ Three independent layers — use what you need:
 
 The OpenAPI spec is stack-independent. Any backend can implement the same endpoints. Only the Node.js handler library ships today.
 
-* [Supported platforms and roadmap](docs/SUPPORTED.md)
-* [ARF alignment notes](docs/ARF.md)
+- [Supported platforms and roadmap](docs/SUPPORTED.md)
+- [ARF alignment notes](docs/ARF.md)
 
 ```txt
 ┌─────────────────────────────────────────────────────────┐
@@ -191,12 +189,12 @@ See the [integration guide](docs/INTEGRATION.md) for end-to-end setup.
 
 Planned areas include:
 
-* React wrapper;
-* Vue example;
-* WordPress plugin;
-* PHP, Python, and Java integration guides;
-* production wallet interoperability as national EUDI Wallets become available;
-* production High Assurance Interoperability Profile support where applicable.
+- React wrapper;
+- Vue example;
+- WordPress plugin;
+- PHP, Python, and Java integration guides;
+- production wallet interoperability as national EUDI Wallets become available;
+- production High Assurance Interoperability Profile support where applicable.
 
 See [docs/PLAN.md](docs/PLAN.md) for the technical roadmap and [docs/SUPPORTED.md](docs/SUPPORTED.md) for the platform support matrix.
 
@@ -232,8 +230,8 @@ This allows protocol implementations to be swapped as the EUDI ecosystem matures
 
 Current engine support:
 
-* `MockEngine` for local development and demo mode;
-* production protocol engine support planned as compatible libraries and wallet implementations stabilize.
+- `MockEngine` for local development and demo mode;
+- production protocol engine support planned as compatible libraries and wallet implementations stabilize.
 
 ## Current limitations
 
@@ -251,9 +249,9 @@ For developers: build and test now using demo mode. Do not rely on this project 
 
 Useful official references:
 
-* [European Digital Identity Wallet — European Commission](https://ec.europa.eu/digital-building-blocks/sites/spaces/EUDIGITALIDENTITYWALLET/pages/694487738/EU+Digital+Identity+Wallet+Home)
-* [European Digital Identity Regulation](https://digital-strategy.ec.europa.eu/en/policies/eudi-regulation)
-* [EUDI Wallet Architecture and Reference Framework](https://eu-digital-identity-wallet.github.io/eudi-doc-architecture-and-reference-framework/2.8.0/architecture-and-reference-framework-main/)
+- [European Digital Identity Wallet — European Commission](https://ec.europa.eu/digital-building-blocks/sites/spaces/EUDIGITALIDENTITYWALLET/pages/694487738/EU+Digital+Identity+Wallet+Home)
+- [European Digital Identity Regulation](https://digital-strategy.ec.europa.eu/en/policies/eudi-regulation)
+- [EUDI Wallet Architecture and Reference Framework](https://eu-digital-identity-wallet.github.io/eudi-doc-architecture-and-reference-framework/2.8.0/architecture-and-reference-framework-main/)
 
 ## Security
 
@@ -261,11 +259,11 @@ See [SECURITY.md](SECURITY.md) and [THREAT_MODEL.md](THREAT_MODEL.md).
 
 Important boundaries:
 
-* The browser widget is not trusted.
-* Verification tokens must be validated server-side.
-* Demo mode accepts simulated wallet responses and must not be used in production.
-* The verifier backend is responsible for session state, callback validation, token signing, expiry, replay protection, and rate limiting.
-* Applications should treat verified claims as scoped, time-limited assertions, not permanent user identity.
+- The browser widget is not trusted.
+- Verification tokens must be validated server-side.
+- Demo mode accepts simulated wallet responses and must not be used in production.
+- The verifier backend is responsible for session state, callback validation, token signing, expiry, replay protection, and rate limiting.
+- Applications should treat verified claims as scoped, time-limited assertions, not permanent user identity.
 
 ## API documentation
 
@@ -307,11 +305,11 @@ Contributions are welcome.
 
 Please read:
 
-* [CONTRIBUTING.md](CONTRIBUTING.md)
-* [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
-* [SECURITY.md](SECURITY.md)
-* [docs/PLAN.md](docs/PLAN.md)
-* [docs/SUPPORTED.md](docs/SUPPORTED.md)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- [SECURITY.md](SECURITY.md)
+- [docs/PLAN.md](docs/PLAN.md)
+- [docs/SUPPORTED.md](docs/SUPPORTED.md)
 
 Before claiming new platform support in documentation, please check the roadmap and existing support matrix.
 
@@ -321,10 +319,10 @@ This is independent open source software licensed under Apache-2.0.
 
 Ways to help:
 
-* Try the demo and open issues for gaps.
-* Contribute fixes, examples, tests, or documentation.
-* Share feedback from real verifier integration scenarios.
-* See [FUNDING.md](FUNDING.md) for sponsorship information.
+- Try the demo and open issues for gaps.
+- Contribute fixes, examples, tests, or documentation.
+- Share feedback from real verifier integration scenarios.
+- See [FUNDING.md](FUNDING.md) for sponsorship information.
 
 ## License
 

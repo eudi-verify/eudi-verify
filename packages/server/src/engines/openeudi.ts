@@ -22,8 +22,8 @@ import type {
   CallbackData,
   CallbackResult,
   OpenEudiEngineConfig,
-} from '../engine.js';
-import type { Session, VerifiedClaims, VerifierMode } from '../types.js';
+} from "../engine.js";
+import type { Session, VerifiedClaims, VerifierMode } from "../types.js";
 
 /**
  * Demo claims configuration.
@@ -69,7 +69,7 @@ interface OpenEudiSessionData {
  * - Trust list validation
  */
 export class OpenEudiEngine implements VerifierEngine {
-  readonly name = 'openeudi';
+  readonly name = "openeudi";
   readonly mode: VerifierMode;
 
   private config: Required<OpenEudiEngineOptions>;
@@ -83,28 +83,30 @@ export class OpenEudiEngine implements VerifierEngine {
       demoClaims: options.demoClaims ?? {
         age_over_18: true,
         age_over_21: true,
-        nationality: 'LU',
-        given_name: 'Jean',
-        family_name: 'Dupont',
-        birth_date: '1985-03-15',
+        nationality: "LU",
+        given_name: "Jean",
+        family_name: "Dupont",
+        birth_date: "1985-03-15",
       },
       demoDelayMs: options.demoDelayMs ?? 0,
     };
   }
 
   async initialize(): Promise<void> {
-    if (this.mode === 'demo') {
+    if (this.mode === "demo") {
       console.warn(
-        '[OpenEudiEngine] Running in DEMO mode. ' +
-          'Credentials are simulated. Do NOT use in production.'
+        "[OpenEudiEngine] Running in DEMO mode. " +
+          "Credentials are simulated. Do NOT use in production.",
       );
     }
   }
 
-  async createSession(config: CreateSessionConfig): Promise<CreateSessionResult> {
+  async createSession(
+    config: CreateSessionConfig,
+  ): Promise<CreateSessionResult> {
     const nonce = this.generateNonce();
     const requestedClaims = Object.keys(config.request).filter(
-      (k) => config.request[k] === true
+      (k) => config.request[k] === true,
     );
 
     const engineData: OpenEudiSessionData = {
@@ -120,22 +122,25 @@ export class OpenEudiEngine implements VerifierEngine {
 
   async parseCallback(rawBody: string): Promise<CallbackData> {
     const params = new URLSearchParams(rawBody);
-    const response = params.get('response');
-    const state = params.get('state') || params.get('session_id');
+    const response = params.get("response");
+    const state = params.get("state") || params.get("session_id");
 
     if (!response || !state) {
-      throw new Error('Invalid callback: missing response or state');
+      throw new Error("Invalid callback: missing response or state");
     }
 
     return { sessionId: state, response };
   }
 
-  async handleCallback(data: CallbackData, session: Session): Promise<CallbackResult> {
+  async handleCallback(
+    data: CallbackData,
+    session: Session,
+  ): Promise<CallbackResult> {
     if (this.config.demoDelayMs > 0) {
       await this.delay(this.config.demoDelayMs);
     }
 
-    if (this.mode === 'demo') {
+    if (this.mode === "demo") {
       return this.handleDemoCallback(data, session);
     }
 
@@ -146,27 +151,31 @@ export class OpenEudiEngine implements VerifierEngine {
     const engineData = session._engineData as OpenEudiSessionData | undefined;
     const nonce = engineData?.nonce ?? this.generateNonce();
 
-    if (this.mode === 'demo') {
+    if (this.mode === "demo") {
       return JSON.stringify({
-        type: 'authorization_request',
-        response_type: 'vp_token',
+        type: "authorization_request",
+        response_type: "vp_token",
         client_id: this.config.baseUrl,
         redirect_uri: `${this.config.baseUrl}/callback`,
         state: session.id,
         nonce,
-        presentation_definition: this.buildPresentationDefinition(session.request),
-        mode: 'demo',
+        presentation_definition: this.buildPresentationDefinition(
+          session.request,
+        ),
+        mode: "demo",
       });
     }
 
     return JSON.stringify({
-      type: 'authorization_request',
-      response_type: 'vp_token',
+      type: "authorization_request",
+      response_type: "vp_token",
       client_id: this.config.baseUrl,
       redirect_uri: `${this.config.baseUrl}/callback`,
       state: session.id,
       nonce,
-      presentation_definition: this.buildPresentationDefinition(session.request),
+      presentation_definition: this.buildPresentationDefinition(
+        session.request,
+      ),
     });
   }
 
@@ -180,23 +189,24 @@ export class OpenEudiEngine implements VerifierEngine {
 
   private handleDemoCallback(
     _data: CallbackData,
-    session: Session
+    session: Session,
   ): CallbackResult {
     const engineData = session._engineData as OpenEudiSessionData | undefined;
-    const requestedClaims = engineData?.requestedClaims ?? Object.keys(session.request);
+    const requestedClaims =
+      engineData?.requestedClaims ?? Object.keys(session.request);
 
     const claims = this.generateDemoClaims(requestedClaims);
 
     return {
       success: true,
       claims,
-      status: 'verified',
+      status: "verified",
     };
   }
 
   private handleProductionCallback(
     _data: CallbackData,
-    _session: Session
+    _session: Session,
   ): CallbackResult {
     // Production implementation would:
     // 1. Decrypt JWE if encrypted
@@ -207,23 +217,23 @@ export class OpenEudiEngine implements VerifierEngine {
 
     return {
       success: false,
-      error: 'Production mode not yet implemented',
-      status: 'error',
+      error: "Production mode not yet implemented",
+      status: "error",
     };
   }
 
   private buildAuthorizationRequestUrl(
     config: CreateSessionConfig,
-    nonce: string
+    nonce: string,
   ): string {
-    if (this.mode === 'demo') {
+    if (this.mode === "demo") {
       const params = new URLSearchParams({
         client_id: this.config.baseUrl,
-        response_type: 'vp_token',
+        response_type: "vp_token",
         state: config.sessionId,
         nonce,
         redirect_uri: `${this.config.baseUrl}/callback`,
-        mode: 'demo',
+        mode: "demo",
       });
 
       return `openid4vp://authorize?${params.toString()}`;
@@ -238,9 +248,11 @@ export class OpenEudiEngine implements VerifierEngine {
   }
 
   private buildPresentationDefinition(
-    request: Record<string, boolean | undefined>
+    request: Record<string, boolean | undefined>,
   ): object {
-    const requestedClaims = Object.keys(request).filter((k) => request[k] === true);
+    const requestedClaims = Object.keys(request).filter(
+      (k) => request[k] === true,
+    );
 
     const inputDescriptors = requestedClaims.map((claim) => ({
       id: claim,
@@ -257,20 +269,20 @@ export class OpenEudiEngine implements VerifierEngine {
 
     return {
       id: `eudi-verify-${Date.now()}`,
-      name: 'EUDI Verification Request',
-      purpose: 'Identity verification',
+      name: "EUDI Verification Request",
+      purpose: "Identity verification",
       input_descriptors: inputDescriptors,
     };
   }
 
   private getClaimDisplayName(claim: string): string {
     const names: Record<string, string> = {
-      age_over_18: 'Age over 18',
-      age_over_21: 'Age over 21',
-      nationality: 'Nationality',
-      given_name: 'Given name',
-      family_name: 'Family name',
-      birth_date: 'Birth date',
+      age_over_18: "Age over 18",
+      age_over_21: "Age over 21",
+      nationality: "Nationality",
+      given_name: "Given name",
+      family_name: "Family name",
+      birth_date: "Birth date",
     };
     return names[claim] ?? claim;
   }
@@ -280,17 +292,20 @@ export class OpenEudiEngine implements VerifierEngine {
     const defaults = this.config.demoClaims;
 
     for (const claim of requestedClaims) {
-      if (claim === 'age_over_18' && defaults.age_over_18 !== undefined) {
+      if (claim === "age_over_18" && defaults.age_over_18 !== undefined) {
         claims.age_over_18 = defaults.age_over_18;
-      } else if (claim === 'age_over_21' && defaults.age_over_21 !== undefined) {
+      } else if (
+        claim === "age_over_21" &&
+        defaults.age_over_21 !== undefined
+      ) {
         claims.age_over_21 = defaults.age_over_21;
-      } else if (claim === 'nationality' && defaults.nationality) {
+      } else if (claim === "nationality" && defaults.nationality) {
         claims.nationality = defaults.nationality;
-      } else if (claim === 'given_name' && defaults.given_name) {
+      } else if (claim === "given_name" && defaults.given_name) {
         claims.given_name = defaults.given_name;
-      } else if (claim === 'family_name' && defaults.family_name) {
+      } else if (claim === "family_name" && defaults.family_name) {
         claims.family_name = defaults.family_name;
-      } else if (claim === 'birth_date' && defaults.birth_date) {
+      } else if (claim === "birth_date" && defaults.birth_date) {
         claims.birth_date = defaults.birth_date;
       }
     }
@@ -302,7 +317,7 @@ export class OpenEudiEngine implements VerifierEngine {
     // 16 bytes = 32 hex chars; keeps QR URL under 270 byte limit
     const array = new Uint8Array(16);
     crypto.getRandomValues(array);
-    return Array.from(array, (b) => b.toString(16).padStart(2, '0')).join('');
+    return Array.from(array, (b) => b.toString(16).padStart(2, "0")).join("");
   }
 
   private delay(ms: number): Promise<void> {

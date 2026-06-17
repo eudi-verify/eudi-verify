@@ -34,7 +34,8 @@
 
 **Threat**: Malicious JavaScript modifies verification flow to inject fake claims.
 
-**Implemented Mitigations**: 
+**Implemented Mitigations**:
+
 - Widget returns opaque, signed verification token
 - Claims are visible in session polling response for UX display only
 - Merchant server MUST call `POST /tokens/verify` for authoritative claims
@@ -54,6 +55,7 @@
 **Threat**: Attacker captures valid token and reuses it.
 
 **Implemented Mitigations**:
+
 - Tokens are single-use (consumed atomically via `IKVStore.getAndDelete`)
 - Short TTL (5 minutes default, configurable)
 - Token bound to session ID
@@ -70,6 +72,7 @@
 **Threat**: Attacker creates fake token without completing verification.
 
 **Implemented Mitigations**:
+
 - HMAC-SHA256 signature with server secret
 - Constant-time signature comparison (`crypto.timingSafeEqual`)
 - Token format: `eudi_v1.<base64url-payload>.<signature>`
@@ -87,6 +90,7 @@
 **Threat**: Attacker pre-creates session and tricks user into verifying it.
 
 **Implemented Mitigations**:
+
 - Sessions bound to cryptographic nonce (via OpenEUDI)
 - State parameter validated on callback
 - Session expires after 5 minutes (configurable)
@@ -103,10 +107,12 @@
 **Threat**: Attacker modifies Verifiable Presentation in transit.
 
 **Implemented Mitigations (Demo)**:
+
 - VP signature verification (simulated in demo mode)
 - Delegated to `@openeudi/openid4vp` library
 
 **Planned Mitigations (Production)**:
+
 - Full cryptographic VP signature verification
 - Selective disclosure hash validation
 - EU trust list verification
@@ -122,9 +128,11 @@
 **Threat**: Attacker intercepts wallet callback.
 
 **Implemented Mitigations**:
+
 - Callback URL pinned to configured `baseUrl`
 
 **Planned Mitigations**:
+
 - HTTPS enforcement in production deployments
 - JWE encryption for wallet callback (production mode)
 
@@ -141,10 +149,12 @@
 **Threat**: Attacker triggers verification on victim's behalf.
 
 **Implemented Mitigations**:
+
 - Origin header validation on `POST /sessions`
 - Configurable allowed origins list
 
 **Planned Mitigations**:
+
 - Referer check as fallback for legacy proxies
 - Optional CSRF token for cookie-authenticated sites
 
@@ -159,6 +169,7 @@
 **Threat**: Attacker floods session creation endpoint.
 
 **Implemented Mitigations**:
+
 - Per-IP rate limiting (10 requests/min default, configurable)
 - Session TTL limits memory growth (5 minutes default)
 - Configurable rate limit thresholds (`maxRequests`, `windowMs`)
@@ -176,12 +187,14 @@
 **Threat**: Token signing secret exposed.
 
 **Implemented Mitigations**:
+
 - Secret from environment variable only
 - Never in client bundle
 - Minimum 32-character requirement enforced
 - Token includes `kid` (key ID) field for future rotation support
 
 **Planned Mitigations**:
+
 - Multi-key rotation support (verify with multiple active secrets)
 - Documented rotation procedure
 
@@ -198,6 +211,7 @@
 **Threat**: Vulnerable dependency compromises server.
 
 **Implemented Mitigations**:
+
 - `pnpm audit` in CI (fails on high/critical)
 - Dependabot security alerts enabled
 - License allowlist enforcement in CI
@@ -211,14 +225,14 @@
 
 ## Security by Mode
 
-| Control | Demo Mode | Production Mode |
-|---------|-----------|-----------------|
-| VP Verification | Simulated | Full cryptographic verification |
-| Trust Lists | None | EU trust list (when available) |
-| HTTPS Required | No (local testing) | Yes (deployment responsibility) |
-| Rate Limiting | Yes | Yes |
-| Token Security | Full | Full |
-| Audit Logging | Console warnings | Structured logging (planned) |
+| Control         | Demo Mode          | Production Mode                 |
+| --------------- | ------------------ | ------------------------------- |
+| VP Verification | Simulated          | Full cryptographic verification |
+| Trust Lists     | None               | EU trust list (when available)  |
+| HTTPS Required  | No (local testing) | Yes (deployment responsibility) |
+| Rate Limiting   | Yes                | Yes                             |
+| Token Security  | Full               | Full                            |
+| Audit Logging   | Console warnings   | Structured logging (planned)    |
 
 ## Future Hardening
 
@@ -233,6 +247,7 @@ The following controls are on the roadmap for production release:
 ## Keeping This Document Updated
 
 When implementing security controls:
+
 1. Update threat status in this document (`IMPLEMENTED`, `PARTIAL`, `PLANNED`)
 2. Link to GitHub issues for planned work
 3. Remove from "Future Hardening" when completed

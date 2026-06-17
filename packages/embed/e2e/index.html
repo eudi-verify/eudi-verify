@@ -10,7 +10,10 @@
       }
 
       body {
-        font-family: system-ui, -apple-system, sans-serif;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
         max-width: 600px;
         margin: 40px auto;
         padding: 20px;
@@ -50,7 +53,7 @@
       }
 
       #events:empty::before {
-        content: 'Events will appear here...';
+        content: "Events will appear here...";
         color: #999;
       }
 
@@ -71,7 +74,9 @@
   </head>
   <body>
     <h1>EUDI Verify Widget</h1>
-    <p>E2E test page for the <code>&lt;eudi-verify&gt;</code> custom element.</p>
+    <p>
+      E2E test page for the <code>&lt;eudi-verify&gt;</code> custom element.
+    </p>
 
     <eudi-verify
       id="widget"
@@ -82,41 +87,41 @@
     <div id="events"></div>
 
     <script type="module">
-      import '../src/index.ts';
+      import "../src/index.ts";
 
-      const widget = document.getElementById('widget');
-      const eventsDiv = document.getElementById('events');
+      const widget = document.getElementById("widget");
+      const eventsDiv = document.getElementById("events");
 
       function logEvent(name, detail) {
-        const line = document.createElement('div');
-        line.className = 'event-line';
+        const line = document.createElement("div");
+        line.className = "event-line";
         line.innerHTML = `<span class="event-name">${name}</span>: ${JSON.stringify(detail)}`;
         eventsDiv.prepend(line);
       }
 
-      widget.addEventListener('state-change', (e) => {
-        logEvent('state-change', { status: e.detail.state.status });
+      widget.addEventListener("state-change", (e) => {
+        logEvent("state-change", { status: e.detail.state.status });
       });
 
-      widget.addEventListener('verified', (e) => {
-        logEvent('verified', e.detail);
+      widget.addEventListener("verified", (e) => {
+        logEvent("verified", e.detail);
       });
 
-      widget.addEventListener('rejected', (e) => {
-        logEvent('rejected', e.detail);
+      widget.addEventListener("rejected", (e) => {
+        logEvent("rejected", e.detail);
       });
 
-      widget.addEventListener('expired', (e) => {
-        logEvent('expired', e.detail);
+      widget.addEventListener("expired", (e) => {
+        logEvent("expired", e.detail);
       });
 
-      widget.addEventListener('error', (e) => {
-        logEvent('error', e.detail);
+      widget.addEventListener("error", (e) => {
+        logEvent("error", e.detail);
       });
 
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('auto-start') === 'true') {
-        widget.setAttribute('auto-start', '');
+      if (urlParams.get("auto-start") === "true") {
+        widget.setAttribute("auto-start", "");
       }
     </script>
   </body>

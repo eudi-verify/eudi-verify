@@ -1,21 +1,21 @@
-const widget = document.querySelector('eudi-verify');
-const form = document.getElementById('checkout-form');
-const tokenInput = document.getElementById('eudi-token');
-const sessionInput = document.getElementById('eudi-session-id');
-const errorAlert = document.getElementById('error-alert');
-const verificationLog = document.getElementById('verification-log');
-const demoWalletPanel = document.getElementById('demo-wallet-panel');
-const demoWalletLink = document.getElementById('demo-wallet-link');
-const curlHint = document.getElementById('curl-hint');
-const curlCommand = document.getElementById('curl-command');
+const widget = document.querySelector("eudi-verify");
+const form = document.getElementById("checkout-form");
+const tokenInput = document.getElementById("eudi-token");
+const sessionInput = document.getElementById("eudi-session-id");
+const errorAlert = document.getElementById("error-alert");
+const verificationLog = document.getElementById("verification-log");
+const demoWalletPanel = document.getElementById("demo-wallet-panel");
+const demoWalletLink = document.getElementById("demo-wallet-link");
+const curlHint = document.getElementById("curl-hint");
+const curlCommand = document.getElementById("curl-command");
 
 let currentSessionId = null;
 let lastLoggedStatus = null;
 let hasActiveSession = false;
 
 function log(message, html) {
-  const li = document.createElement('li');
-  const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
+  const li = document.createElement("li");
+  const time = new Date().toLocaleTimeString("en-GB", { hour12: false });
   if (html) {
     li.innerHTML = `${time}  ${message}`;
   } else {
@@ -46,7 +46,7 @@ function updateDemoWalletLink(sessionId) {
 function resetSessionUi() {
   hasActiveSession = false;
   currentSessionId = null;
-  sessionInput.value = '';
+  sessionInput.value = "";
   demoWalletPanel.hidden = true;
   curlHint.hidden = true;
 }
@@ -58,38 +58,38 @@ function showSessionTools() {
 }
 
 const params = new URLSearchParams(window.location.search);
-if (params.get('error')) {
+if (params.get("error")) {
   errorAlert.hidden = false;
   errorAlert.textContent =
-    params.get('error') === 'invalid_token'
-      ? 'Token validation failed. Please try again.'
-      : params.get('error') === 'missing_token'
-        ? 'Missing verification token. Please try again.'
-        : 'Verification failed. Please try again.';
+    params.get("error") === "invalid_token"
+      ? "Token validation failed. Please try again."
+      : params.get("error") === "missing_token"
+        ? "Missing verification token. Please try again."
+        : "Verification failed. Please try again.";
 }
 
-widget.addEventListener('state-change', (e) => {
+widget.addEventListener("state-change", (e) => {
   const state = e.detail.state;
   const status = state.status;
 
-  if (status === lastLoggedStatus && status !== 'showQR') return;
+  if (status === lastLoggedStatus && status !== "showQR") return;
 
   switch (status) {
-    case 'loading':
-      log('Starting verification…');
+    case "loading":
+      log("Starting verification…");
       resetSessionUi();
       lastLoggedStatus = status;
       break;
 
-    case 'showQR':
-      if ('sessionId' in state) {
+    case "showQR":
+      if ("sessionId" in state) {
         currentSessionId = state.sessionId;
         sessionInput.value = state.sessionId;
         const inspectUrl = `/api/eudi/sessions/${encodeURIComponent(state.sessionId)}`;
         log(
           `POST /sessions → session <code>${state.sessionId}</code> — ` +
             `<a href="${inspectUrl}" target="_blank" rel="noopener">inspect</a>`,
-          true
+          true,
         );
         updateDemoWalletLink(state.sessionId);
         updateCurlHint(state.sessionId);
@@ -100,8 +100,8 @@ widget.addEventListener('state-change', (e) => {
       lastLoggedStatus = status;
       break;
 
-    case 'waitingForWallet':
-      if ('sessionId' in state) {
+    case "waitingForWallet":
+      if ("sessionId" in state) {
         currentSessionId = state.sessionId;
         sessionInput.value = state.sessionId;
         updateDemoWalletLink(state.sessionId);
@@ -109,41 +109,47 @@ widget.addEventListener('state-change', (e) => {
         hasActiveSession = true;
         showSessionTools();
       }
-      log('Status: waiting_for_wallet');
+      log("Status: waiting_for_wallet");
       lastLoggedStatus = status;
       break;
 
-    case 'verified':
-      if ('token' in state) {
-        log(`GET /sessions/${currentSessionId ?? '?'} → verified (token ${truncateToken(state.token)})`);
+    case "verified":
+      if ("token" in state) {
+        log(
+          `GET /sessions/${currentSessionId ?? "?"} → verified (token ${truncateToken(state.token)})`,
+        );
       }
       lastLoggedStatus = status;
       resetSessionUi();
       break;
 
-    case 'rejected':
-      log(`Verification rejected${state.error ? `: ${state.error}` : ''}`);
+    case "rejected":
+      log(`Verification rejected${state.error ? `: ${state.error}` : ""}`);
       resetSessionUi();
       lastLoggedStatus = status;
       break;
 
-    case 'expired':
-      log('Session expired');
+    case "expired":
+      log("Session expired");
       resetSessionUi();
       lastLoggedStatus = status;
       break;
 
-    case 'error':
-      log(`Error: ${state.error ?? 'Unknown error'}`);
+    case "error":
+      log(`Error: ${state.error ?? "Unknown error"}`);
       resetSessionUi();
       lastLoggedStatus = status;
       break;
 
-    case 'idle':
-      if (lastLoggedStatus === 'loading' || lastLoggedStatus === 'showQR' || lastLoggedStatus === 'waitingForWallet') {
-        log('Returned to idle');
+    case "idle":
+      if (
+        lastLoggedStatus === "loading" ||
+        lastLoggedStatus === "showQR" ||
+        lastLoggedStatus === "waitingForWallet"
+      ) {
+        log("Returned to idle");
       }
-      if (lastLoggedStatus !== 'verified') {
+      if (lastLoggedStatus !== "verified") {
         resetSessionUi();
       }
       lastLoggedStatus = status;
@@ -151,8 +157,8 @@ widget.addEventListener('state-change', (e) => {
   }
 });
 
-widget.addEventListener('verified', (e) => {
-  log('Submitting token to POST /api/checkout');
+widget.addEventListener("verified", (e) => {
+  log("Submitting token to POST /api/checkout");
   tokenInput.value = e.detail.token;
   if (currentSessionId) {
     sessionInput.value = currentSessionId;
@@ -160,20 +166,20 @@ widget.addEventListener('verified', (e) => {
   form.submit();
 });
 
-widget.addEventListener('rejected', () => {
+widget.addEventListener("rejected", () => {
   errorAlert.hidden = false;
-  errorAlert.textContent = 'Verification was rejected. Please try again.';
+  errorAlert.textContent = "Verification was rejected. Please try again.";
   resetSessionUi();
 });
 
-widget.addEventListener('expired', () => {
+widget.addEventListener("expired", () => {
   errorAlert.hidden = false;
-  errorAlert.textContent = 'Session expired. Please try again.';
+  errorAlert.textContent = "Session expired. Please try again.";
   resetSessionUi();
 });
 
-widget.addEventListener('error', (e) => {
+widget.addEventListener("error", (e) => {
   errorAlert.hidden = false;
-  errorAlert.textContent = `Error: ${e.detail?.message || e.detail?.error || 'Unknown error'}`;
+  errorAlert.textContent = `Error: ${e.detail?.message || e.detail?.error || "Unknown error"}`;
   resetSessionUi();
 });

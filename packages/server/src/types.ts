@@ -42,23 +42,23 @@ export interface VerificationRequest {
  *       ↳ cancelled (from any non-terminal state)
  */
 export type SessionStatus =
-  | 'pending' // Session created, waiting for wallet scan
-  | 'waiting_for_wallet' // QR scanned, waiting for user approval
-  | 'verified' // User approved, claims verified successfully
-  | 'rejected' // User rejected the request in wallet
-  | 'expired' // Session TTL exceeded
-  | 'cancelled' // Cancelled via API
-  | 'error'; // Verification failed
+  | "pending" // Session created, waiting for wallet scan
+  | "waiting_for_wallet" // QR scanned, waiting for user approval
+  | "verified" // User approved, claims verified successfully
+  | "rejected" // User rejected the request in wallet
+  | "expired" // Session TTL exceeded
+  | "cancelled" // Cancelled via API
+  | "error"; // Verification failed
 
 /**
  * Terminal states that cannot transition further.
  */
 export const TERMINAL_STATUSES: readonly SessionStatus[] = [
-  'verified',
-  'rejected',
-  'expired',
-  'cancelled',
-  'error',
+  "verified",
+  "rejected",
+  "expired",
+  "cancelled",
+  "error",
 ] as const;
 
 /**
@@ -166,7 +166,7 @@ export interface VerificationTokenPayload {
 /**
  * Token version prefix for format identification and future compatibility.
  */
-export const TOKEN_VERSION = 'eudi_v1' as const;
+export const TOKEN_VERSION = "eudi_v1" as const;
 
 /**
  * Default session TTL in milliseconds (5 minutes).
@@ -199,7 +199,11 @@ export interface VerifyTokenInput {
 export interface VerifyTokenResult {
   valid: boolean;
   claims?: VerifiedClaims;
-  error?: 'invalid_token' | 'expired' | 'already_consumed' | 'invalid_signature';
+  error?:
+    | "invalid_token"
+    | "expired"
+    | "already_consumed"
+    | "invalid_signature";
 }
 
 /**
@@ -214,4 +218,4 @@ export interface ApiError {
 /**
  * Operation mode for the verifier.
  */
-export type VerifierMode = 'demo' | 'production';
+export type VerifierMode = "demo" | "production";

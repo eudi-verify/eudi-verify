@@ -10,15 +10,15 @@
  * Format: eudi_v1.<base64url-payload>.<hmac>
  */
 
-import { createHmac, timingSafeEqual, randomUUID } from 'node:crypto';
-import type { IKVStore } from './store.js';
-import { tokenKey } from './store.js';
+import { createHmac, timingSafeEqual, randomUUID } from "node:crypto";
+import type { IKVStore } from "./store.js";
+import { tokenKey } from "./store.js";
 import type {
   VerifiedClaims,
   VerifyTokenResult,
   VerificationTokenPayload,
-} from './types.js';
-import { TOKEN_VERSION, DEFAULT_TOKEN_TTL_MS } from './types.js';
+} from "./types.js";
+import { TOKEN_VERSION, DEFAULT_TOKEN_TTL_MS } from "./types.js";
 
 /**
  * Configuration for the token service.
@@ -67,10 +67,10 @@ export interface TokenService {
  * Create a token service instance.
  */
 export function createTokenService(config: TokenServiceConfig): TokenService {
-  const { secret, store, keyId = 'k1', ttlMs = DEFAULT_TOKEN_TTL_MS } = config;
+  const { secret, store, keyId = "k1", ttlMs = DEFAULT_TOKEN_TTL_MS } = config;
 
   if (secret.length < 32) {
-    throw new Error('Token secret must be at least 32 characters');
+    throw new Error("Token secret must be at least 32 characters");
   }
 
   return {
@@ -107,49 +107,49 @@ export function createTokenService(config: TokenServiceConfig): TokenService {
     async verify(token: string): Promise<VerifyTokenResult> {
       const parsed = parseToken(token);
       if (!parsed) {
-        return { valid: false, error: 'invalid_token' };
+        return { valid: false, error: "invalid_token" };
       }
 
       const { version, payloadB64, signature, payload } = parsed;
 
       if (version !== TOKEN_VERSION) {
-        return { valid: false, error: 'invalid_token' };
+        return { valid: false, error: "invalid_token" };
       }
 
       if (!payload.tid || !payload.sid || !payload.exp || !payload.hash) {
-        return { valid: false, error: 'invalid_token' };
+        return { valid: false, error: "invalid_token" };
       }
 
       const expectedSignature = createSignature(payloadB64, secret);
       if (!constantTimeCompare(signature, expectedSignature)) {
-        return { valid: false, error: 'invalid_signature' };
+        return { valid: false, error: "invalid_signature" };
       }
 
       const nowSec = Math.floor(Date.now() / 1000);
       if (payload.exp <= nowSec) {
         await store.delete(tokenKey(payload.tid));
-        return { valid: false, error: 'expired' };
+        return { valid: false, error: "expired" };
       }
 
       const storedData = await store.getAndDelete<StoredTokenData>(
-        tokenKey(payload.tid)
+        tokenKey(payload.tid),
       );
 
       if (!storedData) {
         const currentSec = Math.floor(Date.now() / 1000);
         if (payload.exp <= currentSec) {
-          return { valid: false, error: 'expired' };
+          return { valid: false, error: "expired" };
         }
-        return { valid: false, error: 'already_consumed' };
+        return { valid: false, error: "already_consumed" };
       }
 
       if (storedData.sessionId !== payload.sid) {
-        return { valid: false, error: 'invalid_token' };
+        return { valid: false, error: "invalid_token" };
       }
 
       const expectedHash = hashClaims(storedData.claims, secret);
       if (payload.hash !== expectedHash) {
-        return { valid: false, error: 'invalid_token' };
+        return { valid: false, error: "invalid_token" };
       }
 
       return { valid: true, claims: storedData.claims };
@@ -160,15 +160,13 @@ export function createTokenService(config: TokenServiceConfig): TokenService {
 /**
  * Parse a token string into its components.
  */
-function parseToken(
-  token: string
-): {
+function parseToken(token: string): {
   version: string;
   payloadB64: string;
   signature: string;
   payload: VerificationTokenPayload & { tid?: string };
 } | null {
-  const parts = token.split('.');
+  const parts = token.split(".");
   if (parts.length !== 3) {
     return null;
   }
@@ -188,7 +186,7 @@ function parseToken(
  * Create HMAC-SHA256 signature of the payload.
  */
 function createSignature(data: string, secret: string): string {
-  return createHmac('sha256', secret).update(data).digest('base64url');
+  return createHmac("sha256", secret).update(data).digest("base64url");
 }
 
 /**
@@ -211,9 +209,9 @@ function constantTimeCompare(a: string, b: string): boolean {
  */
 function hashClaims(claims: VerifiedClaims, secret: string): string {
   const sorted = JSON.stringify(claims, Object.keys(claims).sort());
-  return createHmac('sha256', secret)
+  return createHmac("sha256", secret)
     .update(sorted)
-    .digest('base64url')
+    .digest("base64url")
     .slice(0, 16);
 }
 
@@ -221,12 +219,12 @@ function hashClaims(claims: VerifiedClaims, secret: string): string {
  * Base64URL encode a string.
  */
 function base64UrlEncode(str: string): string {
-  return Buffer.from(str).toString('base64url');
+  return Buffer.from(str).toString("base64url");
 }
 
 /**
  * Base64URL decode to string.
  */
 function base64UrlDecode(str: string): string {
-  return Buffer.from(str, 'base64url').toString('utf-8');
+  return Buffer.from(str, "base64url").toString("utf-8");
 }

@@ -82,6 +82,7 @@ git config --global tag.gpgSign true
 ```
 
 Upload the public key to GitHub → **Settings** → **SSH and GPG keys** → **New GPG key**.
+
 </details>
 
 ### Create a signed tag

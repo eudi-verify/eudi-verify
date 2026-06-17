@@ -5,8 +5,8 @@
  * Uses sliding window counter stored in IKVStore.
  */
 
-import type { IKVStore } from './store.js';
-import { rateLimitKey } from './store.js';
+import type { IKVStore } from "./store.js";
+import { rateLimitKey } from "./store.js";
 
 /**
  * Rate limit configuration.
@@ -148,7 +148,9 @@ export function createRateLimiter(config: RateLimitConfig): RateLimiter {
 
       const result: RateLimitResult = {
         allowed,
-        remaining: allowed ? remaining : Math.max(0, maxRequests - window.count),
+        remaining: allowed
+          ? remaining
+          : Math.max(0, maxRequests - window.count),
         limit: maxRequests,
       };
 

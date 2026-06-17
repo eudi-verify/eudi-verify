@@ -4,24 +4,24 @@
  * Manages the verification flow with state transitions and polling.
  */
 
-import type { VerificationRequest, VerifiedClaims, Session } from './types.js';
-import { isTerminalStatus } from './types.js';
-import { createApiClient, type EudiApiClient } from './api.js';
-import { createPoller, type PollingConfig } from './polling.js';
-import { generateQRDataUrl, type QRCodeOptions } from './qr.js';
+import type { VerificationRequest, VerifiedClaims, Session } from "./types.js";
+import { isTerminalStatus } from "./types.js";
+import { createApiClient, type EudiApiClient } from "./api.js";
+import { createPoller, type PollingConfig } from "./polling.js";
+import { generateQRDataUrl, type QRCodeOptions } from "./qr.js";
 
 /**
  * All possible verification states.
  */
 export type VerificationState =
-  | { status: 'idle' }
-  | { status: 'loading' }
-  | { status: 'showQR'; qrDataUrl: string; qrUrl: string; sessionId: string }
-  | { status: 'waitingForWallet'; sessionId: string }
-  | { status: 'verified'; token: string; claims: VerifiedClaims }
-  | { status: 'rejected'; error?: string }
-  | { status: 'expired' }
-  | { status: 'error'; error: string };
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "showQR"; qrDataUrl: string; qrUrl: string; sessionId: string }
+  | { status: "waitingForWallet"; sessionId: string }
+  | { status: "verified"; token: string; claims: VerifiedClaims }
+  | { status: "rejected"; error?: string }
+  | { status: "expired" }
+  | { status: "error"; error: string };
 
 /**
  * State change callback.
@@ -78,10 +78,13 @@ export interface Verification {
 export function createVerification(config: VerificationConfig): Verification {
   const { apiUrl, polling, qr, fetch: fetchFn } = config;
 
-  const client: EudiApiClient = createApiClient({ baseUrl: apiUrl, fetch: fetchFn });
+  const client: EudiApiClient = createApiClient({
+    baseUrl: apiUrl,
+    fetch: fetchFn,
+  });
   const subscribers = new Set<StateCallback>();
 
-  let currentState: VerificationState = { status: 'idle' };
+  let currentState: VerificationState = { status: "idle" };
   let currentSessionId: string | null = null;
   let poller: ReturnType<typeof createPoller> | null = null;
 
@@ -98,41 +101,44 @@ export function createVerification(config: VerificationConfig): Verification {
 
   function mapSessionToState(session: Session): VerificationState {
     switch (session.status) {
-      case 'pending':
+      case "pending":
         if (session.qrUrl) {
           return {
-            status: 'showQR',
+            status: "showQR",
             qrDataUrl: generateQRDataUrl(session.qrUrl, qr),
             qrUrl: session.qrUrl,
             sessionId: session.id,
           };
         }
-        return { status: 'loading' };
+        return { status: "loading" };
 
-      case 'waiting_for_wallet':
-        return { status: 'waitingForWallet', sessionId: session.id };
+      case "waiting_for_wallet":
+        return { status: "waitingForWallet", sessionId: session.id };
 
-      case 'verified':
+      case "verified":
         return {
-          status: 'verified',
+          status: "verified",
           token: session.token!,
           claims: session.claims!,
         };
 
-      case 'rejected':
-        return { status: 'rejected', error: session.error };
+      case "rejected":
+        return { status: "rejected", error: session.error };
 
-      case 'expired':
-        return { status: 'expired' };
+      case "expired":
+        return { status: "expired" };
 
-      case 'cancelled':
-        return { status: 'idle' };
+      case "cancelled":
+        return { status: "idle" };
 
-      case 'error':
-        return { status: 'error', error: session.error ?? 'Verification failed' };
+      case "error":
+        return {
+          status: "error",
+          error: session.error ?? "Verification failed",
+        };
 
       default:
-        return { status: 'error', error: 'Unknown session status' };
+        return { status: "error", error: "Unknown session status" };
     }
   }
 
@@ -143,9 +149,12 @@ export function createVerification(config: VerificationConfig): Verification {
       const session = await client.getSession(currentSessionId);
       const newState = mapSessionToState(session);
 
-      if (newState.status !== currentState.status ||
-          (newState.status === 'showQR' && currentState.status === 'showQR' &&
-           newState.sessionId !== currentState.sessionId)) {
+      if (
+        newState.status !== currentState.status ||
+        (newState.status === "showQR" &&
+          currentState.status === "showQR" &&
+          newState.sessionId !== currentState.sessionId)
+      ) {
         setState(newState);
       }
 
@@ -155,8 +164,9 @@ export function createVerification(config: VerificationConfig): Verification {
 
       return false;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      setState({ status: 'error', error: errorMessage });
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      setState({ status: "error", error: errorMessage });
       return true;
     }
   }
@@ -182,7 +192,7 @@ export function createVerification(config: VerificationConfig): Verification {
     async start(request: VerificationRequest): Promise<void> {
       stopPolling();
       currentSessionId = null;
-      setState({ status: 'loading' });
+      setState({ status: "loading" });
 
       try {
         const session = await client.createSession(request);
@@ -195,8 +205,9 @@ export function createVerification(config: VerificationConfig): Verification {
           startPolling();
         }
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        setState({ status: 'error', error: errorMessage });
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error";
+        setState({ status: "error", error: errorMessage });
       }
     },
 
@@ -208,10 +219,11 @@ export function createVerification(config: VerificationConfig): Verification {
       try {
         await client.cancelSession(currentSessionId);
         currentSessionId = null;
-        setState({ status: 'idle' });
+        setState({ status: "idle" });
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Failed to cancel';
-        setState({ status: 'error', error: errorMessage });
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to cancel";
+        setState({ status: "error", error: errorMessage });
       }
     },
 

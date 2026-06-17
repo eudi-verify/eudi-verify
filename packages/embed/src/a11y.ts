@@ -8,17 +8,19 @@
  * Selectors for focusable elements within the widget.
  */
 const FOCUSABLE_SELECTORS = [
-  'button:not([disabled])',
+  "button:not([disabled])",
   '[tabindex]:not([tabindex="-1"])',
-  'a[href]',
-  'input:not([disabled])',
-].join(', ');
+  "a[href]",
+  "input:not([disabled])",
+].join(", ");
 
 /**
  * Get all focusable elements within a container.
  */
 export function getFocusableElements(container: HTMLElement): HTMLElement[] {
-  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS));
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS),
+  );
 }
 
 /**
@@ -29,7 +31,7 @@ export function createFocusTrap(container: HTMLElement): () => void {
   let previouslyFocused: HTMLElement | null = null;
 
   function handleKeyDown(event: KeyboardEvent): void {
-    if (event.key !== 'Tab') return;
+    if (event.key !== "Tab") return;
 
     const focusable = getFocusableElements(container);
     if (focusable.length === 0) return;
@@ -48,7 +50,7 @@ export function createFocusTrap(container: HTMLElement): () => void {
 
   function activate(): void {
     previouslyFocused = document.activeElement as HTMLElement | null;
-    container.addEventListener('keydown', handleKeyDown);
+    container.addEventListener("keydown", handleKeyDown);
 
     const focusable = getFocusableElements(container);
     if (focusable.length > 0) {
@@ -57,8 +59,8 @@ export function createFocusTrap(container: HTMLElement): () => void {
   }
 
   function deactivate(): void {
-    container.removeEventListener('keydown', handleKeyDown);
-    if (previouslyFocused && typeof previouslyFocused.focus === 'function') {
+    container.removeEventListener("keydown", handleKeyDown);
+    if (previouslyFocused && typeof previouslyFocused.focus === "function") {
       previouslyFocused.focus();
     }
   }
@@ -73,10 +75,10 @@ export function createFocusTrap(container: HTMLElement): () => void {
 export function announce(
   liveRegion: HTMLElement,
   message: string,
-  priority: 'polite' | 'assertive' = 'polite'
+  priority: "polite" | "assertive" = "polite",
 ): void {
-  liveRegion.setAttribute('aria-live', priority);
-  liveRegion.textContent = '';
+  liveRegion.setAttribute("aria-live", priority);
+  liveRegion.textContent = "";
   requestAnimationFrame(() => {
     liveRegion.textContent = message;
   });
@@ -86,21 +88,21 @@ export function announce(
  * Clear the announcement from a live region.
  */
 export function clearAnnouncement(liveRegion: HTMLElement): void {
-  liveRegion.textContent = '';
+  liveRegion.textContent = "";
 }
 
 /**
  * Messages for each verification state (for screen reader announcements).
  */
 export const STATE_MESSAGES = {
-  idle: '',
-  loading: 'Loading verification session...',
-  showQR: 'QR code ready. Scan with your EU Digital Identity Wallet.',
-  waitingForWallet: 'Waiting for wallet approval...',
-  verified: 'Identity verified successfully.',
-  rejected: 'Verification was declined.',
-  expired: 'Verification session expired.',
-  error: 'Verification error occurred.',
+  idle: "",
+  loading: "Loading verification session...",
+  showQR: "QR code ready. Scan with your EU Digital Identity Wallet.",
+  waitingForWallet: "Waiting for wallet approval...",
+  verified: "Identity verified successfully.",
+  rejected: "Verification was declined.",
+  expired: "Verification session expired.",
+  error: "Verification error occurred.",
 } as const;
 
 /**
@@ -108,16 +110,16 @@ export const STATE_MESSAGES = {
  * Terminal states use assertive, others use polite.
  */
 export function getAnnouncementPriority(
-  status: keyof typeof STATE_MESSAGES
-): 'polite' | 'assertive' {
+  status: keyof typeof STATE_MESSAGES,
+): "polite" | "assertive" {
   switch (status) {
-    case 'verified':
-    case 'rejected':
-    case 'expired':
-    case 'error':
-      return 'assertive';
+    case "verified":
+    case "rejected":
+    case "expired":
+    case "error":
+      return "assertive";
     default:
-      return 'polite';
+      return "polite";
   }
 }
 
@@ -126,7 +128,7 @@ export function getAnnouncementPriority(
  */
 export function prefersReducedMotion(): boolean {
   return (
-    typeof window !== 'undefined' &&
-    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
   );
 }

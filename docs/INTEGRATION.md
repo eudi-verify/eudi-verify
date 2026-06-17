@@ -45,27 +45,27 @@ import {
   createVerifierHandlers,
   OpenEudiEngine,
   MemoryKVStore,
-} from '@eudi-verify/server';
-import express from 'express';
+} from "@eudi-verify/server";
+import express from "express";
 
 const app = express();
 app.use(express.json());
 
 // Initialize
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3000/api/eudi';
+const BASE_URL = process.env.BASE_URL || "http://localhost:3000/api/eudi";
 
 const handlers = createVerifierHandlers({
-  engine: new OpenEudiEngine({ mode: 'demo', baseUrl: BASE_URL }),
+  engine: new OpenEudiEngine({ mode: "demo", baseUrl: BASE_URL }),
   store: new MemoryKVStore(),
   baseUrl: BASE_URL,
-  mode: 'demo',
+  mode: "demo",
   tokenSecret: process.env.TOKEN_SECRET!, // 32+ chars, keep secret
 });
 
 // Helper to build request context
 function buildContext(req, params = {}, body = undefined) {
   return {
-    ip: req.ip ?? '127.0.0.1',
+    ip: req.ip ?? "127.0.0.1",
     origin: req.headers.origin,
     params,
     body,
@@ -73,35 +73,41 @@ function buildContext(req, params = {}, body = undefined) {
 }
 
 // Mount routes
-app.post('/api/eudi/sessions', async (req, res) => {
+app.post("/api/eudi/sessions", async (req, res) => {
   const result = await handlers.createSession(buildContext(req, {}, req.body));
   res.status(result.status).set(result.headers).json(result.body);
 });
 
-app.get('/api/eudi/sessions/:id', async (req, res) => {
-  const result = await handlers.getSession(buildContext(req, { sessionId: req.params.id }));
+app.get("/api/eudi/sessions/:id", async (req, res) => {
+  const result = await handlers.getSession(
+    buildContext(req, { sessionId: req.params.id }),
+  );
   res.status(result.status).set(result.headers).json(result.body);
 });
 
-app.post('/api/eudi/sessions/:id/cancel', async (req, res) => {
-  const result = await handlers.cancelSession(buildContext(req, { sessionId: req.params.id }));
+app.post("/api/eudi/sessions/:id/cancel", async (req, res) => {
+  const result = await handlers.cancelSession(
+    buildContext(req, { sessionId: req.params.id }),
+  );
   res.status(result.status).set(result.headers).json(result.body);
 });
 
-app.post('/api/eudi/tokens/verify', async (req, res) => {
+app.post("/api/eudi/tokens/verify", async (req, res) => {
   const result = await handlers.verifyToken(buildContext(req, {}, req.body));
   res.status(result.status).json(result.body);
 });
 
 // Callback endpoint (required for wallet integration)
-app.post('/api/eudi/callback', async (req, res) => {
+app.post("/api/eudi/callback", async (req, res) => {
   const result = await handlers.handleCallback(buildContext(req));
   res.status(result.status).json(result.body);
 });
 
 // Authorization request endpoint (optional, for PAR flow)
-app.get('/api/eudi/request/:id', async (req, res) => {
-  const result = await handlers.getRequest(buildContext(req, { requestId: req.params.id }));
+app.get("/api/eudi/request/:id", async (req, res) => {
+  const result = await handlers.getRequest(
+    buildContext(req, { requestId: req.params.id }),
+  );
   res.status(result.status).json(result.body);
 });
 
@@ -119,60 +125,60 @@ pnpm add @eudi-verify/embed
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-  <script type="module">
-    import '@eudi-verify/embed';
-  </script>
-</head>
-<body>
-  <h1>Age Verification Required</h1>
-  
-  <eudi-verify 
-    api-url="/api/eudi" 
-    request='{"age_over_18": true}'
-  ></eudi-verify>
+  <head>
+    <script type="module">
+      import "@eudi-verify/embed";
+    </script>
+  </head>
+  <body>
+    <h1>Age Verification Required</h1>
 
-  <script>
-    document.querySelector('eudi-verify')
-      .addEventListener('verified', async (e) => {
-        // Token received — send to your backend
-        const response = await fetch('/checkout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ eudiToken: e.detail.token }),
+    <eudi-verify
+      api-url="/api/eudi"
+      request='{"age_over_18": true}'
+    ></eudi-verify>
+
+    <script>
+      document
+        .querySelector("eudi-verify")
+        .addEventListener("verified", async (e) => {
+          // Token received — send to your backend
+          const response = await fetch("/checkout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ eudiToken: e.detail.token }),
+          });
+
+          if (response.ok) {
+            window.location.href = "/success";
+          }
         });
-        
-        if (response.ok) {
-          window.location.href = '/success';
-        }
+
+      document.querySelector("eudi-verify").addEventListener("rejected", () => {
+        alert("Verification was declined");
       });
-      
-    document.querySelector('eudi-verify')
-      .addEventListener('rejected', () => {
-        alert('Verification was declined');
-      });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
 ```
 
 ### Widget Attributes
 
-| Attribute | Description |
-|-----------|-------------|
-| `api-url` | Base URL of your verifier API |
-| `request` | JSON string of requested claims |
+| Attribute    | Description                                              |
+| ------------ | -------------------------------------------------------- |
+| `api-url`    | Base URL of your verifier API                            |
+| `request`    | JSON string of requested claims                          |
 | `auto-start` | (Optional) Start verification automatically on page load |
 
 ### Widget Events
 
-| Event | Detail | Description |
-|-------|--------|-------------|
-| `verified` | `{ token, claims }` | User approved, token ready |
-| `rejected` | `{ error? }` | User declined in wallet |
-| `expired` | `{}` | Session timed out |
-| `error` | `{ error }` | Something went wrong |
-| `state-change` | `{ state }` | Any state change (for custom handling) |
+| Event          | Detail              | Description                            |
+| -------------- | ------------------- | -------------------------------------- |
+| `verified`     | `{ token, claims }` | User approved, token ready             |
+| `rejected`     | `{ error? }`        | User declined in wallet                |
+| `expired`      | `{}`                | Session timed out                      |
+| `error`        | `{ error }`         | Something went wrong                   |
+| `state-change` | `{ state }`         | Any state change (for custom handling) |
 
 ### Theming
 
@@ -198,23 +204,23 @@ pnpm add @eudi-verify/client
 ```
 
 ```ts
-import { createVerification } from '@eudi-verify/client';
+import { createVerification } from "@eudi-verify/client";
 
 const verification = createVerification({
-  apiUrl: '/api/eudi',
+  apiUrl: "/api/eudi",
 });
 
 verification.subscribe((state) => {
   // Update your UI based on state
   switch (state.status) {
-    case 'showQR':
+    case "showQR":
       qrImage.src = state.qrDataUrl;
-      qrContainer.style.display = 'block';
+      qrContainer.style.display = "block";
       break;
-    case 'waitingForWallet':
-      statusText.textContent = 'Approve in your wallet...';
+    case "waitingForWallet":
+      statusText.textContent = "Approve in your wallet...";
       break;
-    case 'verified':
+    case "verified":
       submitToken(state.token);
       break;
     // Handle other states...
@@ -233,17 +239,17 @@ Errors are handled differently at each layer. There is no global error hook — 
 
 ### Three channels on the server
 
-| Channel | When | How to detect |
-|---------|------|---------------|
-| **HTTP error** | Bad input, rate limit, origin denied, engine crash on create | `result.status >= 400` and `result.body.error` |
-| **Session outcome** | User declined, VP invalid, session timed out | `result.body.status` on `getSession` — values include `rejected`, `expired`, `error` |
-| **Token soft failure** | Token invalid, expired, or already used at checkout | `verifyToken` returns HTTP 200 with `{ valid: false, error: '...' }` |
+| Channel                | When                                                         | How to detect                                                                        |
+| ---------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| **HTTP error**         | Bad input, rate limit, origin denied, engine crash on create | `result.status >= 400` and `result.body.error`                                       |
+| **Session outcome**    | User declined, VP invalid, session timed out                 | `result.body.status` on `getSession` — values include `rejected`, `expired`, `error` |
+| **Token soft failure** | Token invalid, expired, or already used at checkout          | `verifyToken` returns HTTP 200 with `{ valid: false, error: '...' }`                 |
 
 Handlers **return** `HandlerResponse` objects; they do not throw. Your route adapter is the error boundary:
 
 ```ts
 async function sendHandlerResult(res, result) {
-  if (result.status >= 400 && 'error' in result.body) {
+  if (result.status >= 400 && "error" in result.body) {
     // HTTP-level failure — log/report here (429, 500, etc.)
     reportError({ httpStatus: result.status, code: result.body.error });
   }
@@ -255,20 +261,20 @@ async function sendHandlerResult(res, result) {
 
 `POST /callback` is called by the **EUDI Wallet**, not your page. HTTP status on that endpoint means “payload received,” not “user verified”:
 
-| Callback result | HTTP to wallet | Where the outcome lives |
-|-----------------|----------------|-------------------------|
-| Malformed body, unknown session | **400** + `ApiError` | Wallet may show delivery failure |
+| Callback result                                   | HTTP to wallet             | Where the outcome lives                   |
+| ------------------------------------------------- | -------------------------- | ----------------------------------------- |
+| Malformed body, unknown session                   | **400** + `ApiError`       | Wallet may show delivery failure          |
 | VP processed (success, declined, or crypto error) | **200** `{ status: 'ok' }` | Session record — poll `GET /sessions/:id` |
 
 Your widget or client learns verification outcomes by **polling session status**, not from the callback response.
 
 ### Frontend boundaries
 
-| Integration | Boundary | User declined | System/network failure |
-|-------------|----------|---------------|------------------------|
-| **Widget** (`@eudi-verify/embed`) | DOM events | `rejected` | `error` |
-| **Custom UI** (`@eudi-verify/client`) | `verification.subscribe()` | `state.status === 'rejected'` | `state.status === 'error'` |
-| **Direct API** (`createApiClient`) | `try/catch` | Session `status: 'rejected'` from `getSession` | Typed throws: `NetworkError`, `ApiResponseError`, etc. |
+| Integration                           | Boundary                   | User declined                                  | System/network failure                                 |
+| ------------------------------------- | -------------------------- | ---------------------------------------------- | ------------------------------------------------------ |
+| **Widget** (`@eudi-verify/embed`)     | DOM events                 | `rejected`                                     | `error`                                                |
+| **Custom UI** (`@eudi-verify/client`) | `verification.subscribe()` | `state.status === 'rejected'`                  | `state.status === 'error'`                             |
+| **Direct API** (`createApiClient`)    | `try/catch`                | Session `status: 'rejected'` from `getSession` | Typed throws: `NetworkError`, `ApiResponseError`, etc. |
 
 `createVerification` does **not** throw on flow failures — it transitions to `{ status: 'error', error: string }`. Use `createApiClient` directly if you need typed HTTP error codes (e.g. rate-limit retry).
 
@@ -277,18 +283,20 @@ Your widget or client learns verification outcomes by **polling session status**
 ```ts
 // Server — wrap handler calls
 const result = await handlers.getSession(ctx);
-if (result.status === 200 && result.body.status === 'error') {
+if (result.status === 200 && result.body.status === "error") {
   reportError({ sessionId: result.body.id, error: result.body.error });
 }
 
 // Client — subscribe
 verification.subscribe((state) => {
-  if (state.status === 'error') reportError({ message: state.error });
+  if (state.status === "error") reportError({ message: state.error });
 });
 
 // Widget — events
-widget.addEventListener('error', (e) => reportError({ error: e.detail.error }));
-widget.addEventListener('rejected', (e) => reportEvent({ type: 'rejected', detail: e.detail }));
+widget.addEventListener("error", (e) => reportError({ error: e.detail.error }));
+widget.addEventListener("rejected", (e) =>
+  reportEvent({ type: "rejected", detail: e.detail }),
+);
 ```
 
 See package READMEs for per-layer detail: [server](../packages/server/README.md#error-boundaries), [client](../packages/client/README.md#error-boundaries), [embed](../packages/embed/README.md#error-boundaries).
@@ -299,26 +307,26 @@ See package READMEs for per-layer detail: [server](../packages/server/README.md#
 
 ```ts
 // In your protected endpoint
-app.post('/checkout', async (req, res) => {
+app.post("/checkout", async (req, res) => {
   const { eudiToken } = req.body;
-  
+
   // Verify with your handlers
   const result = await handlers.verifyToken({ token: eudiToken });
-  
+
   if (!result.body.valid) {
-    return res.status(401).json({ 
-      error: 'verification_failed',
+    return res.status(401).json({
+      error: "verification_failed",
       reason: result.body.error, // 'expired', 'already_consumed', etc.
     });
   }
-  
+
   // Token valid — user's claims are verified
   const { age_over_18, nationality } = result.body.claims;
-  
+
   if (!age_over_18) {
-    return res.status(403).json({ error: 'age_restricted' });
+    return res.status(403).json({ error: "age_restricted" });
   }
-  
+
   // Proceed with checkout...
 });
 ```
@@ -372,6 +380,7 @@ User clicks "Verify Age"
 ⚠️ Currently only demo mode is available. The EU digital identity infrastructure is still being deployed.
 
 In demo mode:
+
 - Credentials are simulated (not real identity verification)
 - Console warnings are logged
 - `X-Eudi-Mode: demo` header on all responses

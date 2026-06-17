@@ -1,0 +1,7 @@
+node_modules
+dist
+coverage
+.pnpm-store
+pnpm-lock.yaml
+packages/embed/playwright-report
+packages/embed/test-results

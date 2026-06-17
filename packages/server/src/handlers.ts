@@ -6,14 +6,14 @@
  * The adapter layer (Node http, Hono, Express, etc.) maps these to actual HTTP.
  */
 
-import { randomUUID } from 'node:crypto';
-import type { VerifierEngine } from './engine.js';
-import type { IKVStore } from './store.js';
-import { sessionKey } from './store.js';
-import type { TokenService } from './token.js';
-import { createTokenService } from './token.js';
-import type { RateLimiter } from './rate-limit.js';
-import { createRateLimiter } from './rate-limit.js';
+import { randomUUID } from "node:crypto";
+import type { VerifierEngine } from "./engine.js";
+import type { IKVStore } from "./store.js";
+import { sessionKey } from "./store.js";
+import type { TokenService } from "./token.js";
+import { createTokenService } from "./token.js";
+import type { RateLimiter } from "./rate-limit.js";
+import { createRateLimiter } from "./rate-limit.js";
 import type {
   Session,
   SessionDTO,
@@ -22,12 +22,12 @@ import type {
   VerifyTokenResult,
   ApiError,
   VerifierMode,
-} from './types.js';
+} from "./types.js";
 import {
   sessionToDTO,
   isTerminalStatus,
   DEFAULT_SESSION_TTL_MS,
-} from './types.js';
+} from "./types.js";
 
 /**
  * Configuration for the verifier handlers.
@@ -88,7 +88,7 @@ export interface HandlerResponse<T = unknown> {
  * Handler function signature.
  */
 export type RequestHandler<T = unknown> = (
-  ctx: RequestContext
+  ctx: RequestContext,
 ) => Promise<HandlerResponse<T>>;
 
 /**
@@ -106,7 +106,9 @@ export interface VerifierHandlers {
 /**
  * Create the verifier handlers.
  */
-export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers {
+export function createVerifierHandlers(
+  config: VerifierConfig,
+): VerifierHandlers {
   const {
     engine,
     store,
@@ -135,14 +137,14 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
     : null;
 
   function modeHeader(): Record<string, string> {
-    return { 'X-Eudi-Mode': mode };
+    return { "X-Eudi-Mode": mode };
   }
 
   function logDemoWarning(): void {
-    if (mode === 'demo') {
+    if (mode === "demo") {
       console.warn(
-        '[eudi-verify] WARNING: Running in demo mode. ' +
-          'Credentials are simulated. Do not use in production.'
+        "[eudi-verify] WARNING: Running in demo mode. " +
+          "Credentials are simulated. Do not use in production.",
       );
     }
   }
@@ -161,7 +163,7 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
       !isTerminalStatus(session.status) &&
       new Date() > new Date(session.expiresAt)
     ) {
-      const expired: Session = { ...session, status: 'expired' };
+      const expired: Session = { ...session, status: "expired" };
       await store.set(sessionKey(sessionId), expired);
       return expired;
     }
@@ -178,8 +180,8 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
           status: 403,
           headers: modeHeader(),
           body: {
-            error: 'forbidden',
-            message: 'Origin not allowed',
+            error: "forbidden",
+            message: "Origin not allowed",
           },
         };
       }
@@ -191,24 +193,24 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
             status: 429,
             headers: {
               ...modeHeader(),
-              'Retry-After': String(rateResult.retryAfter ?? 60),
+              "Retry-After": String(rateResult.retryAfter ?? 60),
             },
             body: {
-              error: 'rate_limited',
-              message: 'Too many requests, please retry later',
+              error: "rate_limited",
+              message: "Too many requests, please retry later",
             },
           };
         }
       }
 
       const input = ctx.body as CreateSessionInput | undefined;
-      if (!input?.request || typeof input.request !== 'object') {
+      if (!input?.request || typeof input.request !== "object") {
         return {
           status: 400,
           headers: modeHeader(),
           body: {
-            error: 'bad_request',
-            message: 'Invalid verification request',
+            error: "bad_request",
+            message: "Invalid verification request",
           },
         };
       }
@@ -227,7 +229,7 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
 
         const session: Session = {
           id: sessionId,
-          status: 'pending',
+          status: "pending",
           request: input.request,
           qrUrl: engineResult.qrUrl,
           createdAt: now,
@@ -243,13 +245,13 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
           body: sessionToDTO(session),
         };
       } catch (err) {
-        console.error('[eudi-verify] createSession error:', err);
+        console.error("[eudi-verify] createSession error:", err);
         return {
           status: 500,
           headers: modeHeader(),
           body: {
-            error: 'internal_error',
-            message: 'Failed to create session',
+            error: "internal_error",
+            message: "Failed to create session",
           },
         };
       }
@@ -263,8 +265,8 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
           status: 400,
           headers: modeHeader(),
           body: {
-            error: 'bad_request',
-            message: 'Missing session ID',
+            error: "bad_request",
+            message: "Missing session ID",
           },
         };
       }
@@ -276,8 +278,8 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
           status: 404,
           headers: modeHeader(),
           body: {
-            error: 'not_found',
-            message: 'Session not found',
+            error: "not_found",
+            message: "Session not found",
           },
         };
       }
@@ -297,8 +299,8 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
           status: 400,
           headers: modeHeader(),
           body: {
-            error: 'bad_request',
-            message: 'Missing session ID',
+            error: "bad_request",
+            message: "Missing session ID",
           },
         };
       }
@@ -310,8 +312,8 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
           status: 404,
           headers: modeHeader(),
           body: {
-            error: 'not_found',
-            message: 'Session not found',
+            error: "not_found",
+            message: "Session not found",
           },
         };
       }
@@ -321,19 +323,19 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
           status: 409,
           headers: modeHeader(),
           body: {
-            error: 'conflict',
+            error: "conflict",
             message: `Session already in terminal state: ${session.status}`,
           },
         };
       }
 
-      const cancelled: Session = { ...session, status: 'cancelled' };
+      const cancelled: Session = { ...session, status: "cancelled" };
 
       if (engine.cancelSession) {
         try {
           await engine.cancelSession(session);
         } catch (err) {
-          console.error('[eudi-verify] cancelSession engine error:', err);
+          console.error("[eudi-verify] cancelSession engine error:", err);
         }
       }
 
@@ -346,16 +348,18 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
       };
     },
 
-    async verifyToken(ctx): Promise<HandlerResponse<VerifyTokenResult | ApiError>> {
+    async verifyToken(
+      ctx,
+    ): Promise<HandlerResponse<VerifyTokenResult | ApiError>> {
       const input = ctx.body as VerifyTokenInput | undefined;
 
-      if (!input?.token || typeof input.token !== 'string') {
+      if (!input?.token || typeof input.token !== "string") {
         return {
           status: 400,
           headers: modeHeader(),
           body: {
-            error: 'bad_request',
-            message: 'Missing or invalid token',
+            error: "bad_request",
+            message: "Missing or invalid token",
           },
         };
       }
@@ -369,7 +373,9 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
       };
     },
 
-    async handleCallback(ctx): Promise<HandlerResponse<{ status: string } | ApiError>> {
+    async handleCallback(
+      ctx,
+    ): Promise<HandlerResponse<{ status: string } | ApiError>> {
       logDemoWarning();
 
       if (!ctx.rawBody) {
@@ -377,8 +383,8 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
           status: 400,
           headers: modeHeader(),
           body: {
-            error: 'bad_request',
-            message: 'Missing callback body',
+            error: "bad_request",
+            message: "Missing callback body",
           },
         };
       }
@@ -387,13 +393,13 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
       try {
         callbackData = await engine.parseCallback(ctx.rawBody);
       } catch (err) {
-        console.error('[eudi-verify] parseCallback error:', err);
+        console.error("[eudi-verify] parseCallback error:", err);
         return {
           status: 400,
           headers: modeHeader(),
           body: {
-            error: 'bad_request',
-            message: 'Invalid callback format',
+            error: "bad_request",
+            message: "Invalid callback format",
           },
         };
       }
@@ -405,8 +411,8 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
           status: 400,
           headers: modeHeader(),
           body: {
-            error: 'bad_request',
-            message: 'Session not found for callback',
+            error: "bad_request",
+            message: "Session not found for callback",
           },
         };
       }
@@ -415,7 +421,7 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
         return {
           status: 200,
           headers: modeHeader(),
-          body: { status: 'ok' },
+          body: { status: "ok" },
         };
       }
 
@@ -439,22 +445,22 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
         return {
           status: 200,
           headers: modeHeader(),
-          body: { status: 'ok' },
+          body: { status: "ok" },
         };
       } catch (err) {
-        console.error('[eudi-verify] handleCallback error:', err);
+        console.error("[eudi-verify] handleCallback error:", err);
 
         const errorSession: Session = {
           ...session,
-          status: 'error',
-          error: 'Verification failed',
+          status: "error",
+          error: "Verification failed",
         };
         await store.set(sessionKey(session.id), errorSession, sessionTtlMs);
 
         return {
           status: 200,
           headers: modeHeader(),
-          body: { status: 'ok' },
+          body: { status: "ok" },
         };
       }
     },
@@ -467,8 +473,8 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
           status: 400,
           headers: modeHeader(),
           body: {
-            error: 'bad_request',
-            message: 'Missing request ID',
+            error: "bad_request",
+            message: "Missing request ID",
           },
         };
       }
@@ -480,11 +486,11 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
           status: 404,
           headers: {
             ...modeHeader(),
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: {
-            error: 'not_found',
-            message: 'Request not found',
+            error: "not_found",
+            message: "Request not found",
           },
         };
       }
@@ -494,11 +500,11 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
           status: 501,
           headers: {
             ...modeHeader(),
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: {
-            error: 'not_implemented',
-            message: 'PAR not supported by this engine',
+            error: "not_implemented",
+            message: "PAR not supported by this engine",
           },
         };
       }
@@ -509,21 +515,21 @@ export function createVerifierHandlers(config: VerifierConfig): VerifierHandlers
           status: 200,
           headers: {
             ...modeHeader(),
-            'Content-Type': 'application/oauth-authz-req+jwt',
+            "Content-Type": "application/oauth-authz-req+jwt",
           },
           body: jwt,
         };
       } catch (err) {
-        console.error('[eudi-verify] getRequest error:', err);
+        console.error("[eudi-verify] getRequest error:", err);
         return {
           status: 500,
           headers: {
             ...modeHeader(),
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: {
-            error: 'internal_error',
-            message: 'Failed to generate authorization request',
+            error: "internal_error",
+            message: "Failed to generate authorization request",
           },
         };
       }

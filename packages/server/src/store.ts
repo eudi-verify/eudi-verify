@@ -191,9 +191,9 @@ export class MemoryKVStore implements IKVStore {
  * Key prefixes for namespacing different data types.
  */
 export const KEY_PREFIX = {
-  SESSION: 'session:',
-  TOKEN: 'token:',
-  RATE_LIMIT: 'rate:',
+  SESSION: "session:",
+  TOKEN: "token:",
+  RATE_LIMIT: "rate:",
 } as const;
 
 /**

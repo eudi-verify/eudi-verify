@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createPoller } from './polling.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { createPoller } from "./polling.js";
 
-describe('createPoller', () => {
+describe("createPoller", () => {
   beforeEach(() => {
     vi.useFakeTimers();
   });
@@ -10,7 +10,7 @@ describe('createPoller', () => {
     vi.useRealTimers();
   });
 
-  it('polls immediately on start', async () => {
+  it("polls immediately on start", async () => {
     const pollFn = vi.fn().mockResolvedValue(true);
     const poller = createPoller(pollFn);
 
@@ -20,7 +20,7 @@ describe('createPoller', () => {
     expect(pollFn).toHaveBeenCalledTimes(1);
   });
 
-  it('stops polling when function returns true', async () => {
+  it("stops polling when function returns true", async () => {
     let callCount = 0;
     const pollFn = vi.fn().mockImplementation(async () => {
       callCount++;
@@ -35,7 +35,7 @@ describe('createPoller', () => {
     expect(pollFn).toHaveBeenCalledTimes(3);
   });
 
-  it('uses exponential backoff', async () => {
+  it("uses exponential backoff", async () => {
     const pollFn = vi.fn().mockResolvedValue(false);
     const poller = createPoller(pollFn, {
       initialIntervalMs: 100,
@@ -60,7 +60,7 @@ describe('createPoller', () => {
     poller.stop();
   });
 
-  it('respects max interval', async () => {
+  it("respects max interval", async () => {
     const pollFn = vi.fn().mockResolvedValue(false);
     const poller = createPoller(pollFn, {
       initialIntervalMs: 100,
@@ -81,7 +81,7 @@ describe('createPoller', () => {
     poller.stop();
   });
 
-  it('stops polling on stop()', async () => {
+  it("stops polling on stop()", async () => {
     const pollFn = vi.fn().mockResolvedValue(false);
     const poller = createPoller(pollFn, { initialIntervalMs: 100 });
 
@@ -94,7 +94,7 @@ describe('createPoller', () => {
     expect(pollFn).toHaveBeenCalledTimes(1);
   });
 
-  it('resets interval on reset()', async () => {
+  it("resets interval on reset()", async () => {
     const pollFn = vi.fn().mockResolvedValue(false);
     const poller = createPoller(pollFn, {
       initialIntervalMs: 100,
@@ -123,31 +123,35 @@ describe('createPoller', () => {
     poller.stop();
   });
 
-  it('continues polling on error', async () => {
+  it("continues polling on error", async () => {
     let callCount = 0;
     const pollFn = vi.fn().mockImplementation(async () => {
       callCount++;
-      if (callCount === 2) throw new Error('Test error');
+      if (callCount === 2) throw new Error("Test error");
       return callCount >= 4;
     });
 
-    const poller = createPoller(pollFn, { initialIntervalMs: 100, maxIntervalMs: 100, backoffMultiplier: 1 });
+    const poller = createPoller(pollFn, {
+      initialIntervalMs: 100,
+      maxIntervalMs: 100,
+      backoffMultiplier: 1,
+    });
     poller.start();
 
     await vi.advanceTimersByTimeAsync(0);
     expect(pollFn).toHaveBeenCalledTimes(1);
-    
+
     await vi.advanceTimersByTimeAsync(100);
     expect(pollFn).toHaveBeenCalledTimes(2);
-    
+
     await vi.advanceTimersByTimeAsync(100);
     expect(pollFn).toHaveBeenCalledTimes(3);
-    
+
     await vi.advanceTimersByTimeAsync(100);
     expect(pollFn).toHaveBeenCalledTimes(4);
   });
 
-  it('does nothing if start() called while running', async () => {
+  it("does nothing if start() called while running", async () => {
     const pollFn = vi.fn().mockResolvedValue(false);
     const poller = createPoller(pollFn, { initialIntervalMs: 100 });
 
@@ -160,7 +164,7 @@ describe('createPoller', () => {
     poller.stop();
   });
 
-  it('uses default config values', async () => {
+  it("uses default config values", async () => {
     const pollFn = vi.fn().mockResolvedValue(false);
     const poller = createPoller(pollFn);
 

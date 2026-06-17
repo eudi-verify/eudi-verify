@@ -6,15 +6,15 @@ This document tracks all dependencies used in the eudi-verify project, their lic
 
 ### @eudi-verify/server
 
-| Package | Version | License | Origin | Purpose | Security Critical |
-|---------|---------|---------|--------|---------|-------------------|
-| `@openeudi/core` | ^0.8.0 | Apache-2.0 | Luxembourg | OpenID4VP protocol, VP verification | **Yes** |
+| Package          | Version | License    | Origin     | Purpose                             | Security Critical |
+| ---------------- | ------- | ---------- | ---------- | ----------------------------------- | ----------------- |
+| `@openeudi/core` | ^0.8.0  | Apache-2.0 | Luxembourg | OpenID4VP protocol, VP verification | **Yes**           |
 
 ### @eudi-verify/embed
 
-| Package | Version | License | Purpose | Security Critical |
-|---------|---------|---------|---------|-------------------|
-| `@eudi-verify/client` | workspace | Apache-2.0 | API client, state machine | No (internal) |
+| Package               | Version   | License    | Purpose                   | Security Critical |
+| --------------------- | --------- | ---------- | ------------------------- | ----------------- |
+| `@eudi-verify/client` | workspace | Apache-2.0 | API client, state machine | No (internal)     |
 
 ### @eudi-verify/client
 
@@ -26,28 +26,29 @@ No external runtime dependencies (zero dependencies).
 
 ### Root Workspace
 
-| Package | Version | License | Purpose |
-|---------|---------|---------|---------|
-| `typescript` | ^5.0.0 | Apache-2.0 | Type checking |
-| `vitest` | ^2.0.0 | MIT | Unit testing |
+| Package                   | Version | License    | Purpose         |
+| ------------------------- | ------- | ---------- | --------------- |
+| `typescript`              | ^5.0.0  | Apache-2.0 | Type checking   |
+| `vitest`                  | ^2.0.0  | MIT        | Unit testing    |
 | `@stoplight/spectral-cli` | ^6.16.0 | Apache-2.0 | OpenAPI linting |
 
 ### Package-Specific Dev Dependencies
 
-| Package | Used In | License | Purpose |
-|---------|---------|---------|---------|
-| `@types/node` | server | MIT | Node.js type definitions |
-| `tsup` | client, embed | MIT | Build tooling |
-| `@playwright/test` | embed | Apache-2.0 | E2E testing |
-| `@axe-core/playwright` | embed | MPL-2.0 | Accessibility testing |
-| `happy-dom` | embed | MIT | DOM testing environment |
-| `vite` | embed | MIT | Dev server for E2E tests |
+| Package                | Used In       | License    | Purpose                  |
+| ---------------------- | ------------- | ---------- | ------------------------ |
+| `@types/node`          | server        | MIT        | Node.js type definitions |
+| `tsup`                 | client, embed | MIT        | Build tooling            |
+| `@playwright/test`     | embed         | Apache-2.0 | E2E testing              |
+| `@axe-core/playwright` | embed         | MPL-2.0    | Accessibility testing    |
+| `happy-dom`            | embed         | MIT        | DOM testing environment  |
+| `vite`                 | embed         | MIT        | Dev server for E2E tests |
 
 ---
 
 ## License Allowlist
 
 Only these licenses are permitted in **runtime dependencies**:
+
 - **Apache-2.0**
 - **MIT**
 - **BSD-2-Clause**
@@ -65,12 +66,12 @@ Dev dependencies may use broader licenses (e.g., MPL-2.0 for `@axe-core/playwrig
 
 ## Security Audit Status
 
-| Component | Last Audit | Auditor | Status | Notes |
-|-----------|-----------|---------|--------|-------|
-| `@openeudi/core` | Unknown | — | Upstream | Monitor for security advisories |
-| `@eudi-verify/server` | Pending | — | Pre-audit | Third-party audit planned |
-| `@eudi-verify/client` | Pending | — | Pre-audit | Zero external deps |
-| `@eudi-verify/embed` | Pending | — | Pre-audit | Third-party audit planned |
+| Component             | Last Audit | Auditor | Status    | Notes                           |
+| --------------------- | ---------- | ------- | --------- | ------------------------------- |
+| `@openeudi/core`      | Unknown    | —       | Upstream  | Monitor for security advisories |
+| `@eudi-verify/server` | Pending    | —       | Pre-audit | Third-party audit planned       |
+| `@eudi-verify/client` | Pending    | —       | Pre-audit | Zero external deps              |
+| `@eudi-verify/embed`  | Pending    | —       | Pre-audit | Third-party audit planned       |
 
 **Note on upstream dependencies**: We do not audit dependencies we don't maintain. For `@openeudi/core`, we monitor upstream security advisories and will switch to the Sphereon OID4VC fallback engine if critical issues arise.
 
@@ -87,6 +88,7 @@ pnpm ls --depth=10
 ```
 
 **Critical transitive dependencies** (from `@openeudi/core`) are reviewed for:
+
 - Known CVEs via `pnpm audit`
 - License compliance
 - Maintenance status (last update, GitHub stars, active issues)
@@ -95,13 +97,14 @@ pnpm ls --depth=10
 
 ## Dependency Update Policy
 
-| Update Type | Policy | Review Process |
-|-------------|--------|----------------|
-| **Security patches** | Immediate | Apply within 48 hours of disclosure |
-| **Minor updates** | Weekly review | Check changelog, test before merging |
-| **Major updates** | Case-by-case | Assess breaking changes, compatibility |
+| Update Type          | Policy        | Review Process                         |
+| -------------------- | ------------- | -------------------------------------- |
+| **Security patches** | Immediate     | Apply within 48 hours of disclosure    |
+| **Minor updates**    | Weekly review | Check changelog, test before merging   |
+| **Major updates**    | Case-by-case  | Assess breaking changes, compatibility |
 
 **Process**:
+
 1. Dependabot creates alerts for security vulnerabilities
 2. CI `pnpm audit` job fails on high/critical severity
 3. Maintainers review, test, and merge updates
@@ -113,13 +116,13 @@ pnpm ls --depth=10
 
 ### Current Controls
 
-| Control | Status | Notes |
-|---------|--------|-------|
-| Lockfile committed | ✅ Enabled | `pnpm-lock.yaml` in version control |
-| Dependabot alerts | ✅ Enabled | Weekly scans, no auto-PRs |
-| CI audit checks | ✅ Enabled | Fails on high/critical findings |
-| License allowlist | ✅ Enforced | CI blocks unapproved licenses |
-| Minimal dependencies | ✅ Policy | Only `@openeudi/core` in server runtime |
+| Control              | Status      | Notes                                   |
+| -------------------- | ----------- | --------------------------------------- |
+| Lockfile committed   | ✅ Enabled  | `pnpm-lock.yaml` in version control     |
+| Dependabot alerts    | ✅ Enabled  | Weekly scans, no auto-PRs               |
+| CI audit checks      | ✅ Enabled  | Fails on high/critical findings         |
+| License allowlist    | ✅ Enforced | CI blocks unapproved licenses           |
+| Minimal dependencies | ✅ Policy   | Only `@openeudi/core` in server runtime |
 
 ### Planned Enhancements
 
@@ -161,6 +164,7 @@ pnpm audit --audit-level=high
 ## Reporting Dependency Issues
 
 If you discover:
+
 - A vulnerable dependency in this project
 - A license violation
 - An unmaintained critical dependency

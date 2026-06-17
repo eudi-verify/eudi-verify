@@ -13,12 +13,14 @@ End-user documentation for integrating the EUDI Verifier Kit packages.
 ### 1. Package READMEs
 
 Each package gets a README with:
+
 - Installation
 - Quick start example
 - API reference (key exports)
 - Configuration options
 
 Files:
+
 - `packages/server/README.md`
 - `packages/client/README.md`
 - `packages/embed/README.md` (WP4)
@@ -26,6 +28,7 @@ Files:
 ### 2. Integration Guide (`docs/INTEGRATION.md`)
 
 End-to-end walkthrough covering:
+
 - Architecture overview
 - Server setup (mounting handlers)
 - Client-side integration options (widget vs custom UI)
