@@ -179,10 +179,10 @@ This project uses [Changesets](https://github.com/changesets/changesets) for ver
 
 ### Two commands (do not confuse them)
 
-| Command | When | Who |
-|---------|------|-----|
-| `pnpm changeset` | On a **feature branch**, before opening a PR | Contributors |
-| `pnpm changeset version` | On **`main`**, when ready to ship to npm | Maintainers — see [docs/RELEASING.md](docs/RELEASING.md) |
+| Command                  | When                                         | Who                                                      |
+| ------------------------ | -------------------------------------------- | -------------------------------------------------------- |
+| `pnpm changeset`         | On a **feature branch**, before opening a PR | Contributors                                             |
+| `pnpm changeset version` | On **`main`**, when ready to ship to npm     | Maintainers — see [docs/RELEASING.md](docs/RELEASING.md) |
 
 `pnpm changeset` creates a small `.changeset/*.md` file (changelog line + semver bump type). It does **not** change `package.json` versions.
 
@@ -190,11 +190,11 @@ This project uses [Changesets](https://github.com/changesets/changesets) for ver
 
 ### When a changeset is required
 
-| PR touches | Changeset? |
-|------------|------------|
-| `packages/server`, `client`, or `embed` (behavior, API, exports) | **Yes** |
-| Docs, examples, CI, OpenAPI-only with no package change | **No** |
-| `@eudi-verify/demo-html-vanilla` or other unpublished workspace packages | **No** |
+| PR touches                                                               | Changeset? |
+| ------------------------------------------------------------------------ | ---------- |
+| `packages/server`, `client`, or `embed` (behavior, API, exports)         | **Yes**    |
+| Docs, examples, CI, OpenAPI-only with no package change                  | **No**     |
+| `@eudi-verify/demo-html-vanilla` or other unpublished workspace packages | **No**     |
 
 Do not add a changeset to “catch up” for older merged commits. Changesets are forward-looking: each PR documents what **that PR** contributes to the **next** release.
 
