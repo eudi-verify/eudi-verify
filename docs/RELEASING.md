@@ -2,7 +2,7 @@
 
 How to cut a release and publish `@eudi-verify/*` packages to npm.
 
-For day-to-day contribution (setup, PRs, tests), see [CONTRIBUTING.md](../CONTRIBUTING.md). Contributors add [Changesets](https://github.com/changesets/changesets) with their PRs; maintainers run the steps below when it is time to ship.
+For day-to-day contribution (setup, PRs, tests), see [CONTRIBUTING.md](../CONTRIBUTING.md). Contributors run `pnpm changeset` on feature branches and merge the generated `.changeset/*.md` with their PRs ([Changesets section](../CONTRIBUTING.md#changesets)); maintainers run the steps below when it is time to ship.
 
 ## Prerequisites
 
