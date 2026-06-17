@@ -2,13 +2,13 @@
  * Rasterize our QR SVG output and decode with jsQR (test-only helper).
  */
 
-import jsQR = require('jsqr');
+import jsQR = require("jsqr");
 
 /** ponytail: test helper — rasterizes our fixed SVG path format, no canvas native dep */
 export function rasterizeQRSvg(svg: string, size: number): Uint8ClampedArray {
   const pathMatch = svg.match(/d="([^"]+)"/);
   if (!pathMatch) {
-    throw new Error('QR SVG missing path data');
+    throw new Error("QR SVG missing path data");
   }
 
   const pixels = new Uint8ClampedArray(size * size * 4);
@@ -46,9 +46,9 @@ export function decodeQRSvg(svg: string, size = 400): string | null {
 }
 
 export function decodeQRDataUrl(dataUrl: string, size = 400): string | null {
-  const prefix = 'data:image/svg+xml,';
+  const prefix = "data:image/svg+xml,";
   if (!dataUrl.startsWith(prefix)) {
-    throw new Error('Expected data:image/svg+xml data URL');
+    throw new Error("Expected data:image/svg+xml data URL");
   }
   const svg = decodeURIComponent(dataUrl.slice(prefix.length));
   return decodeQRSvg(svg, size);

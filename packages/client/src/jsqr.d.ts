@@ -1,5 +1,5 @@
 /** jsqr types declare `export default` but runtime is CJS (`jsQR.js`); NodeNext needs `export =`. */
-declare module 'jsqr' {
+declare module "jsqr" {
   export interface QRCode {
     binaryData: number[];
     data: string;
@@ -12,7 +12,11 @@ declare module 'jsqr' {
     width: number,
     height: number,
     providedOptions?: {
-      inversionAttempts?: 'dontInvert' | 'onlyInvert' | 'attemptBoth' | 'invertFirst';
+      inversionAttempts?:
+        | "dontInvert"
+        | "onlyInvert"
+        | "attemptBoth"
+        | "invertFirst";
     },
   ): QRCode | null;
   export = jsQR;
