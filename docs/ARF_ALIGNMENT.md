@@ -20,6 +20,17 @@ This document maps `eudi-verify` implementation to the [EU Digital Identity Wall
 
 ---
 
+## OpenEUDI dependencies (accurate as of v0.1)
+
+| Package | Relationship today |
+|---------|-------------------|
+| **`@openeudi/core`** | **Direct runtime dependency** of `@eudi-verify/server` — `OpenEudiEngine` wraps it |
+| **`@openeudi/openid4vp`** | **Not a direct dependency today** — planned for production VP parsing/verification (HAIP path) |
+
+Demo mode uses `@openeudi/core` with simulated wallet responses. Production HAIP will add real OpenID4VP verification — expected via `@openeudi/openid4vp` (or equivalent APIs in the OpenEUDI stack), behind the same `VerifierEngine` interface.
+
+---
+
 ## Protocol Alignment
 
 ### OpenID4VP (ARF § 6.2)
@@ -28,23 +39,23 @@ ARF mandates OpenID for Verifiable Presentations (OpenID4VP) as the credential p
 
 | ARF Requirement | `eudi-verify` Implementation |
 |-----------------|------------------------------|
-| **OpenID4VP flow** | Implemented via `@openeudi/openid4vp` (wrapped by `VerifierEngine` interface) |
-| **Authorization Request** | `POST /sessions` → generates OpenID4VP request → QR URL (`qrUrl` in response) |
+| **OpenID4VP flow** | `OpenEudiEngine` on `@openeudi/core` (demo: simulated; production: roadmap) |
+| **Authorization Request** | `POST /sessions` → generates authorization request → QR URL (`qrUrl` in response) |
 | **VP Token Response** | `POST /callback` receives VP token from wallet (production); demo mode simulates wallet response |
 | **Selective Disclosure** | Supported via `VerificationRequest` schema (request only needed claims: `age_over_18`, `nationality`, etc.) |
 
 **Demo vs Production:**
-- **Demo mode:** simulates wallet responses; no real cryptographic verification
+- **Demo mode:** simulates wallet responses via `@openeudi/core`; no real cryptographic verification
 - **Production mode (roadmap):** full OpenID4VP with VP signature verification, trust-list validation (see [§ Production Roadmap](#production-roadmap))
 
 ### HAIP (High Assurance Interoperability Profile)
 
-ARF profiles OpenID4VP with **HAIP** for EU wallet interoperability.
+**HAIP** (High Assurance Interoperability Profile) is the EU’s production OpenID4VP profile — SD-JWT VC / mDL formats, trust lists, and registered relying parties so wallets interoperate across Member States.
 
 | HAIP Component | Status |
 |----------------|--------|
-| **SD-JWT VC** format | Roadmap — `@openeudi/openid4vp` supports; integration pending |
-| **mDL (ISO 18013-5)** format | Roadmap — protocol library support exists |
+| **SD-JWT VC** format | Roadmap — OpenEUDI `openid4vp` library exists; not wired into eudi-verify yet |
+| **mDL (ISO 18013-5)** format | Roadmap — same |
 | **Trust framework enrollment** | Not implemented — requires legal entity + Member State registration |
 | **Presentation flow** | Demo mode today; HAIP production path documented in [deploy-eu.md](deploy-eu.md) |
 
@@ -100,7 +111,7 @@ ARF defines clear trust boundaries. Our implementation:
 
 | ARF Trust Principle | `eudi-verify` Implementation |
 |---------------------|------------------------------|
-| **Wallet-issued VPs are cryptographically verifiable** | Delegated to `@openeudi/openid4vp` (signature + trust-list checks) |
+| **Wallet-issued VPs are cryptographically verifiable** | Roadmap: `@openeudi/openid4vp` (or OpenEUDI stack) behind `VerifierEngine` — not in demo mode |
 | **Relying parties must verify VPs** | `VerifierEngine.handleCallback` processes wallet responses; server validates before returning `verified` status |
 | **Clients (browsers) are untrusted** | Widget never sees verified claims; only opaque token; merchant server calls `/tokens/verify` |
 | **Session integrity** | Nonce binding in OpenID4VP flow (engine-managed); token bound to `sessionId` |
@@ -149,7 +160,7 @@ Only requested + disclosed attributes appear in verified claims. ARF-compliant s
 | ARF Security Requirement | Implementation | Reference |
 |--------------------------|----------------|-----------|
 | **Confidentiality of user data** | HTTPS-only in production (enforced by deploy guides) | [deploy-eu.md](deploy-eu.md) |
-| **Integrity of VP tokens** | VP signature verification (via `@openeudi/openid4vp` in production) | [`VerifierEngine`](../packages/server/src/engine.ts) |
+| **Integrity of VP tokens** | VP signature verification (roadmap: `@openeudi/openid4vp` in production) | [`VerifierEngine`](../packages/server/src/engine.ts) |
 | **Replay attack prevention** | Single-use verification tokens; session nonce binding | [THREAT_MODEL.md](../THREAT_MODEL.md#t2-token-replay-attack) |
 | **Rate limiting** | Per-IP rate limits on `POST /sessions` and `POST /callback` | [THREAT_MODEL.md](../THREAT_MODEL.md#t6-abuse-dos) |
 | **Session timeout** | Configurable TTL (default 5 min); expired sessions return `status: expired` | [`Session` schema](../openapi/eudi-verifier.yaml#L275) |
@@ -189,7 +200,7 @@ Planned work to achieve full ARF compliance:
 - Dependency audit (`DEPENDENCY.md` ✅ complete)
 
 ### Post-Demo Milestones
-- **Production HAIP:** integrate SD-JWT VC + mDL verification via `@openeudi/openid4vp`
+- **Production HAIP:** add `@openeudi/openid4vp` (or equivalent) for SD-JWT VC + mDL verification
 - **Trust-list validation:** verify issuer certificates against EU Trust Lists
 - **National sandbox testing:** interop with Denmark/Ireland/other public sandbox wallets
 - **Trust framework registration:** register as relying party in national/EU ecosystem (requires legal entity)
@@ -218,7 +229,7 @@ ARF emphasizes interoperability across Member State wallets. Our testing strateg
 | ARF Area | Compliance Level | Notes |
 |----------|------------------|-------|
 | **Relying Party Role** | ✅ Aligned | REST API + widget implement RP surface |
-| **OpenID4VP Protocol** | ✅ Aligned | Via `@openeudi/openid4vp` (demo mode today) |
+| **OpenID4VP Protocol** | ⚠️ Demo aligned | Flow via `@openeudi/core`; production crypto via `openid4vp` roadmap |
 | **Selective Disclosure** | ✅ Aligned | `VerificationRequest` schema supports minimal claims |
 | **Trust Boundaries** | ✅ Aligned | Server-side token verify; clients untrusted |
 | **Security (Demo)** | ⚠️ Partial | Rate limits, TTL, HMAC tokens — but no real VP verification |
