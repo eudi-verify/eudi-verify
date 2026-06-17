@@ -20,4 +20,10 @@ export default defineConfig({
     }
   },
   globalName: "EudiVerify",
+  esbuildOptions(options, context) {
+    if (context.format === "iife") {
+      options.platform = "browser";
+      options.mainFields = ["browser", "module", "main"];
+    }
+  },
 });
