@@ -168,7 +168,7 @@ function renderRejected(): string {
       <div class="eudi-error">
         ${ERROR_ICON}
         <p class="eudi-error-text">Verification declined</p>
-        <p class="eudi-error-detail"></p>
+        <p id="eudi-rejected-detail" class="eudi-error-detail"></p>
         <button class="eudi-retry-btn" type="button" data-action="reset">Try again</button>
       </div>
     </div>
@@ -199,7 +199,7 @@ function renderError(): string {
       <div class="eudi-error">
         ${ERROR_ICON}
         <p class="eudi-error-text">Verification failed</p>
-        <p class="eudi-error-detail"></p>
+        <p id="eudi-error-state-detail" class="eudi-error-detail"></p>
         <button class="eudi-retry-btn" type="button" data-action="reset">Try again</button>
       </div>
     </div>
@@ -266,19 +266,47 @@ export function updateWidgetState(
 
   if (state.status === "rejected" && "error" in state && state.error) {
     const detail = container.querySelector(
-      `#${getStateId("rejected")} .eudi-error-detail`,
+      `#${getStateId("rejected")} #eudi-rejected-detail`,
     );
     if (detail) {
       detail.textContent = state.error;
     }
+    wireRetryDescribedBy(
+      container,
+      getStateId("rejected"),
+      "eudi-rejected-detail",
+    );
   }
 
   if (state.status === "error" && "error" in state) {
     const detail = container.querySelector(
-      `#${getStateId("error")} .eudi-error-detail`,
+      `#${getStateId("error")} #eudi-error-state-detail`,
     );
     if (detail) {
       detail.textContent = state.error;
     }
+    wireRetryDescribedBy(
+      container,
+      getStateId("error"),
+      "eudi-error-state-detail",
+    );
+  }
+}
+
+function wireRetryDescribedBy(
+  container: HTMLElement,
+  stateId: string,
+  detailId: string,
+): void {
+  const detail = container.querySelector(`#${detailId}`);
+  const retryBtn = container.querySelector<HTMLButtonElement>(
+    `#${stateId} .eudi-retry-btn`,
+  );
+  if (!retryBtn) return;
+
+  if (detail?.textContent) {
+    retryBtn.setAttribute("aria-describedby", detailId);
+  } else {
+    retryBtn.removeAttribute("aria-describedby");
   }
 }

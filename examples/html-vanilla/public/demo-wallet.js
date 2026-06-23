@@ -23,6 +23,7 @@ function showError(message) {
   errorEl.textContent = message;
   loadingEl.hidden = true;
   contentEl.hidden = true;
+  errorEl.focus();
 }
 
 const CLAIM_LABELS = {

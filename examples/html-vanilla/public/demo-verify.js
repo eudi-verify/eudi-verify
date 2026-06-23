@@ -57,15 +57,21 @@ function showSessionTools() {
   curlHint.hidden = false;
 }
 
+function showError(message) {
+  errorAlert.hidden = false;
+  errorAlert.textContent = message;
+  errorAlert.focus();
+}
+
 const params = new URLSearchParams(window.location.search);
 if (params.get("error")) {
-  errorAlert.hidden = false;
-  errorAlert.textContent =
+  showError(
     params.get("error") === "invalid_token"
       ? "Token validation failed. Please try again."
       : params.get("error") === "missing_token"
         ? "Missing verification token. Please try again."
-        : "Verification failed. Please try again.";
+        : "Verification failed. Please try again.",
+  );
 }
 
 widget.addEventListener("state-change", (e) => {
@@ -167,19 +173,18 @@ widget.addEventListener("verified", (e) => {
 });
 
 widget.addEventListener("rejected", () => {
-  errorAlert.hidden = false;
-  errorAlert.textContent = "Verification was rejected. Please try again.";
+  showError("Verification was rejected. Please try again.");
   resetSessionUi();
 });
 
 widget.addEventListener("expired", () => {
-  errorAlert.hidden = false;
-  errorAlert.textContent = "Session expired. Please try again.";
+  showError("Session expired. Please try again.");
   resetSessionUi();
 });
 
 widget.addEventListener("error", (e) => {
-  errorAlert.hidden = false;
-  errorAlert.textContent = `Error: ${e.detail?.message || e.detail?.error || "Unknown error"}`;
+  showError(
+    `Error: ${e.detail?.message || e.detail?.error || "Unknown error"}`,
+  );
   resetSessionUi();
 });

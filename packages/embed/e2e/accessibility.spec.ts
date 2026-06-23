@@ -103,6 +103,37 @@ test.describe("<eudi-verify> accessibility", () => {
     await expect(idleState).toHaveAttribute("data-active");
   });
 
+  test("cancel button receives focus in waitingForWallet state", async ({
+    page,
+  }) => {
+    const widget = page.locator("eudi-verify");
+    const startButton = widget.locator('[data-action="start"]');
+
+    await startButton.click();
+
+    const waitingState = widget.locator("#eudi-state-waitingForWallet");
+    await expect(waitingState).toHaveAttribute("data-active", {
+      timeout: 10000,
+    });
+
+    const cancelButton = widget.locator(
+      '#eudi-state-waitingForWallet [data-action="cancel"]',
+    );
+    await expect(cancelButton).toBeFocused();
+  });
+
+  test("widget sets aria-busy during loading", async ({ page }) => {
+    const widget = page.locator("eudi-verify");
+    const startButton = widget.locator('[data-action="start"]');
+
+    await startButton.click();
+
+    const region = widget.locator('[role="region"]');
+    await expect(region).toHaveAttribute("aria-busy", "true", {
+      timeout: 1000,
+    });
+  });
+
   test("buttons have visible focus indicators", async ({ page }) => {
     const widget = page.locator("eudi-verify");
     const startButton = widget.locator('[data-action="start"]');

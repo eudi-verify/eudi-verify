@@ -255,6 +255,31 @@ describe("EudiVerifyElement", () => {
         expect(svg.getAttribute("aria-hidden")).toBe("true");
       });
     });
+
+    it("sets aria-busy during loading", async () => {
+      vi.stubGlobal("fetch", createMockFetch());
+      element.apiUrl = "https://api.example.com";
+      element.request = '{"age_over_18":true}';
+
+      element.start();
+
+      const widget = element.shadowRoot?.querySelector(".eudi-widget");
+      expect(widget?.getAttribute("aria-busy")).toBe("true");
+      vi.unstubAllGlobals();
+    });
+
+    it("clears aria-busy after reset", async () => {
+      vi.stubGlobal("fetch", createMockFetch());
+      element.apiUrl = "https://api.example.com";
+      element.request = '{"age_over_18":true}';
+
+      element.start();
+      element.reset();
+
+      const widget = element.shadowRoot?.querySelector(".eudi-widget");
+      expect(widget?.hasAttribute("aria-busy")).toBe(false);
+      vi.unstubAllGlobals();
+    });
   });
 
   describe("theming", () => {

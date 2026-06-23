@@ -12,6 +12,7 @@ async function loadReceipt() {
     receiptMissing.hidden = false;
     receiptMissing.textContent =
       "No receipt ID in URL. Complete verification from the demo page to see a server receipt.";
+    receiptMissing.focus();
     return;
   }
 
@@ -21,11 +22,13 @@ async function loadReceipt() {
   } catch {
     receiptMissing.hidden = false;
     receiptMissing.textContent = "Network error loading receipt.";
+    receiptMissing.focus();
     return;
   }
 
   if (!res.ok) {
     receiptMissing.hidden = false;
+    receiptMissing.focus();
     return;
   }
 
