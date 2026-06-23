@@ -87,7 +87,9 @@ Upload the public key to GitHub → **Settings** → **SSH and GPG keys** → **
 
 ### Create a signed tag
 
-Annotated + signed (preferred for releases):
+Use **only** the CLI for release tags. Do not create the tag in the GitHub UI first — UI-created tags are usually lightweight and will conflict with signed annotated tags on other machines.
+
+Annotated + signed (required for releases):
 
 ```bash
 git tag -s v0.X.Y -m "v0.X.Y"
@@ -96,15 +98,35 @@ git push origin main
 git push origin v0.X.Y
 ```
 
-Unsigned tag (only if signing is not set up yet):
+If `v0.X.Y` already exists on the remote as a lightweight tag, delete it before pushing the signed tag (maintainers only, only before others depend on the release):
 
 ```bash
-git tag v0.X.Y
-git push origin main
+git push origin :refs/tags/v0.X.Y
 git push origin v0.X.Y
 ```
 
+Unsigned tags (`git tag v0.X.Y` without `-s`) are not acceptable for npm releases once signing is configured.
+
 **Demo / pre-npm milestone** (no npm publish): same flow — tag the commit you want reviewers to cite, e.g. `v0.1.0-demo`, and create a GitHub release. Skip [§3 Publish packages](#3-publish-packages) if packages are not on npm yet.
+
+### Troubleshooting: conflicting tags on `git pull`
+
+Symptom: `would clobber existing tag v0.X.Y` or a GUI reports conflicting tags.
+
+Cause: local and remote tags share a name but differ in type (annotated vs lightweight) or commit.
+
+Fix for contributors (take the remote tag, then pull):
+
+```bash
+git fetch origin tag v0.X.Y --force
+git pull origin main
+```
+
+Verify:
+
+```bash
+git rev-parse 'v0.X.Y^{commit}'   # should match the chore: release commit on main
+```
 
 ## 5. GitHub release
 
@@ -112,7 +134,7 @@ git push origin v0.X.Y
 gh release create v0.X.Y --title "v0.X.Y" --notes "<paste changelog summary>"
 ```
 
-Or create the release in the GitHub UI from the tag.
+Create the release **after** pushing the signed tag from the CLI (`gh release create` above, or the GitHub UI by **selecting** the existing tag — do not type a new tag name in the UI; that creates a conflicting lightweight tag).
 
 ## Checklist
 

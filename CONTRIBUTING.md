@@ -37,6 +37,30 @@ pnpm hooks:install
 
 If `pnpm verify` fails on formatting, run `pnpm format`, then re-run `pnpm verify`.
 
+### Syncing with `main`
+
+After merging PRs or when a maintainer cuts a release:
+
+```bash
+git switch main
+git pull origin main
+```
+
+If pull fails with **conflicting tag(s)** (e.g. `v0.1.1`), your local tag object differs from `origin` — often a signed annotated tag locally vs a lightweight tag on the remote. Both may point at the same commit. Replace your local copy with the remote tag, then pull:
+
+```bash
+git fetch origin tag v0.X.Y --force
+git pull origin main
+```
+
+Do not recreate or move release tags unless you are [cutting a release](docs/RELEASING.md).
+
+Optional: auto-set upstream on first push of a new branch:
+
+```bash
+git config --global push.autoSetupRemote true
+```
+
 ## Project Structure
 
 ```
