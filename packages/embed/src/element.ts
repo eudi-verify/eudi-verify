@@ -291,6 +291,12 @@ export class EudiVerifyElement extends HTMLElement {
 
     updateWidgetState(this.#container, state);
 
+    if (state.status === "loading") {
+      this.#container.setAttribute("aria-busy", "true");
+    } else {
+      this.#container.removeAttribute("aria-busy");
+    }
+
     if (this.#liveRegion && state.status !== this.#lastStatus) {
       const message = STATE_MESSAGES[state.status];
       if (message) {
@@ -308,14 +314,14 @@ export class EudiVerifyElement extends HTMLElement {
     if (!this.#container) return;
 
     switch (state.status) {
-      case "showQR": {
+      case "showQR":
+      case "waitingForWallet": {
         const cancelBtn = this.#container.querySelector<HTMLElement>(
-          "#eudi-state-showQR .eudi-cancel-btn",
+          `#eudi-state-${state.status} .eudi-cancel-btn`,
         );
         cancelBtn?.focus();
         break;
       }
-      case "verified":
       case "rejected":
       case "expired":
       case "error": {

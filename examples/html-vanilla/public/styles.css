@@ -42,6 +42,39 @@ html {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ── Skip link ───────────────────────────────────────────────── */
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.skip-link:focus {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 10000;
+  width: auto;
+  height: auto;
+  padding: 0.75rem 1rem;
+  background: var(--color-background);
+  color: var(--color-eu-blue);
+  border: 2px solid var(--color-eu-blue);
+  border-radius: var(--radius);
+  font-weight: 600;
+  text-decoration: none;
+}
+
 body {
   font-family: var(--font-sans);
   color: var(--color-text);
@@ -82,18 +115,25 @@ body {
   border-bottom: 1px solid var(--color-eu-blue-dark);
 }
 
-.site-header__inner {
+.site-header__brand {
   width: 100%;
   max-width: var(--content-wide);
   display: flex;
   align-items: center;
   gap: 1rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-header__brand-text {
+  display: flex;
+  flex-direction: column;
 }
 
 .eu-emblem {
   flex-shrink: 0;
-  width: 2.5rem;
   height: 2.5rem;
+  width: auto;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
 
@@ -152,6 +192,7 @@ body {
   margin-bottom: 0.75rem;
 }
 
+h1,
 h2 {
   font-size: clamp(1.375rem, 3vw, 1.75rem);
   font-weight: 700;
@@ -371,6 +412,21 @@ a:hover {
 
 .btn:hover {
   background: var(--color-eu-blue-dark);
+}
+
+.btn:focus-visible,
+.btn-demo-wallet:focus-visible,
+.link-card:focus-visible,
+.back-link:focus-visible,
+.site-footer a:focus-visible,
+.skip-link:focus-visible {
+  outline: 2px solid var(--color-eu-blue);
+  outline-offset: 2px;
+}
+
+.site-header__brand:focus-visible {
+  outline: 2px solid var(--color-eu-yellow);
+  outline-offset: 2px;
 }
 
 .btn--lg {
@@ -638,7 +694,7 @@ eudi-verify {
   border-bottom: 1px solid var(--color-border);
 }
 
-.demo-wallet-header h2 {
+.demo-wallet-header h1 {
   font-size: 1.0625rem;
   margin: 0;
   color: var(--color-text);

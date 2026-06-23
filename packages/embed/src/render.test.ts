@@ -176,10 +176,15 @@ describe("render", () => {
       const rejectedEl = container.querySelector("#eudi-state-rejected");
       expect(rejectedEl?.hasAttribute("data-active")).toBe(true);
 
-      const detail = container.querySelector(
-        "#eudi-state-rejected .eudi-error-detail",
-      );
+      const detail = container.querySelector("#eudi-rejected-detail");
       expect(detail?.textContent).toBe("User declined");
+
+      const retryBtn = container.querySelector<HTMLButtonElement>(
+        "#eudi-state-rejected .eudi-retry-btn",
+      );
+      expect(retryBtn?.getAttribute("aria-describedby")).toBe(
+        "eudi-rejected-detail",
+      );
     });
 
     it("activates expired state", () => {
@@ -200,10 +205,15 @@ describe("render", () => {
       const errorEl = container.querySelector("#eudi-state-error");
       expect(errorEl?.hasAttribute("data-active")).toBe(true);
 
-      const detail = container.querySelector(
-        "#eudi-state-error .eudi-error-detail",
-      );
+      const detail = container.querySelector("#eudi-error-state-detail");
       expect(detail?.textContent).toBe("Network error");
+
+      const retryBtn = container.querySelector<HTMLButtonElement>(
+        "#eudi-state-error .eudi-retry-btn",
+      );
+      expect(retryBtn?.getAttribute("aria-describedby")).toBe(
+        "eudi-error-state-detail",
+      );
     });
 
     it("only one state is active at a time", () => {
