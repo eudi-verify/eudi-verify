@@ -185,7 +185,7 @@ Before going live:
 - [ ] Demo mode banner visible in UI
 - [ ] `X-Eudi-Mode: demo` header present in API responses
 - [ ] Rate limiting enabled (default: 10 req/min per IP)
-- [ ] Landing page only in search results (`robots.txt` allows `/` only; demo flow pages use `noindex` meta and `X-Robots-Tag`)
+- [ ] Landing page only in search results (`robots.txt` allows `/` and `/sitemap.xml`; demo flow pages use `noindex` meta and `X-Robots-Tag`; `sitemap.xml` lists the canonical home URL)
 
 ---
 

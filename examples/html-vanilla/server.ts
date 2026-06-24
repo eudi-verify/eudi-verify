@@ -73,6 +73,7 @@ const MIME: Record<string, string> = {
   ".json": "application/json",
   ".png": "image/png",
   ".svg": "image/svg+xml",
+  ".xml": "application/xml",
 };
 
 async function serveStatic(
