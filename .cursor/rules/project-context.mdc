@@ -39,7 +39,7 @@ Avoid:
 - TypeScript strict mode
 - Vitest for testing
 - OpenAPI 3.1 for API contracts
-- Apache-2.0 license; deps must be Apache-2.0/MIT/BSD/ISC
+- AGPL-3.0 license; runtime deps must be Apache-2.0/MIT/BSD/ISC
 
 ## Local shell (Node 22)
 
