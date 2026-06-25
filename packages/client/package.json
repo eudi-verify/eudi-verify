@@ -1,6 +1,6 @@
 {
   "name": "@eudi-verify/client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Typed API client and state machine for EUDI Wallet verification",
   "type": "module",
   "engines": {

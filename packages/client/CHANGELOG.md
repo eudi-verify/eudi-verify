@@ -1,5 +1,16 @@
 # @eudi-verify/client
 
+## 1.0.1
+
+### Patch Changes
+
+- 1fd4a66: fix: map cancelled wallet sessions to rejected state
+
+  When polling returns `cancelled`, verification state is now `rejected` with
+  error "Request was declined" instead of resetting to `idle`.
+
+- 1fd4a66: Change cancel-paths and url-fragments in example demos
+
 ## 1.0.0
 
 ### Major Changes

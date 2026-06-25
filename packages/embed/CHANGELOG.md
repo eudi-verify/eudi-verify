@@ -1,5 +1,14 @@
 # @eudi-verify/embed
 
+## 1.0.1
+
+### Patch Changes
+
+- 1fd4a66: Change cancel-paths and url-fragments in example demos
+- Updated dependencies [1fd4a66]
+- Updated dependencies [1fd4a66]
+  - @eudi-verify/client@1.0.1
+
 ## 1.0.0
 
 ### Major Changes

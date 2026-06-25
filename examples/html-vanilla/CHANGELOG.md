@@ -1,5 +1,13 @@
 # @eudi-verify/demo-html-vanilla
 
+## 0.0.4
+
+### Patch Changes
+
+- 1fd4a66: Change cancel-paths and url-fragments in example demos
+- Updated dependencies [1fd4a66]
+  - @eudi-verify/embed@1.0.1
+
 ## 0.0.3
 
 ### Patch Changes
