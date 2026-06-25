@@ -244,8 +244,7 @@ describe("EudiVerifyElement", () => {
                 ? input.href
                 : input.url;
           const method =
-            init?.method ??
-            (input instanceof Request ? input.method : "GET");
+            init?.method ?? (input instanceof Request ? input.method : "GET");
 
           if (method === "HEAD") {
             return {

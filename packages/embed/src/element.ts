@@ -38,8 +38,11 @@ const OBSERVED_ATTRIBUTES = ["api-url", "request", "auto-start"] as const;
 type ObservedAttribute = (typeof OBSERVED_ATTRIBUTES)[number];
 
 /** States where the in-widget demo banner is shown (active verification only). */
-const DEMO_BANNER_STATUSES: ReadonlySet<VerificationState["status"]> =
-  new Set(["loading", "showQR", "waitingForWallet"]);
+const DEMO_BANNER_STATUSES: ReadonlySet<VerificationState["status"]> = new Set([
+  "loading",
+  "showQR",
+  "waitingForWallet",
+]);
 
 /**
  * <eudi-verify> Custom Element

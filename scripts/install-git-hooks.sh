@@ -3,15 +3,19 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-HOOK_SRC="$ROOT/scripts/git-hooks/pre-push"
-HOOK_DEST="$ROOT/.git/hooks/pre-push"
+HOOKS_DIR="$ROOT/scripts/git-hooks"
 
 if [[ ! -d "$ROOT/.git" ]]; then
   echo "Not a git repository: $ROOT" >&2
   exit 1
 fi
 
-cp "$HOOK_SRC" "$HOOK_DEST"
-chmod +x "$HOOK_DEST"
-echo "Installed pre-push hook -> $HOOK_DEST"
-echo "It runs 'pnpm verify' before every push. Skip with: git push --no-verify"
+for name in pre-commit pre-push; do
+  cp "$HOOKS_DIR/$name" "$ROOT/.git/hooks/$name"
+  chmod +x "$ROOT/.git/hooks/$name"
+  echo "Installed $name hook -> $ROOT/.git/hooks/$name"
+done
+
+echo ""
+echo "pre-commit: pnpm format:check (skip with git commit --no-verify)"
+echo "pre-push:   pnpm verify (skip with git push --no-verify)"
