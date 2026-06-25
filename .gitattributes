@@ -1,0 +1,16 @@
+# Exclude vendored code and build artifacts from language statistics
+node_modules/** linguist-vendored
+dist/** linguist-vendored
+coverage/** linguist-vendored
+.pnpm-store/** linguist-vendored
+
+# Mark test and example HTML as documentation (lower weight in stats)
+examples/**/*.html linguist-documentation
+**/e2e/**/*.html linguist-documentation
+**/playwright-report/** linguist-vendored
+
+# Ensure TypeScript and JavaScript are detected
+*.ts linguist-detectable
+*.tsx linguist-detectable
+*.js linguist-detectable
+*.jsx linguist-detectable
