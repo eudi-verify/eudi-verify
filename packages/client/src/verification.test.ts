@@ -246,6 +246,42 @@ describe("createVerification", () => {
         error: "User declined",
       });
     });
+
+    it("maps cancelled session to rejected while polling", async () => {
+      const pendingSession: Session = {
+        id: "session-123",
+        status: "pending",
+        qrUrl: "openid4vp://test",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
+      };
+
+      const cancelledSession: Session = {
+        id: "session-123",
+        status: "cancelled",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
+      };
+
+      const mockFetch = createMockFetch([
+        { status: 201, body: pendingSession },
+        { status: 200, body: cancelledSession },
+      ]);
+
+      const verification = createVerification({
+        apiUrl: "https://api.example.com",
+        fetch: mockFetch,
+        polling: { initialIntervalMs: 100 },
+      });
+
+      await verification.start({ age_over_18: true });
+      await vi.advanceTimersByTimeAsync(200);
+
+      expect(verification.state).toMatchObject({
+        status: "rejected",
+        error: "Request was declined",
+      });
+    });
   });
 
   describe("cancel()", () => {
@@ -436,7 +472,7 @@ describe("createVerification", () => {
         { sessionStatus: "verified", expectedState: "verified" },
         { sessionStatus: "rejected", expectedState: "rejected" },
         { sessionStatus: "expired", expectedState: "expired" },
-        { sessionStatus: "cancelled", expectedState: "idle" },
+        { sessionStatus: "cancelled", expectedState: "rejected" },
         { sessionStatus: "error", expectedState: "error" },
       ];
 

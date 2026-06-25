@@ -129,7 +129,7 @@ export function createVerification(config: VerificationConfig): Verification {
         return { status: "expired" };
 
       case "cancelled":
-        return { status: "idle" };
+        return { status: "rejected", error: "Request was declined" };
 
       case "error":
         return {

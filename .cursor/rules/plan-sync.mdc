@@ -1,0 +1,21 @@
+# Plan Status Sync
+
+Keep `PLAN.local.md` and `docs/SUPPORTED.md` in sync with actual project state.
+
+## When completing a work package
+
+1. Mark WP done in `PLAN.local.md` Session Bootstrap Snapshot
+2. Update `docs/SUPPORTED.md` if the WP adds platform support
+3. If WP adds a package, verify its README exists and is linked
+
+## When starting a new WP
+
+- Confirm dependencies are marked done in `PLAN.local.md`
+- Read the WP brief in `.github/internal/wp/WPn.md`
+
+## Breaking changes
+
+Use Changesets (`.changeset/`) for all breaking changes:
+- Include migration example in changeset description
+- For v0.x: breaking changes expected, document clearly
+- For v1.0+: follow semver strictly

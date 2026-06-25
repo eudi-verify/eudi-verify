@@ -133,7 +133,11 @@ pnpm build
 # Run tests
 pnpm test
 
-# Start demo server
+# Start shared API server (terminal 1)
+cd examples/server
+pnpm start
+
+# Start html-vanilla demo (terminal 2)
 cd examples/html-vanilla
 pnpm start
 ```
@@ -141,10 +145,10 @@ pnpm start
 Open:
 
 ```txt
-http://localhost:3000
+http://localhost:3001
 ```
 
-The demo runs a single Node.js server that includes the full `@eudi-verify/server` implementation. Session management, token signing, and verification flow handling are real. Only the wallet side is simulated through a demo wallet page.
+The shared API server (`examples/server/`) runs the full `@eudi-verify/server` implementation. Frontend examples (html-vanilla, React) connect to it — same backend, any frontend. Only the wallet side is simulated through a demo wallet page.
 
 See [examples/html-vanilla/README.md](examples/html-vanilla/README.md) for testing instructions.
 

@@ -163,17 +163,46 @@ widget.addEventListener("state-change", (e) => {
   }
 });
 
-widget.addEventListener("verified", (e) => {
+widget.addEventListener("verified", async (e) => {
   log("Submitting token to POST /api/checkout");
-  tokenInput.value = e.detail.token;
-  if (currentSessionId) {
-    sessionInput.value = currentSessionId;
+  const token = e.detail.token;
+  const sessionId = currentSessionId || sessionInput.value;
+
+  try {
+    const res = await fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        eudi_token: token,
+        eudi_session_id: sessionId,
+      }),
+    });
+    const data = await res.json();
+
+    if (res.ok && data.receiptId) {
+      window.location.href = `/success?rid=${encodeURIComponent(data.receiptId)}`;
+      return;
+    }
+
+    showError(
+      data.error === "invalid_token"
+        ? "Token validation failed. Please try again."
+        : data.error === "missing_token"
+          ? "Missing verification token. Please try again."
+          : "Verification failed. Please try again.",
+    );
+  } catch {
+    showError(
+      "Checkout failed. Start the API server: cd ../server && pnpm start",
+    );
   }
-  form.submit();
 });
 
-widget.addEventListener("rejected", () => {
-  showError("Verification was rejected. Please try again.");
+widget.addEventListener("rejected", (e) => {
+  const message = e.detail?.error
+    ? `Verification was declined: ${e.detail.error}`
+    : "Verification was rejected. Please try again.";
+  showError(message);
   resetSessionUi();
 });
 

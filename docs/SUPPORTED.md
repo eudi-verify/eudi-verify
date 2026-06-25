@@ -17,18 +17,20 @@
 
 **Documented integration:** [INTEGRATION.md](./INTEGRATION.md) (Node/Express), [packages/server/README.md](../packages/server/README.md)
 
-**Reference demo:** [examples/html-vanilla](../examples/html-vanilla/) (Node server + plain HTML)
+**Reference demo:** [examples/html-vanilla](../examples/html-vanilla/) (plain HTML + shared API server)
 
 ### Frontend
 
-| Stack          | Status          | How                                                                                    |
-| -------------- | --------------- | -------------------------------------------------------------------------------------- |
-| **Plain HTML** | ✅ Supported    | Import `@eudi-verify/embed`; use `<eudi-verify>`                                       |
-| **React**      | 🟡 Embeddable   | Web component works today; first-class wrapper in [WP9](../.github/internal/wp/WP9.md) |
-| **Custom UI**  | ✅ Supported    | `@eudi-verify/client` (vanilla TS, zero framework deps)                                |
-| **WordPress**  | 🟡 Manual embed | Add script + element in theme/block; no plugin yet                                     |
+| Stack          | Status        | How                                                                |
+| -------------- | ------------- | ------------------------------------------------------------------ |
+| **Plain HTML** | ✅ Supported  | Import `@eudi-verify/embed`; use `<eudi-verify>`                   |
+| **React**      | ✅ Supported  | `@eudi-verify/react` — React wrapper with typed props + callbacks |
+| **Custom UI**  | ✅ Supported  | `@eudi-verify/client` (vanilla TS, zero framework deps)            |
+| **WordPress**  | 🟡 Manual embed | Add script + element in theme/block; no plugin yet               |
 
-**Documented integration:** [INTEGRATION.md](./INTEGRATION.md), [packages/embed/README.md](../packages/embed/README.md)
+**Documented integration:** [INTEGRATION.md](./INTEGRATION.md), [packages/embed/README.md](../packages/embed/README.md), [packages/react/README.md](../packages/react/README.md)
+
+**Reference demo:** [examples/react](../examples/react/) (React + TypeScript + Vite)
 
 ### Packages (demo mode)
 
@@ -37,6 +39,7 @@
 | `@eudi-verify/server` | ✅ Handlers, tokens, rate limiting                    |
 | `@eudi-verify/client` | ✅ API client, state machine, QR                      |
 | `@eudi-verify/embed`  | ✅ `<eudi-verify>` web component (WCAG 2.1 AA target) |
+| `@eudi-verify/react`  | ✅ React wrapper with typed props                     |
 
 ### API contract
 
@@ -57,13 +60,12 @@ Items below are **not shipped** or **not yet documented**. See [PLAN.md](./PLAN.
 
 ### Framework integrations
 
-| Integration   | Status                                  | Deliverable                             |
-| ------------- | --------------------------------------- | --------------------------------------- |
-| **React**     | 🔜 [WP9](../.github/internal/wp/WP9.md) | `@eudi-verify/react` + `examples/react` |
-| **Vue**       | Roadmap                                 | Reference example                       |
-| **WordPress** | Roadmap                                 | Plugin                                  |
-| **Next.js**   | Roadmap                                 | `@eudi-verify/next` (after WP9)         |
-| **Auth.js**   | Roadmap                                 | Adapter                                 |
+| Integration   | Status  | Deliverable                         |
+| ------------- | ------- | ----------------------------------- |
+| **Vue**       | Roadmap | Reference example                   |
+| **WordPress** | Roadmap | Plugin                              |
+| **Next.js**   | Roadmap | `@eudi-verify/next` (route helpers) |
+| **Auth.js**   | Roadmap | Adapter                             |
 
 Other optional packages: `@eudi-verify/hono` (pre-wired Hono mount; handlers work with Hono today).
 

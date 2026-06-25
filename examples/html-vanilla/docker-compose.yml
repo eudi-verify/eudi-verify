@@ -4,9 +4,10 @@ services:
       context: ../..
       dockerfile: examples/html-vanilla/Dockerfile
     ports:
-      - "3000:3000"
+      - "3000:3001"
     environment:
       - TOKEN_SECRET=${TOKEN_SECRET:?TOKEN_SECRET is required}
-      - PORT=3000
+      - PORT=3001
+      - API_PORT=3000
       - NODE_ENV=production
     restart: unless-stopped
