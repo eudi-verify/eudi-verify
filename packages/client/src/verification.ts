@@ -143,10 +143,13 @@ export function createVerification(config: VerificationConfig): Verification {
   }
 
   async function pollSession(): Promise<boolean> {
-    if (!currentSessionId) return true;
+    const sessionId = currentSessionId;
+    if (!sessionId) return true;
 
     try {
-      const session = await client.getSession(currentSessionId);
+      const session = await client.getSession(sessionId);
+      if (currentSessionId !== sessionId) return true;
+
       const newState = mapSessionToState(session);
 
       if (
@@ -212,13 +215,14 @@ export function createVerification(config: VerificationConfig): Verification {
     },
 
     async cancel(): Promise<void> {
-      if (!currentSessionId) return;
+      const sessionId = currentSessionId;
+      if (!sessionId) return;
 
       stopPolling();
+      currentSessionId = null;
 
       try {
-        await client.cancelSession(currentSessionId);
-        currentSessionId = null;
+        await client.cancelSession(sessionId);
         setState({ status: "idle" });
       } catch (error) {
         const errorMessage =

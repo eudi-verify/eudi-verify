@@ -57,6 +57,11 @@ function showSessionTools() {
   curlHint.hidden = false;
 }
 
+function clearError() {
+  errorAlert.hidden = true;
+  errorAlert.textContent = "";
+}
+
 function showError(message) {
   errorAlert.hidden = false;
   errorAlert.textContent = message;
@@ -84,6 +89,7 @@ widget.addEventListener("state-change", (e) => {
     case "loading":
       log("Starting verification…");
       resetSessionUi();
+      clearError();
       lastLoggedStatus = status;
       break;
 

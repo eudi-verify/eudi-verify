@@ -170,13 +170,14 @@ async function approve() {
 async function decline() {
   btnApprove.disabled = true;
   btnDecline.disabled = true;
-  log(`POST /api/eudi/sessions/${sessionId} (cancel)`);
+  log(`POST /api/eudi/sessions/${sessionId}/cancel`);
 
   let res;
   try {
-    res = await fetch(`/api/eudi/sessions/${encodeURIComponent(sessionId)}`, {
-      method: "POST",
-    });
+    res = await fetch(
+      `/api/eudi/sessions/${encodeURIComponent(sessionId)}/cancel`,
+      { method: "POST" },
+    );
   } catch {
     log("→ network error");
     btnApprove.disabled = false;

@@ -43,6 +43,10 @@ function App() {
     setShowCurlHint(false);
   };
 
+  const clearError = () => {
+    setErrorMessage(null);
+  };
+
   const showError = (message: string) => {
     setErrorMessage(message);
     setTimeout(() => errorAlertRef.current?.focus(), 100);
@@ -69,6 +73,7 @@ function App() {
       case "loading":
         log("Starting verification…");
         resetSessionUi();
+        clearError();
         break;
 
       case "showQR":
@@ -117,6 +122,10 @@ function App() {
           log(`Error: ${state.error}`);
           showError("Verification failed. Please try again.");
         }
+        resetSessionUi();
+        break;
+
+      case "idle":
         resetSessionUi();
         break;
     }

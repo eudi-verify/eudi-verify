@@ -349,6 +349,84 @@ describe("createVerification", () => {
       expect(mockFetch).not.toHaveBeenCalled();
       expect(verification.state.status).toBe("idle");
     });
+
+    it("ignores stale poll results after cancel", async () => {
+      const pendingSession: Session = {
+        id: "session-123",
+        status: "pending",
+        qrUrl: "openid4vp://test",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
+      };
+
+      const cancelledSession: Session = {
+        id: "session-123",
+        status: "cancelled",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
+      };
+
+      let resolvePoll: (value: Response) => void = () => {};
+      const pollPromise = new Promise<Response>((resolve) => {
+        resolvePoll = resolve;
+      });
+
+      let getSessionCalls = 0;
+      const mockFetch = vi.fn(async (input: string | URL | Request) => {
+        const url =
+          typeof input === "string"
+            ? input
+            : input instanceof URL
+              ? input.href
+              : input.url;
+
+        if (url.endsWith("/cancel")) {
+          return {
+            ok: true,
+            status: 200,
+            json: async () => cancelledSession,
+            headers: new Headers(),
+          } as Response;
+        }
+
+        if (url.includes("/sessions/session-123")) {
+          getSessionCalls += 1;
+          if (getSessionCalls === 1) {
+            return pollPromise;
+          }
+        }
+
+        return {
+          ok: true,
+          status: 201,
+          json: async () => pendingSession,
+          headers: new Headers(),
+        } as Response;
+      });
+
+      const verification = createVerification({
+        apiUrl: "https://api.example.com",
+        fetch: mockFetch,
+        polling: { initialIntervalMs: 100 },
+      });
+
+      const startPromise = verification.start({ age_over_18: true });
+      await vi.waitFor(() => {
+        expect(getSessionCalls).toBe(1);
+      });
+
+      const cancelPromise = verification.cancel();
+      resolvePoll({
+        ok: true,
+        status: 200,
+        json: async () => cancelledSession,
+        headers: new Headers(),
+      } as Response);
+      await cancelPromise;
+      await startPromise;
+
+      expect(verification.state.status).toBe("idle");
+    });
   });
 
   describe("destroy()", () => {

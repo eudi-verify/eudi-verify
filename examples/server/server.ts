@@ -220,6 +220,15 @@ const server = createServer(async (req, res) => {
       }
     }
 
+    const cancelMatch = apiPath.match(/^\/sessions\/([^/]+)\/cancel$/);
+    if (cancelMatch && req.method === "POST") {
+      const [, sessionId] = cancelMatch;
+      return sendResponse(
+        res,
+        await handlers.cancelSession(buildContext(req, { sessionId })),
+      );
+    }
+
     const sessionMatch = apiPath.match(/^\/sessions\/([^/]+)$/);
     if (sessionMatch) {
       const [, sessionId] = sessionMatch;
@@ -227,12 +236,6 @@ const server = createServer(async (req, res) => {
         return sendResponse(
           res,
           await handlers.getSession(buildContext(req, { sessionId })),
-        );
-      }
-      if (req.method === "POST") {
-        return sendResponse(
-          res,
-          await handlers.cancelSession(buildContext(req, { sessionId })),
         );
       }
     }
