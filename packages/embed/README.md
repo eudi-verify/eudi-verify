@@ -42,6 +42,10 @@ Or include directly via CDN:
 </html>
 ```
 
+## Using React?
+
+See [`@eudi-verify/react`](../react/README.md) for typed props, callbacks, and the `useEudiVerify` hook. You can also use `<eudi-verify>` directly in React with `ref` + `addEventListener` — see [INTEGRATION.md](../../docs/INTEGRATION.md).
+
 ## Attributes
 
 | Attribute    | Type        | Required | Description                                           |

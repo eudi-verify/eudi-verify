@@ -255,6 +255,8 @@ Use the React wrapper for idiomatic React integration.
 
 **Requirements:** React 18+
 
+React does not wire `on*` props to custom element events, so `onVerified` on raw `<eudi-verify>` will not fire. The wrapper attaches `verified`, `rejected`, and related DOM listeners internally. To use the embed without the wrapper, use `ref` + `addEventListener` (Option B above).
+
 ```bash
 pnpm add @eudi-verify/react
 ```

@@ -128,9 +128,9 @@ Style the host element with CSS custom properties (same as embed):
 
 Pass `className` to the wrapper; it applies to the custom element host.
 
-### Manual embed (interim)
+### Manual embed (without wrapper)
 
-Until WP9 ships, React apps can import `@eudi-verify/embed` directly and use `ref` + `addEventListener` (documented in INTEGRATION.md React section once WP9 adds the wrapper docs, or a short interim note in embed README).
+React apps can import `@eudi-verify/embed` directly and use `ref` + `addEventListener` instead of `@eudi-verify/react`. Documented in `docs/INTEGRATION.md` (Option B: embed, Option C: React wrapper).
 
 ## Out of Scope
 

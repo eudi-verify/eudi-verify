@@ -267,22 +267,20 @@ idle → loading → showQR → waitingForWallet → verified
 
 ~8KB gzipped (includes the embed widget).
 
-## Why a Wrapper? React 19 Custom Element Support
+## Why a Wrapper?
 
-React 19 added improved custom element support, including better property handling and event support. However, our wrapper is still necessary because:
+React (18+) does not map `on*` props to custom element events. Passing `onVerified` on `<eudi-verify>` does **not** listen for the `verified` DOM event — the wrapper bridges that gap with `useEffect` + `addEventListener`.
 
-1. **Event Handling**: React 19 doesn't automatically wire `on*` props to custom element events. We use `useEffect` + `addEventListener` to bridge this gap.
+The wrapper also provides:
 
-2. **Type Safety**: The wrapper provides full TypeScript types for props, events, and the ref handle.
-
-3. **Developer Experience**:
+1. **Type safety** — full TypeScript types for props, events, and the ref handle
+2. **Developer experience**:
    - Accept `request` as an object or JSON string
-   - Provide imperative methods via `ref` (`start()`, `cancel()`, `reset()`)
-   - Expose escape hatches (`onStateChange`, `ref.current.element`)
+   - Imperative methods via `ref` (`start()`, `cancel()`, `reset()`)
+   - Escape hatches (`onStateChange`, `ref.current.element`)
+3. **Consistency** — same callback API in CSR, SSR, and tests
 
-4. **Reliability**: Works consistently across environments (CSR, SSR, testing).
-
-While you _could_ use `<eudi-verify>` directly in React 19 with manual event listeners, the wrapper provides a much better developer experience.
+You can use `<eudi-verify>` directly in React with `ref` + `addEventListener` (see [INTEGRATION.md](../../docs/INTEGRATION.md)); the wrapper is the recommended path for typed props and callbacks.
 
 ## License
 
