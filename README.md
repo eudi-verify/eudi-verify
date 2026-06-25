@@ -40,12 +40,12 @@ This project is for developers, product teams, and integrators who want to prepa
 
 ## Packages
 
-| Package               | Description                                          | Status                            |
-| --------------------- | ---------------------------------------------------- | --------------------------------- |
-| `@eudi-verify/server` | REST API handlers, token verification, rate limiting | Preview (MockEngine), Node.js 22+ |
-| `@eudi-verify/embed`  | Drop-in `<eudi-verify>` web component                | Preview                           |
-| `@eudi-verify/client` | Typed API client, state machine, QR generation       | Preview                           |
-| `@eudi-verify/react`  | React wrapper with typed props                       | Preview                           |
+| Package                            | Description                                          | Status                            |
+| ---------------------------------- | ---------------------------------------------------- | --------------------------------- |
+| <nobr>`@eudi-verify/server`</nobr> | REST API handlers, token verification, rate limiting | Preview (MockEngine), Node.js 22+ |
+| <nobr>`@eudi-verify/embed`</nobr>  | Drop-in `<eudi-verify>` web component                | Preview                           |
+| <nobr>`@eudi-verify/client`</nobr> | Typed API client, state machine, QR generation       | Preview                           |
+| <nobr>`@eudi-verify/react`</nobr>  | React wrapper with typed props                       | Preview                           |
 
 See the [integration guide](docs/INTEGRATION.md) for end-to-end setup.
 
