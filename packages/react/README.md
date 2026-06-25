@@ -16,7 +16,7 @@ pnpm add @eudi-verify/react
 ## Quick Start
 
 ```tsx
-import { EudiVerify } from '@eudi-verify/react';
+import { EudiVerify } from "@eudi-verify/react";
 
 function AgeGate() {
   return (
@@ -25,13 +25,13 @@ function AgeGate() {
       request={{ age_over_18: true }}
       onVerified={({ token, claims }) => {
         // POST token to your backend for validation
-        fetch('/checkout', {
-          method: 'POST',
+        fetch("/checkout", {
+          method: "POST",
           body: JSON.stringify({ eudiToken: token }),
         });
       }}
-      onRejected={() => console.log('User declined verification')}
-      onError={({ error }) => console.error('Verification error:', error)}
+      onRejected={() => console.log("User declined verification")}
+      onError={({ error }) => console.error("Verification error:", error)}
     />
   );
 }
@@ -39,18 +39,18 @@ function AgeGate() {
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `apiUrl` | `string` | Yes | Base URL of your EUDI Verifier API |
-| `request` | `VerificationRequest \| string` | Yes | Claims to request from wallet |
-| `autoStart` | `boolean` | No | Start verification automatically on mount |
-| `className` | `string` | No | CSS class for the host element |
-| `style` | `CSSProperties` | No | Inline styles for the host element |
-| `onVerified` | `(detail) => void` | No | Called when verification succeeds |
-| `onRejected` | `(detail) => void` | No | Called when user rejects in wallet |
-| `onExpired` | `() => void` | No | Called when session expires |
-| `onError` | `(detail) => void` | No | Called when an error occurs |
-| `onStateChange` | `(detail) => void` | No | Called on any state change |
+| Prop            | Type                            | Required | Description                               |
+| --------------- | ------------------------------- | -------- | ----------------------------------------- |
+| `apiUrl`        | `string`                        | Yes      | Base URL of your EUDI Verifier API        |
+| `request`       | `VerificationRequest \| string` | Yes      | Claims to request from wallet             |
+| `autoStart`     | `boolean`                       | No       | Start verification automatically on mount |
+| `className`     | `string`                        | No       | CSS class for the host element            |
+| `style`         | `CSSProperties`                 | No       | Inline styles for the host element        |
+| `onVerified`    | `(detail) => void`              | No       | Called when verification succeeds         |
+| `onRejected`    | `(detail) => void`              | No       | Called when user rejects in wallet        |
+| `onExpired`     | `() => void`                    | No       | Called when session expires               |
+| `onError`       | `(detail) => void`              | No       | Called when an error occurs               |
+| `onStateChange` | `(detail) => void`              | No       | Called on any state change                |
 
 ### Verification Request
 
@@ -70,21 +70,21 @@ interface VerificationRequest {
 Access component methods programmatically:
 
 ```tsx
-import { useRef } from 'react';
-import { EudiVerify, type EudiVerifyRef } from '@eudi-verify/react';
+import { useRef } from "react";
+import { EudiVerify, type EudiVerifyRef } from "@eudi-verify/react";
 
 function App() {
   const ref = useRef<EudiVerifyRef>(null);
 
   return (
     <>
-      <EudiVerify ref={ref} apiUrl="/api/eudi" request={{ age_over_18: true }} />
-      <button onClick={() => ref.current?.start()}>
-        Start Verification
-      </button>
-      <button onClick={() => ref.current?.cancel()}>
-        Cancel
-      </button>
+      <EudiVerify
+        ref={ref}
+        apiUrl="/api/eudi"
+        request={{ age_over_18: true }}
+      />
+      <button onClick={() => ref.current?.start()}>Start Verification</button>
+      <button onClick={() => ref.current?.cancel()}>Cancel</button>
     </>
   );
 }
@@ -92,27 +92,27 @@ function App() {
 
 ### Ref Handle API
 
-| Property/Method | Type | Description |
-|-----------------|------|-------------|
-| `start()` | `() => void` | Start the verification flow |
-| `cancel()` | `() => void` | Cancel current verification |
-| `reset()` | `() => void` | Reset to idle state |
-| `state` | `VerificationState \| null` | Current state (read-only) |
-| `element` | `EudiVerifyElement \| null` | Underlying custom element (escape hatch) |
+| Property/Method | Type                        | Description                              |
+| --------------- | --------------------------- | ---------------------------------------- |
+| `start()`       | `() => void`                | Start the verification flow              |
+| `cancel()`      | `() => void`                | Cancel current verification              |
+| `reset()`       | `() => void`                | Reset to idle state                      |
+| `state`         | `VerificationState \| null` | Current state (read-only)                |
+| `element`       | `EudiVerifyElement \| null` | Underlying custom element (escape hatch) |
 
 ## Headless Hook
 
 For custom UI implementations, use the `useEudiVerify` hook:
 
 ```tsx
-import { useEudiVerify } from '@eudi-verify/react';
+import { useEudiVerify } from "@eudi-verify/react";
 
 function CustomVerificationUI() {
   const { state, start, cancel } = useEudiVerify({
-    apiUrl: '/api/eudi'
+    apiUrl: "/api/eudi",
   });
 
-  if (state.status === 'idle') {
+  if (state.status === "idle") {
     return (
       <button onClick={() => start({ age_over_18: true })}>
         Verify Your Age
@@ -120,11 +120,11 @@ function CustomVerificationUI() {
     );
   }
 
-  if (state.status === 'showQR') {
+  if (state.status === "showQR") {
     return <img src={state.qrDataUrl} alt="Scan with EUDI Wallet" />;
   }
 
-  if (state.status === 'verified') {
+  if (state.status === "verified") {
     return <div>Verified! Token: {state.token}</div>;
   }
 
@@ -138,12 +138,12 @@ Style the widget using CSS custom properties:
 
 ```css
 eudi-verify {
-  --eudi-primary: #0052b4;        /* Buttons, success */
-  --eudi-text: #1a1a1a;          /* Body text */
-  --eudi-background: #ffffff;     /* Widget surface */
-  --eudi-border-radius: 12px;     /* Corner rounding */
+  --eudi-primary: #0052b4; /* Buttons, success */
+  --eudi-text: #1a1a1a; /* Body text */
+  --eudi-background: #ffffff; /* Widget surface */
+  --eudi-border-radius: 12px; /* Corner rounding */
   --eudi-font-family: "Inter", sans-serif;
-  --eudi-error: #d32f2f;          /* Error state */
+  --eudi-error: #d32f2f; /* Error state */
 }
 ```
 
@@ -152,7 +152,7 @@ Or pass `className` and `style` props directly:
 ```tsx
 <EudiVerify
   className="my-verification-widget"
-  style={{ maxWidth: '400px', margin: '0 auto' }}
+  style={{ maxWidth: "400px", margin: "0 auto" }}
   apiUrl="/api/eudi"
   request={{ age_over_18: true }}
 />
@@ -163,9 +163,9 @@ Or pass `className` and `style` props directly:
 This component registers a custom element and must run in the browser. Use the `'use client'` directive:
 
 ```tsx
-'use client';
+"use client";
 
-import { EudiVerify } from '@eudi-verify/react';
+import { EudiVerify } from "@eudi-verify/react";
 
 export default function VerificationPage() {
   return <EudiVerify apiUrl="/api/eudi" request={{ age_over_18: true }} />;
@@ -179,12 +179,12 @@ The package uses happy-dom for tests. If you use jsdom, you may need a custom el
 Example test setup:
 
 ```tsx
-import { render, screen } from '@testing-library/react';
-import { EudiVerify } from '@eudi-verify/react';
+import { render, screen } from "@testing-library/react";
+import { EudiVerify } from "@eudi-verify/react";
 
-test('renders verification widget', () => {
+test("renders verification widget", () => {
   render(<EudiVerify apiUrl="/api/eudi" request={{ age_over_18: true }} />);
-  expect(screen.getByRole('region')).toBeInTheDocument();
+  expect(screen.getByRole("region")).toBeInTheDocument();
 });
 ```
 
@@ -202,8 +202,8 @@ Receive the full state object for custom logic:
   request={{ age_over_18: true }}
   onStateChange={({ state }) => {
     // Full state object with discriminated union
-    if (state.status === 'verified') {
-      myAnalytics.track('verification_success', {
+    if (state.status === "verified") {
+      myAnalytics.track("verification_success", {
         claims: state.claims,
         sessionId: state.token,
       });
@@ -225,11 +225,11 @@ useEffect(() => {
   if (!element) return;
 
   const customHandler = (e: CustomEvent) => {
-    console.log('Custom verified handler:', e.detail);
+    console.log("Custom verified handler:", e.detail);
   };
 
-  element.addEventListener('verified', customHandler);
-  return () => element.removeEventListener('verified', customHandler);
+  element.addEventListener("verified", customHandler);
+  return () => element.removeEventListener("verified", customHandler);
 }, []);
 ```
 
@@ -237,13 +237,13 @@ useEffect(() => {
 
 All events include a `detail` property with relevant data:
 
-| Event | Detail | Description |
-|-------|--------|-------------|
-| `verified` | `{ token: string, claims: object }` | Verification succeeded |
-| `rejected` | `{ error?: string }` | User rejected in wallet |
-| `expired` | `{}` | Session expired |
-| `error` | `{ error: string }` | Error occurred |
-| `state-change` | `{ state: VerificationState }` | Any state change |
+| Event          | Detail                              | Description             |
+| -------------- | ----------------------------------- | ----------------------- |
+| `verified`     | `{ token: string, claims: object }` | Verification succeeded  |
+| `rejected`     | `{ error?: string }`                | User rejected in wallet |
+| `expired`      | `{}`                                | Session expired         |
+| `error`        | `{ error: string }`                 | Error occurred          |
+| `state-change` | `{ state: VerificationState }`      | Any state change        |
 
 ## States
 
@@ -275,14 +275,14 @@ React 19 added improved custom element support, including better property handli
 
 2. **Type Safety**: The wrapper provides full TypeScript types for props, events, and the ref handle.
 
-3. **Developer Experience**: 
+3. **Developer Experience**:
    - Accept `request` as an object or JSON string
    - Provide imperative methods via `ref` (`start()`, `cancel()`, `reset()`)
    - Expose escape hatches (`onStateChange`, `ref.current.element`)
 
 4. **Reliability**: Works consistently across environments (CSR, SSR, testing).
 
-While you *could* use `<eudi-verify>` directly in React 19 with manual event listeners, the wrapper provides a much better developer experience.
+While you _could_ use `<eudi-verify>` directly in React 19 with manual event listeners, the wrapper provides a much better developer experience.
 
 ## License
 

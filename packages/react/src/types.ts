@@ -30,7 +30,10 @@ export interface EudiVerifyProps {
   style?: CSSProperties;
 
   /** Called when verification succeeds */
-  onVerified?: (detail: { token: string; claims: Record<string, unknown> }) => void;
+  onVerified?: (detail: {
+    token: string;
+    claims: Record<string, unknown>;
+  }) => void;
 
   /** Called when user rejects verification in wallet */
   onRejected?: (detail: { error?: string }) => void;

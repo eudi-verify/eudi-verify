@@ -61,7 +61,9 @@ export interface UseEudiVerifyReturn {
  * }
  * ```
  */
-export function useEudiVerify(config: UseEudiVerifyConfig): UseEudiVerifyReturn {
+export function useEudiVerify(
+  config: UseEudiVerifyConfig,
+): UseEudiVerifyReturn {
   const [state, setState] = useState<VerificationState>({ status: "idle" });
   const verificationRef = useRef<Verification | null>(null);
 
@@ -82,7 +84,6 @@ export function useEudiVerify(config: UseEudiVerifyConfig): UseEudiVerifyReturn 
     state,
     start: (request: VerificationRequest) =>
       verificationRef.current?.start(request) ?? Promise.resolve(),
-    cancel: () =>
-      verificationRef.current?.cancel() ?? Promise.resolve(),
+    cancel: () => verificationRef.current?.cancel() ?? Promise.resolve(),
   };
 }

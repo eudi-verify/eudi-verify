@@ -52,13 +52,13 @@ Terminal 2 — examples/html-vanilla/  http://localhost:3001 (static + /api prox
 
 ## Files
 
-| File                  | Purpose                                     |
-| --------------------- | ------------------------------------------- |
-| `server.ts`           | Static file server + API proxy to `:3000`   |
-| `public/index.html`   | Landing page                                |
-| `public/verify.html`  | Age verification with widget                |
-| `public/success.html` | Post-verification page                      |
-| `public/styles.css`   | EU-themed styling                           |
+| File                  | Purpose                                   |
+| --------------------- | ----------------------------------------- |
+| `server.ts`           | Static file server + API proxy to `:3000` |
+| `public/index.html`   | Landing page                              |
+| `public/verify.html`  | Age verification with widget              |
+| `public/success.html` | Post-verification page                    |
+| `public/styles.css`   | EU-themed styling                         |
 
 ## Running with Docker
 
@@ -71,12 +71,12 @@ docker run -p 3000:3001 -e TOKEN_SECRET=your-secret-here eudi-verify-demo
 
 ## Environment Variables
 
-| Variable       | Required   | Default                          | Description                   |
-| -------------- | ---------- | -------------------------------- | ----------------------------- |
-| `TOKEN_SECRET` | Yes (prod) | `demo-secret-...`                | HMAC secret (API server)      |
-| `PORT`         | No         | `3001`                           | Static server port            |
-| `API_PORT`     | No         | `3000`                           | API server port to proxy to   |
-| `BASE_URL`     | No         | `http://localhost:3000/api/eudi` | Public URL (API server)       |
+| Variable       | Required   | Default                          | Description                 |
+| -------------- | ---------- | -------------------------------- | --------------------------- |
+| `TOKEN_SECRET` | Yes (prod) | `demo-secret-...`                | HMAC secret (API server)    |
+| `PORT`         | No         | `3001`                           | Static server port          |
+| `API_PORT`     | No         | `3000`                           | API server port to proxy to |
+| `BASE_URL`     | No         | `http://localhost:3000/api/eudi` | Public URL (API server)     |
 
 ## Testing Without a Wallet
 

@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect } from 'react';
-import { EudiVerify, type EudiVerifyRef } from '@eudi-verify/react';
+import { useRef, useState, useEffect } from "react";
+import { EudiVerify, type EudiVerifyRef } from "@eudi-verify/react";
 
 interface LogEntry {
   time: string;
@@ -10,16 +10,15 @@ interface LogEntry {
 function App() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
-  const [hasActiveSession, setHasActiveSession] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [curlCommand, setCurlCommand] = useState<string>('');
+  const [curlCommand, setCurlCommand] = useState<string>("");
   const [showDemoWallet, setShowDemoWallet] = useState(false);
   const [showCurlHint, setShowCurlHint] = useState(false);
   const widgetRef = useRef<EudiVerifyRef>(null);
   const errorAlertRef = useRef<HTMLDivElement>(null);
 
   const log = (message: string, html = false) => {
-    const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
+    const time = new Date().toLocaleTimeString("en-GB", { hour12: false });
     setLogs((prev) => [...prev, { time, message, html }]);
   };
 
@@ -32,14 +31,13 @@ function App() {
     const origin = window.location.origin;
     setCurlCommand(
       `curl -X POST ${origin}/api/eudi/callback \\\n` +
-      `  -H "Content-Type: application/x-www-form-urlencoded" \\\n` +
-      `  -d "response=demo&state=${sessionId}"`
+        `  -H "Content-Type: application/x-www-form-urlencoded" \\\n` +
+        `  -d "response=demo&state=${sessionId}"`,
     );
     setShowCurlHint(true);
   };
 
   const resetSessionUi = () => {
-    setHasActiveSession(false);
     setCurrentSessionId(null);
     setShowDemoWallet(false);
     setShowCurlHint(false);
@@ -52,13 +50,15 @@ function App() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const errorParam = params.get('error');
+    const errorParam = params.get("error");
     if (errorParam) {
       const messages: Record<string, string> = {
-        invalid_token: 'Token validation failed. Please try again.',
-        missing_token: 'Missing verification token. Please try again.',
+        invalid_token: "Token validation failed. Please try again.",
+        missing_token: "Missing verification token. Please try again.",
       };
-      showError(messages[errorParam] || 'Verification failed. Please try again.');
+      showError(
+        messages[errorParam] || "Verification failed. Please try again.",
+      );
     }
   }, []);
 
@@ -66,77 +66,79 @@ function App() {
     const status = state.status;
 
     switch (status) {
-      case 'loading':
-        log('Starting verification…');
+      case "loading":
+        log("Starting verification…");
         resetSessionUi();
         break;
 
-      case 'showQR':
-        if ('sessionId' in state) {
+      case "showQR":
+        if ("sessionId" in state) {
           const sessionId = state.sessionId;
           setCurrentSessionId(sessionId);
-          setHasActiveSession(true);
           const inspectUrl = `/api/eudi/sessions/${encodeURIComponent(sessionId)}`;
           log(
             `POST /sessions → session <code>${sessionId}</code> — ` +
-            `<a href="${inspectUrl}" target="_blank" rel="noopener">inspect</a>`,
-            true
+              `<a href="${inspectUrl}" target="_blank" rel="noopener">inspect</a>`,
+            true,
           );
           updateCurlHint(sessionId);
           setShowDemoWallet(true);
         }
         break;
 
-      case 'waitingForWallet':
-        if ('sessionId' in state) {
+      case "waitingForWallet":
+        if ("sessionId" in state) {
           const sessionId = state.sessionId;
           setCurrentSessionId(sessionId);
-          setHasActiveSession(true);
           updateCurlHint(sessionId);
           setShowDemoWallet(true);
         }
-        log('Status: waiting_for_wallet');
+        log("Status: waiting_for_wallet");
         break;
 
-      case 'rejected':
-        log(
-          `Verification rejected${state.error ? `: ${state.error}` : ''}`,
-        );
+      case "rejected":
+        log(`Verification rejected${state.error ? `: ${state.error}` : ""}`);
         break;
 
-      case 'expired':
-        log('Session expired');
-        showError('Verification session expired. Please try again.');
+      case "expired":
+        log("Session expired");
+        showError("Verification session expired. Please try again.");
         resetSessionUi();
         break;
 
-      case 'verified':
-        if ('token' in state) {
+      case "verified":
+        if ("token" in state) {
           log(`✓ Verified — token ${truncateToken(state.token)}`);
         }
         break;
 
-      case 'error':
-        if ('error' in state) {
+      case "error":
+        if ("error" in state) {
           log(`Error: ${state.error}`);
-          showError('Verification failed. Please try again.');
+          showError("Verification failed. Please try again.");
         }
         resetSessionUi();
         break;
     }
   };
 
-  const handleVerified = async ({ token, claims }: { token: string; claims: Record<string, unknown> }) => {
+  const handleVerified = async ({
+    token,
+    claims,
+  }: {
+    token: string;
+    claims: Record<string, unknown>;
+  }) => {
     log(`✓ Verified — token ${truncateToken(token)}`);
     log(`Claims: ${JSON.stringify(claims)}`);
 
     try {
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
           eudi_token: token,
-          eudi_session_id: currentSessionId || '',
+          eudi_session_id: currentSessionId || "",
         }),
       });
 
@@ -145,42 +147,42 @@ function App() {
         if (result.success && result.receiptId) {
           window.location.href = `/success.html?rid=${encodeURIComponent(result.receiptId)}`;
         } else {
-          showError('Checkout failed. Please try again.');
+          showError("Checkout failed. Please try again.");
         }
       } else {
-        showError('Token validation failed.');
+        showError("Token validation failed.");
       }
     } catch (err) {
-      console.error('Checkout error:', err);
-      showError('Failed to submit token. Please try again.');
+      console.error("Checkout error:", err);
+      showError("Failed to submit token. Please try again.");
     }
   };
 
   const handleRejected = ({ error }: { error?: string }) => {
-    log(`Verification rejected${error ? `: ${error}` : ''}`);
+    log(`Verification rejected${error ? `: ${error}` : ""}`);
     showError(
       error
         ? `Verification was declined: ${error}`
-        : 'Verification was rejected. Please try again.',
+        : "Verification was rejected. Please try again.",
     );
     resetSessionUi();
   };
 
   const handleExpired = () => {
-    log('Session expired');
-    showError('Verification session expired. Please try again.');
+    log("Session expired");
+    showError("Verification session expired. Please try again.");
     resetSessionUi();
   };
 
   const handleError = ({ error }: { error: string }) => {
     log(`Error: ${error}`);
-    showError('Verification failed. Please try again.');
+    showError("Verification failed. Please try again.");
     resetSessionUi();
   };
 
   const demoWalletLink = currentSessionId
     ? `/demo-wallet.html?state=${encodeURIComponent(currentSessionId)}`
-    : '#';
+    : "#";
 
   return (
     <>
@@ -204,7 +206,9 @@ function App() {
             />
             <span className="site-header__brand-text">
               <span className="site-header__title">EUDI Verify</span>
-              <span className="site-header__subtitle">Age verification demo</span>
+              <span className="site-header__subtitle">
+                Age verification demo
+              </span>
             </span>
           </a>
         </header>
@@ -245,8 +249,8 @@ function App() {
             {showDemoWallet && (
               <div className="card demo-wallet-panel">
                 <p className="demo-wallet-hint">
-                  No EUDI Wallet app installed? Open the demo wallet in a new tab to
-                  approve this request.
+                  No EUDI Wallet app installed? Open the demo wallet in a new
+                  tab to approve this request.
                 </p>
                 <a
                   className="btn-demo-wallet"
@@ -272,7 +276,7 @@ function App() {
                     />
                   ) : (
                     <li key={i}>{`${entry.time}  ${entry.message}`}</li>
-                  )
+                  ),
                 )}
               </ol>
             </div>
@@ -282,8 +286,8 @@ function App() {
                 <summary>Developer: simulate wallet with curl</summary>
                 <div className="curl-hint__body">
                   <p className="curl-hint-note">
-                    Same effect as the demo wallet Approve button — useful for CI,
-                    scripting, and debugging.
+                    Same effect as the demo wallet Approve button — useful for
+                    CI, scripting, and debugging.
                   </p>
                   <pre className="replay-result">{curlCommand}</pre>
                 </div>
@@ -307,7 +311,7 @@ function App() {
 
         <footer className="site-footer">
           <p>
-            Open source under{' '}
+            Open source under{" "}
             <a href="https://github.com/eudi-verify/eudi-verify">AGPL-3.0</a>.
             Designed for EU-sovereign deployment.
           </p>

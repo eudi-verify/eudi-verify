@@ -10,18 +10,18 @@ import { EudiVerify, type EudiVerifyRef } from "./EudiVerify.js";
 describe("EudiVerify", () => {
   it("renders without crashing", () => {
     const { container } = render(
-      <EudiVerify apiUrl="/api/eudi" request={{ age_over_18: true }} />
+      <EudiVerify apiUrl="/api/eudi" request={{ age_over_18: true }} />,
     );
-    
+
     const element = container.querySelector("eudi-verify");
     expect(element).toBeDefined();
   });
 
   it("sets apiUrl attribute", () => {
     const { container } = render(
-      <EudiVerify apiUrl="/test-api" request={{ age_over_18: true }} />
+      <EudiVerify apiUrl="/test-api" request={{ age_over_18: true }} />,
     );
-    
+
     const element = container.querySelector("eudi-verify") as any;
     expect(element?.apiUrl).toBe("/test-api");
   });
@@ -29,18 +29,18 @@ describe("EudiVerify", () => {
   it("accepts request as object", () => {
     const request = { age_over_18: true };
     const { container } = render(
-      <EudiVerify apiUrl="/api/eudi" request={request} />
+      <EudiVerify apiUrl="/api/eudi" request={request} />,
     );
-    
+
     const element = container.querySelector("eudi-verify") as any;
     expect(element?.request).toBe(JSON.stringify(request));
   });
 
   it("accepts request as JSON string", () => {
     const { container } = render(
-      <EudiVerify apiUrl="/api/eudi" request='{"age_over_18":true}' />
+      <EudiVerify apiUrl="/api/eudi" request='{"age_over_18":true}' />,
     );
-    
+
     const element = container.querySelector("eudi-verify") as any;
     expect(element?.request).toBe('{"age_over_18":true}');
   });
@@ -52,14 +52,14 @@ describe("EudiVerify", () => {
         apiUrl="/api/eudi"
         request={{ age_over_18: true }}
         onVerified={onVerified}
-      />
+      />,
     );
-    
+
     const element = container.querySelector("eudi-verify") as any;
     element?.dispatchEvent(
       new CustomEvent("verified", {
         detail: { token: "test-token", claims: { age_over_18: true } },
-      })
+      }),
     );
 
     await waitFor(() => {
@@ -77,12 +77,12 @@ describe("EudiVerify", () => {
         apiUrl="/api/eudi"
         request={{ age_over_18: true }}
         onError={onError}
-      />
+      />,
     );
-    
+
     const element = container.querySelector("eudi-verify") as any;
     element?.dispatchEvent(
-      new CustomEvent("error", { detail: { error: "test_error" } })
+      new CustomEvent("error", { detail: { error: "test_error" } }),
     );
 
     await waitFor(() => {
@@ -93,7 +93,13 @@ describe("EudiVerify", () => {
   it("exposes ref with element property", () => {
     function TestComponent() {
       const ref = useRef<EudiVerifyRef>(null);
-      return <EudiVerify ref={ref} apiUrl="/api/eudi" request={{ age_over_18: true }} />;
+      return (
+        <EudiVerify
+          ref={ref}
+          apiUrl="/api/eudi"
+          request={{ age_over_18: true }}
+        />
+      );
     }
 
     render(<TestComponent />);

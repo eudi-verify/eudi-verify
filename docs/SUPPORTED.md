@@ -21,12 +21,12 @@
 
 ### Frontend
 
-| Stack          | Status        | How                                                                |
-| -------------- | ------------- | ------------------------------------------------------------------ |
-| **Plain HTML** | ✅ Supported  | Import `@eudi-verify/embed`; use `<eudi-verify>`                   |
-| **React**      | ✅ Supported  | `@eudi-verify/react` — React wrapper with typed props + callbacks |
-| **Custom UI**  | ✅ Supported  | `@eudi-verify/client` (vanilla TS, zero framework deps)            |
-| **WordPress**  | 🟡 Manual embed | Add script + element in theme/block; no plugin yet               |
+| Stack          | Status          | How                                                               |
+| -------------- | --------------- | ----------------------------------------------------------------- |
+| **Plain HTML** | ✅ Supported    | Import `@eudi-verify/embed`; use `<eudi-verify>`                  |
+| **React**      | ✅ Supported    | `@eudi-verify/react` — React wrapper with typed props + callbacks |
+| **Custom UI**  | ✅ Supported    | `@eudi-verify/client` (vanilla TS, zero framework deps)           |
+| **WordPress**  | 🟡 Manual embed | Add script + element in theme/block; no plugin yet                |
 
 **Documented integration:** [INTEGRATION.md](./INTEGRATION.md), [packages/embed/README.md](../packages/embed/README.md), [packages/react/README.md](../packages/react/README.md)
 

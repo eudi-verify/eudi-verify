@@ -21,14 +21,14 @@ Each frontend proxies `/api/*` to this server. Only one frontend can run at a ti
 
 ## Endpoints
 
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/api/eudi/sessions` | Create verification session |
-| GET | `/api/eudi/sessions/:id` | Get session status |
-| POST | `/api/eudi/sessions/:id` | Cancel session |
-| POST | `/api/eudi/tokens/verify` | Verify token |
-| POST | `/api/eudi/callback` | Wallet callback |
-| GET | `/api/eudi/request/:id` | Get request object |
-| POST | `/api/checkout` | Demo checkout flow |
-| GET | `/api/demo/receipt/:id` | Get demo receipt |
-| POST | `/api/demo/replay` | Replay verification |
+| Method | Path                      | Description                 |
+| ------ | ------------------------- | --------------------------- |
+| POST   | `/api/eudi/sessions`      | Create verification session |
+| GET    | `/api/eudi/sessions/:id`  | Get session status          |
+| POST   | `/api/eudi/sessions/:id`  | Cancel session              |
+| POST   | `/api/eudi/tokens/verify` | Verify token                |
+| POST   | `/api/eudi/callback`      | Wallet callback             |
+| GET    | `/api/eudi/request/:id`   | Get request object          |
+| POST   | `/api/checkout`           | Demo checkout flow          |
+| GET    | `/api/demo/receipt/:id`   | Get demo receipt            |
+| POST   | `/api/demo/replay`        | Replay verification         |

@@ -35,4 +35,7 @@ export type {
   VerificationState,
   VerifiedClaims,
 } from "./types.js";
-export type { UseEudiVerifyConfig, UseEudiVerifyReturn } from "./useEudiVerify.js";
+export type {
+  UseEudiVerifyConfig,
+  UseEudiVerifyReturn,
+} from "./useEudiVerify.js";

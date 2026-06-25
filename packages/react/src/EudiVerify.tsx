@@ -49,7 +49,7 @@ export const EudiVerify = forwardRef<EudiVerifyRef, EudiVerifyProps>(
       onError,
       onStateChange,
     },
-    ref: ForwardedRef<EudiVerifyRef>
+    ref: ForwardedRef<EudiVerifyRef>,
   ) {
     const elementRef = useRef<EudiVerifyElement>(null);
 
@@ -59,7 +59,8 @@ export const EudiVerify = forwardRef<EudiVerifyRef, EudiVerifyProps>(
       if (!el) return;
 
       el.apiUrl = apiUrl;
-      el.request = typeof request === "string" ? request : JSON.stringify(request);
+      el.request =
+        typeof request === "string" ? request : JSON.stringify(request);
       if (autoStart !== undefined) {
         el.autoStart = autoStart;
       }
@@ -71,7 +72,10 @@ export const EudiVerify = forwardRef<EudiVerifyRef, EudiVerifyProps>(
       if (!el || !onVerified) return;
 
       const handler = (e: Event) => {
-        const customEvent = e as CustomEvent<{ token: string; claims: Record<string, unknown> }>;
+        const customEvent = e as CustomEvent<{
+          token: string;
+          claims: Record<string, unknown>;
+        }>;
         onVerified(customEvent.detail);
       };
 
@@ -142,17 +146,11 @@ export const EudiVerify = forwardRef<EudiVerifyRef, EudiVerifyProps>(
           return elementRef.current;
         },
       }),
-      []
+      [],
     );
 
-    return (
-      <eudi-verify
-        ref={elementRef}
-        className={className}
-        style={style}
-      />
-    );
-  }
+    return <eudi-verify ref={elementRef} className={className} style={style} />;
+  },
 );
 
 // Type augmentation for JSX

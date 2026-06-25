@@ -260,31 +260,31 @@ pnpm add @eudi-verify/react
 ```
 
 ```tsx
-import { EudiVerify } from '@eudi-verify/react';
+import { EudiVerify } from "@eudi-verify/react";
 
 function AgeGate() {
   const handleVerified = async ({ token, claims }) => {
     // Send token to your backend
-    const response = await fetch('/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ eudiToken: token }),
     });
 
     if (response.ok) {
-      window.location.href = '/success';
+      window.location.href = "/success";
     }
   };
 
   return (
     <div>
       <h1>Age Verification Required</h1>
-      
+
       <EudiVerify
         apiUrl="/api/eudi"
         request={{ age_over_18: true }}
         onVerified={handleVerified}
-        onRejected={() => alert('Verification declined')}
+        onRejected={() => alert("Verification declined")}
         onError={({ error }) => console.error(error)}
       />
     </div>
@@ -294,27 +294,31 @@ function AgeGate() {
 
 ### React Props
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `apiUrl` | `string` | Base URL of your verifier API |
-| `request` | `VerificationRequest \| string` | Claims to request |
-| `onVerified` | `(detail) => void` | Called when verification succeeds |
-| `onRejected` | `(detail) => void` | Called when user declines |
-| `onExpired` | `() => void` | Called when session expires |
-| `onError` | `(detail) => void` | Called on errors |
+| Prop         | Type                            | Description                       |
+| ------------ | ------------------------------- | --------------------------------- |
+| `apiUrl`     | `string`                        | Base URL of your verifier API     |
+| `request`    | `VerificationRequest \| string` | Claims to request                 |
+| `onVerified` | `(detail) => void`              | Called when verification succeeds |
+| `onRejected` | `(detail) => void`              | Called when user declines         |
+| `onExpired`  | `() => void`                    | Called when session expires       |
+| `onError`    | `(detail) => void`              | Called on errors                  |
 
 ### Imperative Control
 
 ```tsx
-import { useRef } from 'react';
-import { EudiVerify, type EudiVerifyRef } from '@eudi-verify/react';
+import { useRef } from "react";
+import { EudiVerify, type EudiVerifyRef } from "@eudi-verify/react";
 
 function App() {
   const ref = useRef<EudiVerifyRef>(null);
 
   return (
     <>
-      <EudiVerify ref={ref} apiUrl="/api/eudi" request={{ age_over_18: true }} />
+      <EudiVerify
+        ref={ref}
+        apiUrl="/api/eudi"
+        request={{ age_over_18: true }}
+      />
       <button onClick={() => ref.current?.start()}>Start Verification</button>
       <button onClick={() => ref.current?.cancel()}>Cancel</button>
     </>
@@ -327,9 +331,9 @@ function App() {
 For Next.js App Router, use the `'use client'` directive:
 
 ```tsx
-'use client';
+"use client";
 
-import { EudiVerify } from '@eudi-verify/react';
+import { EudiVerify } from "@eudi-verify/react";
 
 export default function VerificationPage() {
   return <EudiVerify apiUrl="/api/eudi" request={{ age_over_18: true }} />;

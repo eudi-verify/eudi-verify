@@ -307,7 +307,9 @@ const server = createServer(async (req, res) => {
   }
 
   res.writeHead(404, { "Content-Type": "application/json" });
-  res.end(JSON.stringify({ error: "not_found", message: "Endpoint not found" }));
+  res.end(
+    JSON.stringify({ error: "not_found", message: "Endpoint not found" }),
+  );
 });
 
 server.listen(PORT, () => {

@@ -62,7 +62,7 @@ This example demonstrates the same verification flow as the `html-vanilla` examp
 ### Basic Usage
 
 ```tsx
-import { EudiVerify } from '@eudi-verify/react';
+import { EudiVerify } from "@eudi-verify/react";
 
 function AgeGate() {
   return (
@@ -70,7 +70,7 @@ function AgeGate() {
       apiUrl="/api/eudi"
       request={{ age_over_18: true }}
       onVerified={({ token, claims }) => {
-        console.log('Verified!', { token, claims });
+        console.log("Verified!", { token, claims });
       }}
     />
   );
@@ -80,8 +80,8 @@ function AgeGate() {
 ### With State Management
 
 ```tsx
-import { useRef, useState } from 'react';
-import { EudiVerify, type EudiVerifyRef } from '@eudi-verify/react';
+import { useRef, useState } from "react";
+import { EudiVerify, type EudiVerifyRef } from "@eudi-verify/react";
 
 function App() {
   const [logs, setLogs] = useState<string[]>([]);
@@ -100,7 +100,9 @@ function App() {
         onStateChange={handleStateChange}
       />
       <ul>
-        {logs.map((log, i) => <li key={i}>{log}</li>)}
+        {logs.map((log, i) => (
+          <li key={i}>{log}</li>
+        ))}
       </ul>
     </>
   );
