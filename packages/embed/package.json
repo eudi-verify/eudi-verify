@@ -1,6 +1,6 @@
 {
   "name": "@eudi-verify/embed",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "<eudi-verify> Custom Element for EUDI Wallet verification",
   "type": "module",
   "engines": {
