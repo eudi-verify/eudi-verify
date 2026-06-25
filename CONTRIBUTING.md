@@ -31,11 +31,11 @@ pnpm format:check
 # Run all CI checks locally (mirrors GitHub Actions)
 pnpm verify
 
-# Optional: install pre-push hook (runs pnpm verify before every push)
+# Optional: install git hooks (format at commit, full CI at push)
 pnpm hooks:install
 ```
 
-If `pnpm verify` fails on formatting, run `pnpm format`, then re-run `pnpm verify`.
+If a hook fails on formatting, run `pnpm format`, then retry your commit or push.
 
 ### Syncing with `main`
 
@@ -230,7 +230,7 @@ On your branch, after code changes and before push:
 pnpm changeset          # interactive — see below
 git add .changeset/
 git commit -m "..."     # can be same commit as the fix or a separate one
-pnpm verify             # pre-push hook runs this; fix format with pnpm format if needed
+pnpm verify             # pre-push hook runs this; pre-commit runs format:check only
 git push -u origin your-branch
 ```
 

@@ -1,0 +1,56 @@
+{
+  "name": "@eudi-verify/react",
+  "version": "0.1.0",
+  "description": "React wrapper for @eudi-verify/embed web component",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "pnpm build"
+  },
+  "keywords": [
+    "eudi",
+    "wallet",
+    "verifier",
+    "react",
+    "eu-digital-identity",
+    "component"
+  ],
+  "author": "eudi-verify contributors",
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eudi-verify/eudi-verify.git",
+    "directory": "packages/react"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "dependencies": {
+    "@eudi-verify/client": "workspace:*",
+    "@eudi-verify/embed": "workspace:*"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.0.1",
+    "@types/react": "^18.3.0",
+    "happy-dom": "^20.8.9",
+    "react": "^18.3.1",
+    "tsup": "^8.3.0"
+  }
+}

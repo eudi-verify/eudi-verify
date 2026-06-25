@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#003399" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href="https://demo.eudi-verify.eu/" />
+    <title>Demo EU Wallet - EUDI Verify</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div class="demo-banner" role="status">
+      Simulated wallet — approvals are fake. For local testing only.
+    </div>
+
+    <div class="page-shell">
+      <header class="site-header">
+        <a href="/" class="site-header__brand">
+          <img
+            class="eu-emblem"
+            src="/eu-emblem.svg"
+            alt=""
+            width="37"
+            height="25"
+            aria-hidden="true"
+          />
+          <span class="site-header__brand-text">
+            <span class="site-header__title">Demo EU Wallet</span>
+            <span class="site-header__subtitle">
+              Simulated credential holder
+            </span>
+          </span>
+        </a>
+      </header>
+
+      <main id="main-content" class="page-main page-main--wide" tabindex="-1">
+        <div
+          id="wallet-error"
+          class="alert alert-error"
+          role="alert"
+          tabindex="-1"
+          hidden
+        ></div>
+
+        <div class="phone-stage">
+          <div class="phone-frame">
+            <div class="phone-frame__notch" aria-hidden="true"></div>
+            <div class="demo-wallet-card">
+              <div class="demo-wallet-header">
+                <span class="demo-wallet-icon" aria-hidden="true">EU</span>
+                <h1>Credential Request</h1>
+              </div>
+
+              <div id="wallet-loading" class="demo-wallet-loading">
+                <p>Loading session…</p>
+              </div>
+
+              <div id="wallet-content" hidden>
+                <dl class="receipt-table">
+                  <dt>Session ID</dt>
+                  <dd><code id="session-id">—</code></dd>
+                  <dt>Status</dt>
+                  <dd><code id="session-status">—</code></dd>
+                  <dt>Created</dt>
+                  <dd id="session-created">—</dd>
+                  <dt>Expires</dt>
+                  <dd id="session-expires">—</dd>
+                  <dt>Requested claims</dt>
+                  <dd>
+                    <pre id="session-request" class="replay-result">—</pre>
+                  </dd>
+                </dl>
+
+                <div id="wallet-actions" class="demo-wallet-actions">
+                  <button type="button" class="btn" id="btn-approve">
+                    Approve
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline"
+                    id="btn-decline"
+                  >
+                    Decline
+                  </button>
+                </div>
+
+                <div
+                  id="wallet-done"
+                  class="alert alert-success"
+                  role="status"
+                  hidden
+                  style="margin-top: 1rem"
+                >
+                  <strong id="wallet-done-title">Credential sent</strong>
+                  <p id="wallet-done-text">
+                    Return to your verification tab — it should update
+                    automatically.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-panel page-panel--flat">
+          <div class="card log-card">
+            <h3>Audit log</h3>
+            <ol id="wallet-audit-log" class="verification-log"></ol>
+          </div>
+
+          <a href="/" class="back-link">← Back to verification</a>
+        </div>
+      </main>
+
+      <footer class="site-footer">
+        <p>
+          Open source under
+          <a href="https://github.com/eudi-verify/eudi-verify">AGPL-3.0</a>.
+          Designed for EU-sovereign deployment.
+        </p>
+      </footer>
+    </div>
+
+    <script type="module" src="/demo-wallet.js"></script>
+  </body>
+</html>

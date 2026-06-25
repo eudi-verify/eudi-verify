@@ -114,6 +114,22 @@ app.get("/api/eudi/request/:id", async (req, res) => {
 app.listen(3000);
 ```
 
+### Running the repo examples
+
+All frontend examples use a shared backend server ([`examples/server/`](../examples/server/)). Start the API server first, then run your chosen frontend in a second terminal:
+
+```bash
+# Terminal 1 — API (port 3000)
+cd examples/server && pnpm start
+
+# Terminal 2 — html-vanilla (port 3001) or React (port 3001)
+cd examples/html-vanilla && pnpm start
+# or
+cd examples/react && pnpm dev
+```
+
+This mirrors production: one backend, any frontend.
+
 ## Step 2: Frontend — Option A: Widget
 
 The simplest integration. Drop in the `<eudi-verify>` element.
@@ -232,6 +248,101 @@ verifyButton.onclick = () => {
   verification.start({ age_over_18: true });
 };
 ```
+
+## Step 2: Frontend — Option C: React
+
+Use the React wrapper for idiomatic React integration.
+
+**Requirements:** React 18+
+
+React does not wire `on*` props to custom element events, so `onVerified` on raw `<eudi-verify>` will not fire. The wrapper attaches `verified`, `rejected`, and related DOM listeners internally. To use the embed without the wrapper, use `ref` + `addEventListener` (Option B above).
+
+```bash
+pnpm add @eudi-verify/react
+```
+
+```tsx
+import { EudiVerify } from "@eudi-verify/react";
+
+function AgeGate() {
+  const handleVerified = async ({ token, claims }) => {
+    // Send token to your backend
+    const response = await fetch("/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ eudiToken: token }),
+    });
+
+    if (response.ok) {
+      window.location.href = "/success";
+    }
+  };
+
+  return (
+    <div>
+      <h1>Age Verification Required</h1>
+
+      <EudiVerify
+        apiUrl="/api/eudi"
+        request={{ age_over_18: true }}
+        onVerified={handleVerified}
+        onRejected={() => alert("Verification declined")}
+        onError={({ error }) => console.error(error)}
+      />
+    </div>
+  );
+}
+```
+
+### React Props
+
+| Prop         | Type                            | Description                       |
+| ------------ | ------------------------------- | --------------------------------- |
+| `apiUrl`     | `string`                        | Base URL of your verifier API     |
+| `request`    | `VerificationRequest \| string` | Claims to request                 |
+| `onVerified` | `(detail) => void`              | Called when verification succeeds |
+| `onRejected` | `(detail) => void`              | Called when user declines         |
+| `onExpired`  | `() => void`                    | Called when session expires       |
+| `onError`    | `(detail) => void`              | Called on errors                  |
+
+### Imperative Control
+
+```tsx
+import { useRef } from "react";
+import { EudiVerify, type EudiVerifyRef } from "@eudi-verify/react";
+
+function App() {
+  const ref = useRef<EudiVerifyRef>(null);
+
+  return (
+    <>
+      <EudiVerify
+        ref={ref}
+        apiUrl="/api/eudi"
+        request={{ age_over_18: true }}
+      />
+      <button onClick={() => ref.current?.start()}>Start Verification</button>
+      <button onClick={() => ref.current?.cancel()}>Cancel</button>
+    </>
+  );
+}
+```
+
+### Next.js Usage
+
+For Next.js App Router, use the `'use client'` directive:
+
+```tsx
+"use client";
+
+import { EudiVerify } from "@eudi-verify/react";
+
+export default function VerificationPage() {
+  return <EudiVerify apiUrl="/api/eudi" request={{ age_over_18: true }} />;
+}
+```
+
+See [packages/react/README.md](../packages/react/README.md) for full documentation and the [React example](../examples/react/) for a complete working app. Start the shared API server from [`examples/server/`](../examples/server/) before running any frontend example.
 
 ## Error Boundaries
 

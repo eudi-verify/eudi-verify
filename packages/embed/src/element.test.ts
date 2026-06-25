@@ -228,6 +228,80 @@ describe("EudiVerifyElement", () => {
 
       expect(stateChangeHandler).toHaveBeenCalled();
     });
+
+    it("hides demo banner when verification is cancelled", async () => {
+      const cancelledSession: Session = {
+        ...mockSession,
+        status: "cancelled",
+      };
+
+      const mockFetch = vi.fn(
+        async (input: string | URL | Request, init?: RequestInit) => {
+          const url =
+            typeof input === "string"
+              ? input
+              : input instanceof URL
+                ? input.href
+                : input.url;
+          const method =
+            init?.method ?? (input instanceof Request ? input.method : "GET");
+
+          if (method === "HEAD") {
+            return {
+              ok: true,
+              status: 200,
+              headers: new Headers({ "X-Eudi-Mode": "demo" }),
+            } as Response;
+          }
+
+          if (url.endsWith("/cancel")) {
+            return {
+              ok: true,
+              status: 200,
+              json: async () => cancelledSession,
+              headers: new Headers(),
+            } as Response;
+          }
+
+          if (url.includes("/sessions/")) {
+            return {
+              ok: true,
+              status: 200,
+              json: async () => mockSession,
+              headers: new Headers(),
+            } as Response;
+          }
+
+          return {
+            ok: true,
+            status: 201,
+            json: async () => mockSession,
+            headers: new Headers(),
+          } as Response;
+        },
+      );
+
+      vi.stubGlobal("fetch", mockFetch);
+      document.body.appendChild(element);
+      element.apiUrl = "https://api.example.com";
+      element.request = '{"age_over_18":true}';
+
+      const banner = () =>
+        element.shadowRoot?.querySelector(".eudi-demo-banner");
+
+      element.start();
+
+      await vi.waitFor(() => {
+        expect(banner()?.hasAttribute("hidden")).toBe(false);
+      });
+
+      element.cancel();
+
+      await vi.waitFor(() => {
+        expect(element.state?.status).toBe("idle");
+        expect(banner()?.hasAttribute("hidden")).toBe(true);
+      });
+    });
   });
 
   describe("accessibility", () => {

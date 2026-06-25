@@ -12,11 +12,10 @@
     "test": "echo 'Manual testing only'"
   },
   "dependencies": {
-    "@eudi-verify/server": "workspace:*",
     "@eudi-verify/embed": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^25.9.2",
+    "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.0.0"
   }

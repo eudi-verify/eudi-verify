@@ -37,6 +37,13 @@ export interface EudiVerifyEventMap {
 const OBSERVED_ATTRIBUTES = ["api-url", "request", "auto-start"] as const;
 type ObservedAttribute = (typeof OBSERVED_ATTRIBUTES)[number];
 
+/** States where the in-widget demo banner is shown (active verification only). */
+const DEMO_BANNER_STATUSES: ReadonlySet<VerificationState["status"]> = new Set([
+  "loading",
+  "showQR",
+  "waitingForWallet",
+]);
+
 /**
  * <eudi-verify> Custom Element
  *
@@ -245,17 +252,20 @@ export class EudiVerifyElement extends HTMLElement {
       });
       const mode = response.headers.get("X-Eudi-Mode");
       this.#isDemo = mode === "demo";
-      this.#updateDemoBanner();
+      this.#updateDemoBanner(this.state ?? { status: "idle" });
     } catch {
       // If detection fails, don't show banner (fail safely)
       this.#isDemo = false;
+      this.#updateDemoBanner(this.state ?? { status: "idle" });
     }
   }
 
-  #updateDemoBanner(): void {
+  #updateDemoBanner(state: VerificationState): void {
     if (!this.#demoBanner) return;
 
-    if (this.#isDemo === true) {
+    const show =
+      this.#isDemo === true && DEMO_BANNER_STATUSES.has(state.status);
+    if (show) {
       this.#demoBanner.removeAttribute("hidden");
     } else {
       this.#demoBanner.setAttribute("hidden", "");
@@ -307,6 +317,7 @@ export class EudiVerifyElement extends HTMLElement {
 
     this.#lastStatus = state.status;
 
+    this.#updateDemoBanner(state);
     this.#manageFocus(state);
   }
 

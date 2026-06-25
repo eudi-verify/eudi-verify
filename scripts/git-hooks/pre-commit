@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Installed by: pnpm hooks:install
+# Fast format gate at commit time — full CI still runs on pre-push.
+
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+# shellcheck disable=SC1091
+source "$ROOT/scripts/ensure-node.sh"
+cd "$ROOT"
+
+echo "Checking formatting (pnpm format:check)..."
+pnpm format:check || {
+  echo ""
+  echo "Format check failed — commit aborted."
+  echo "Fix with: pnpm format"
+  echo "To commit anyway: git commit --no-verify"
+  exit 1
+}
