@@ -49,7 +49,8 @@ pnpm build
 # Create environment file
 cat > /opt/eudi-verify/examples/html-vanilla/.env << 'EOF'
 TOKEN_SECRET=your-random-secret-at-least-32-bytes-here
-PORT=3000
+PORT=3001
+API_PORT=3000
 NODE_ENV=production
 BASE_URL=https://demo.your-domain.eu/api/eudi
 EOF
@@ -59,6 +60,8 @@ openssl rand -base64 32
 ```
 
 ### 4. Create systemd Service
+
+The demo runs **two Node processes**: API (`examples/server`) and static/proxy (`examples/html-vanilla`). Use `start.sh` as the entrypoint:
 
 ```bash
 cat > /etc/systemd/system/eudi-verify.service << 'EOF'
@@ -71,7 +74,7 @@ Type=simple
 User=www-data
 WorkingDirectory=/opt/eudi-verify/examples/html-vanilla
 EnvironmentFile=/opt/eudi-verify/examples/html-vanilla/.env
-ExecStart=/usr/bin/node --import tsx server.ts
+ExecStart=/opt/eudi-verify/examples/html-vanilla/start.sh
 Restart=on-failure
 RestartSec=5
 
@@ -84,6 +87,8 @@ systemctl enable eudi-verify
 systemctl start eudi-verify
 ```
 
+**Upgrading from a single-process service** (pre–WP9 split): change `ExecStart` from `node --import tsx server.ts` to `start.sh` as above, add `API_PORT=3000` to `.env`, set `PORT=3001`, and point nginx at port `3001` (see step 5). If nginx must stay on port `3000`, keep `PORT=3000` and set `API_PORT` to a free port (e.g. `3002`); `start.sh` binds the API to `API_PORT` only.
+
 ### 5. Configure nginx
 
 ```bash
@@ -93,7 +98,7 @@ server {
     server_name demo.your-domain.eu;
 
     location / {
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://127.0.0.1:3001;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -169,8 +174,9 @@ docker-compose up -d
 | Variable       | Required | Default       | Description                                  |
 | -------------- | -------- | ------------- | -------------------------------------------- |
 | `TOKEN_SECRET` | **Yes**  | —             | HMAC secret for token signing (min 32 bytes) |
-| `PORT`         | No       | `3000`        | Server listening port                        |
-| `BASE_URL`     | No       | Auto-detected | Public callback URL                          |
+| `PORT`         | No       | `3001`        | Static/proxy server port (nginx target)      |
+| `API_PORT`     | No       | `3000`        | Internal API server port                     |
+| `BASE_URL`     | No       | Auto-detected | Public callback URL (API server)             |
 | `NODE_ENV`     | No       | `development` | Set to `production` in production            |
 
 ---
