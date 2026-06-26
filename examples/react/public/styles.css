@@ -735,7 +735,7 @@ eudi-verify {
   }
 }
 
-.demo-wallet-actions {
+.demo-wallet-actions:not([hidden]) {
   display: flex;
   gap: 0.75rem;
   margin-top: 1.25rem;
