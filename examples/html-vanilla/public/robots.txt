@@ -1,5 +1,4 @@
 User-agent: *
-Allow: /$
-Allow: /sitemap.xml
-Disallow: /
+Allow: /
+
 Sitemap: https://demo.eudi-verify.eu/sitemap.xml
