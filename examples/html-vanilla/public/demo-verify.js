@@ -143,7 +143,8 @@ widget.addEventListener("state-change", (e) => {
     case "verified":
       if ("token" in state) {
         const sid = currentSessionId ?? "?";
-        const inspect = sid !== "?" ? ` – ${inspectLink(sessionInspectUrl(sid))}` : "";
+        const inspect =
+          sid !== "?" ? ` – ${inspectLink(sessionInspectUrl(sid))}` : "";
         log(
           `GET /sessions/${sid} → verified (token ${truncateToken(state.token)})${inspect}`,
           sid !== "?",
@@ -187,6 +188,7 @@ widget.addEventListener("state-change", (e) => {
   }
 });
 
+console.log("test");
 widget.addEventListener("verified", async (e) => {
   const token = e.detail.token;
   const sessionId = currentSessionId || sessionInput.value;

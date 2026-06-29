@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Installed by: pnpm hooks:install
-# Fast format gate at commit time — full CI still runs on pre-push.
+# Format staged files before commit — full CI still runs on pre-push.
 
 set -euo pipefail
 
@@ -9,11 +9,15 @@ ROOT="$(git rev-parse --show-toplevel)"
 source "$ROOT/scripts/ensure-node.sh"
 cd "$ROOT"
 
-echo "Checking formatting (pnpm format:check)..."
-pnpm format:check || {
-  echo ""
-  echo "Format check failed — commit aborted."
-  echo "Fix with: pnpm format"
-  echo "To commit anyway: git commit --no-verify"
-  exit 1
-}
+STAGED=()
+while IFS= read -r -d '' file; do
+  STAGED+=("$file")
+done < <(git diff --cached --name-only -z --diff-filter=ACMR)
+
+if ((${#STAGED[@]} == 0)); then
+  exit 0
+fi
+
+echo "Formatting staged files (prettier)..."
+pnpm exec prettier --write --ignore-unknown "${STAGED[@]}"
+git add -- "${STAGED[@]}"

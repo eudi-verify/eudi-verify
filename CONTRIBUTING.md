@@ -35,7 +35,7 @@ pnpm verify
 pnpm hooks:install
 ```
 
-If a hook fails on formatting, run `pnpm format`, then retry your commit or push.
+The pre-commit hook auto-formats staged files with Prettier. If a hook fails, fix the reported issue and retry (or run `pnpm format` for the whole tree).
 
 ### Syncing with `main`
 
@@ -230,7 +230,7 @@ On your branch, after code changes and before push:
 pnpm changeset          # interactive — see below
 git add .changeset/
 git commit -m "..."     # can be same commit as the fix or a separate one
-pnpm verify             # pre-push hook runs this; pre-commit runs format:check only
+pnpm verify             # pre-push hook runs this; pre-commit formats staged files
 git push -u origin your-branch
 ```
 
