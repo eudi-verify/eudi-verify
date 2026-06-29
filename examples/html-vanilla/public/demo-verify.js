@@ -188,7 +188,6 @@ widget.addEventListener("state-change", (e) => {
   }
 });
 
-console.log("test");
 widget.addEventListener("verified", async (e) => {
   const token = e.detail.token;
   const sessionId = currentSessionId || sessionInput.value;
