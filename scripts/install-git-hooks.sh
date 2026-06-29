@@ -17,5 +17,5 @@ for name in pre-commit pre-push; do
 done
 
 echo ""
-echo "pre-commit: pnpm format:check (skip with git commit --no-verify)"
+echo "pre-commit: prettier on staged files (skip with git commit --no-verify)"
 echo "pre-push:   pnpm verify (skip with git push --no-verify)"

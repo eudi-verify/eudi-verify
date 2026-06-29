@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#003399" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Inspect — EUDI Verify Demo</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div class="demo-banner" role="status">
+      Simulated verification — credentials are fake. For local testing only.
+    </div>
+
+    <div class="page-shell">
+      <header class="site-header">
+        <a href="/" class="site-header__brand">
+          <img
+            class="eu-emblem"
+            src="/eu-emblem.svg"
+            alt=""
+            width="37"
+            height="25"
+            aria-hidden="true"
+          />
+          <span class="site-header__brand-text">
+            <span class="site-header__title">EUDI Verify</span>
+            <span class="site-header__subtitle">API Inspector</span>
+          </span>
+        </a>
+      </header>
+
+      <main id="main-content" class="page-main" tabindex="-1">
+        <div class="page-panel page-panel--flat">
+          <h1>API Response Inspector</h1>
+          <p id="api-path" class="lead"></p>
+
+          <div class="card">
+            <pre id="payload" class="replay-result"></pre>
+          </div>
+
+          <a href="javascript:history.back()" class="btn btn-outline">← Back</a>
+        </div>
+      </main>
+
+      <footer class="site-footer">
+        <p>
+          Open source under
+          <a href="https://github.com/eudi-verify/eudi-verify">AGPL-3.0</a>.
+          Designed for EU-sovereign deployment.
+        </p>
+      </footer>
+    </div>
+
+    <script type="module" src="/inspect.js"></script>
+  </body>
+</html>

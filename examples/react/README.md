@@ -55,6 +55,8 @@ The shared API server (`examples/server/`) uses `@eudi-verify/server` handlers w
 
 **Note:** The demo wallet and success pages (`demo-wallet.html`, `success.html`) use vanilla JavaScript, not React. These are testing utilities shared across all examples.
 
+**Limitation:** The Vite dev server does not serve `inspect.html` (pretty-print viewer for inspect links), so clicking inspect links in logs will 404. This works in the html-vanilla demo. For local React dev, inspect links are visible but non-functional; this is acceptable since the deployed demo uses html-vanilla.
+
 ## Code Examples
 
 This example demonstrates the same verification flow as the `html-vanilla` example, but implemented in React using the `@eudi-verify/react` wrapper.
