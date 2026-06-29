@@ -13,9 +13,6 @@ function inspectLink(href: string, label = "inspect") {
 function sessionInspectUrl(id: string) {
   return `/api/eudi/sessions/${encodeURIComponent(id)}`;
 }
-function requestInspectUrl(id: string) {
-  return `/api/eudi/request/${encodeURIComponent(id)}`;
-}
 function receiptInspectUrl(rid: string) {
   return `/api/demo/receipt/${encodeURIComponent(rid)}`;
 }
