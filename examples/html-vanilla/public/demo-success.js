@@ -41,7 +41,10 @@ async function loadReceipt() {
     return;
   }
 
-  log(`GET /api/demo/receipt/${rid} – ${inspectLink(receiptInspectUrl(rid))}`, true);
+  log(
+    `GET /api/demo/receipt/${rid} – ${inspectLink(receiptInspectUrl(rid))}`,
+    true,
+  );
 
   let res;
   try {
@@ -86,7 +89,10 @@ btnReplay.addEventListener("click", async () => {
   btnReplay.disabled = true;
   btnReplay.textContent = "Submitting…";
 
-  log(`POST /api/demo/replay (→ POST /api/eudi/tokens/verify) – ${inspectLink(receiptInspectUrl(rid), "inspect receipt")}`, true);
+  log(
+    `POST /api/demo/replay (→ POST /api/eudi/tokens/verify) – ${inspectLink(receiptInspectUrl(rid), "inspect receipt")}`,
+    true,
+  );
 
   let res;
   try {

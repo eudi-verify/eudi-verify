@@ -67,7 +67,10 @@ function formatClaims(request) {
 }
 
 async function loadRequestedClaims(id) {
-  log(`GET /api/eudi/request/${id} – ${inspectLink(requestInspectUrl(id))}`, true);
+  log(
+    `GET /api/eudi/request/${id} – ${inspectLink(requestInspectUrl(id))}`,
+    true,
+  );
   try {
     const res = await fetch(`/api/eudi/request/${encodeURIComponent(id)}`);
     if (!res.ok) {
@@ -101,7 +104,10 @@ async function loadSession() {
     return;
   }
 
-  log(`GET /api/eudi/sessions/${sessionId} – ${inspectLink(sessionInspectUrl(sessionId))}`, true);
+  log(
+    `GET /api/eudi/sessions/${sessionId} – ${inspectLink(sessionInspectUrl(sessionId))}`,
+    true,
+  );
 
   let res;
   try {
@@ -161,7 +167,10 @@ async function approve() {
   btnApprove.textContent = "Sending…";
 
   const body = new URLSearchParams({ response: "demo", state: sessionId });
-  log(`POST /api/eudi/callback (response=demo&state=${sessionId}) – ${inspectLink(sessionInspectUrl(sessionId))}`, true);
+  log(
+    `POST /api/eudi/callback (response=demo&state=${sessionId}) – ${inspectLink(sessionInspectUrl(sessionId))}`,
+    true,
+  );
 
   let res;
   try {
@@ -191,7 +200,10 @@ async function approve() {
 async function decline() {
   btnApprove.disabled = true;
   btnDecline.disabled = true;
-  log(`POST /api/eudi/sessions/${sessionId}/cancel – ${inspectLink(sessionInspectUrl(sessionId))}`, true);
+  log(
+    `POST /api/eudi/sessions/${sessionId}/cancel – ${inspectLink(sessionInspectUrl(sessionId))}`,
+    true,
+  );
 
   let res;
   try {
