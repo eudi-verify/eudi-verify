@@ -13,7 +13,22 @@ let currentSessionId = null;
 let lastLoggedStatus = null;
 let hasActiveSession = false;
 
+function inspectLink(href, label = "inspect") {
+  return `<a href="${href}" target="_blank" rel="noopener">${label}</a>`;
+}
+function sessionInspectUrl(id) {
+  return `/api/eudi/sessions/${encodeURIComponent(id)}`;
+}
+function requestInspectUrl(id) {
+  return `/api/eudi/request/${encodeURIComponent(id)}`;
+}
+function receiptInspectUrl(rid) {
+  return `/api/demo/receipt/${encodeURIComponent(rid)}`;
+}
+
+const logCard = document.querySelector(".log-card");
 function log(message, html) {
+  if (logCard?.hidden) logCard.hidden = false;
   const li = document.createElement("li");
   const time = new Date().toLocaleTimeString("en-GB", { hour12: false });
   if (html) {
@@ -97,10 +112,9 @@ widget.addEventListener("state-change", (e) => {
       if ("sessionId" in state) {
         currentSessionId = state.sessionId;
         sessionInput.value = state.sessionId;
-        const inspectUrl = `/api/eudi/sessions/${encodeURIComponent(state.sessionId)}`;
         log(
-          `POST /sessions → session <code>${state.sessionId}</code> — ` +
-            `<a href="${inspectUrl}" target="_blank" rel="noopener">inspect</a>`,
+          `POST /sessions → session <code>${state.sessionId}</code> – ` +
+            `${inspectLink(sessionInspectUrl(state.sessionId))}`,
           true,
         );
         updateDemoWalletLink(state.sessionId);
@@ -127,8 +141,11 @@ widget.addEventListener("state-change", (e) => {
 
     case "verified":
       if ("token" in state) {
+        const sid = currentSessionId ?? "?";
+        const inspect = sid !== "?" ? ` – ${inspectLink(sessionInspectUrl(sid))}` : "";
         log(
-          `GET /sessions/${currentSessionId ?? "?"} → verified (token ${truncateToken(state.token)})`,
+          `GET /sessions/${sid} → verified (token ${truncateToken(state.token)})${inspect}`,
+          sid !== "?",
         );
       }
       lastLoggedStatus = status;
@@ -170,9 +187,10 @@ widget.addEventListener("state-change", (e) => {
 });
 
 widget.addEventListener("verified", async (e) => {
-  log("Submitting token to POST /api/checkout");
   const token = e.detail.token;
   const sessionId = currentSessionId || sessionInput.value;
+
+  log("Submitting token to POST /api/checkout");
 
   try {
     const res = await fetch("/api/checkout", {
@@ -186,6 +204,10 @@ widget.addEventListener("verified", async (e) => {
     const data = await res.json();
 
     if (res.ok && data.receiptId) {
+      log(
+        `POST /api/checkout → 200 – ${inspectLink(receiptInspectUrl(data.receiptId))}`,
+        true,
+      );
       window.location.href = `/success?rid=${encodeURIComponent(data.receiptId)}`;
       return;
     }

@@ -7,6 +7,19 @@ interface LogEntry {
   html?: boolean;
 }
 
+function inspectLink(href: string, label = "inspect") {
+  return `<a href="${href}" target="_blank" rel="noopener">${label}</a>`;
+}
+function sessionInspectUrl(id: string) {
+  return `/api/eudi/sessions/${encodeURIComponent(id)}`;
+}
+function requestInspectUrl(id: string) {
+  return `/api/eudi/request/${encodeURIComponent(id)}`;
+}
+function receiptInspectUrl(rid: string) {
+  return `/api/demo/receipt/${encodeURIComponent(rid)}`;
+}
+
 function App() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
@@ -80,10 +93,9 @@ function App() {
         if ("sessionId" in state) {
           const sessionId = state.sessionId;
           setCurrentSessionId(sessionId);
-          const inspectUrl = `/api/eudi/sessions/${encodeURIComponent(sessionId)}`;
           log(
-            `POST /sessions → session <code>${sessionId}</code> — ` +
-              `<a href="${inspectUrl}" target="_blank" rel="noopener">inspect</a>`,
+            `POST /sessions → session <code>${sessionId}</code> – ` +
+              `${inspectLink(sessionInspectUrl(sessionId))}`,
             true,
           );
           updateCurlHint(sessionId);
@@ -112,8 +124,11 @@ function App() {
         break;
 
       case "verified":
-        if ("token" in state) {
-          log(`✓ Verified — token ${truncateToken(state.token)}`);
+        if ("token" in state && currentSessionId) {
+          log(
+            `GET /sessions/${currentSessionId} → verified (token ${truncateToken(state.token)}) – ${inspectLink(sessionInspectUrl(currentSessionId))}`,
+            true,
+          );
         }
         break;
 
@@ -138,7 +153,6 @@ function App() {
     token: string;
     claims: Record<string, unknown>;
   }) => {
-    log(`✓ Verified — token ${truncateToken(token)}`);
     log(`Claims: ${JSON.stringify(claims)}`);
 
     try {
@@ -154,6 +168,10 @@ function App() {
       if (response.ok) {
         const result = await response.json();
         if (result.success && result.receiptId) {
+          log(
+            `POST /api/checkout → 200 – ${inspectLink(receiptInspectUrl(result.receiptId))}`,
+            true,
+          );
           window.location.href = `/success.html?rid=${encodeURIComponent(result.receiptId)}`;
         } else {
           showError("Checkout failed. Please try again.");
@@ -272,23 +290,25 @@ function App() {
               </div>
             )}
 
-            <div className="card log-card">
-              <h3>Verification log</h3>
-              <ol className="verification-log">
-                {logs.map((entry, i) =>
-                  entry.html ? (
-                    <li
-                      key={i}
-                      dangerouslySetInnerHTML={{
-                        __html: `${entry.time}  ${entry.message}`,
-                      }}
-                    />
-                  ) : (
-                    <li key={i}>{`${entry.time}  ${entry.message}`}</li>
-                  ),
-                )}
-              </ol>
-            </div>
+            {logs.length > 0 && (
+              <div className="card log-card">
+                <h3>Verification log</h3>
+                <ol className="verification-log">
+                  {logs.map((entry, i) =>
+                    entry.html ? (
+                      <li
+                        key={i}
+                        dangerouslySetInnerHTML={{
+                          __html: `${entry.time}  ${entry.message}`,
+                        }}
+                      />
+                    ) : (
+                      <li key={i}>{`${entry.time}  ${entry.message}`}</li>
+                    ),
+                  )}
+                </ol>
+              </div>
+            )}
 
             {showCurlHint && (
               <details className="curl-hint">
