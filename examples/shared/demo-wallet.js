@@ -11,7 +11,8 @@ const btnApprove = document.getElementById("btn-approve");
 const btnDecline = document.getElementById("btn-decline");
 
 function inspectLink(href, label = "inspect") {
-  return `<a href="${href}" target="_blank" rel="noopener">${label}</a>`;
+  const view = `/inspect?url=${encodeURIComponent(href)}`;
+  return `<a href="${view}" target="_blank" rel="noopener">${label}</a>`;
 }
 function sessionInspectUrl(id) {
   return `/api/eudi/sessions/${encodeURIComponent(id)}`;
