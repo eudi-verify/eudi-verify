@@ -1,6 +1,6 @@
 # Support the project
 
-`eudi-verify` is independent open source (AGPL-3.0). Core packages stay free and self-hostable.
+`eudi-verify` is independent open source (Apache-2.0). Core packages stay free and self-hostable.
 
 ## Contribute without donating
 
@@ -18,7 +18,7 @@ Sponsorship helps pay for:
 - Adoption documentation and a hosted demo
 - Maintainer time for releases and ecosystem interop
 
-**License unchanged:** sponsorship does not affect the AGPL-3.0 license on core packages.
+**License unchanged:** sponsorship does not affect the Apache-2.0 license on core packages.
 
 ## Enterprise
 

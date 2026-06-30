@@ -12,9 +12,9 @@ This document tracks all dependencies used in the eudi-verify project, their lic
 
 ### @eudi-verify/embed
 
-| Package               | Version   | License  | Purpose                   | Security Critical |
-| --------------------- | --------- | -------- | ------------------------- | ----------------- |
-| `@eudi-verify/client` | workspace | AGPL-3.0 | API client, state machine | No (internal)     |
+| Package               | Version   | License    | Purpose                   | Security Critical |
+| --------------------- | --------- | ---------- | ------------------------- | ----------------- |
+| `@eudi-verify/client` | workspace | Apache-2.0 | API client, state machine | No (internal)     |
 
 ### @eudi-verify/client
 
@@ -56,7 +56,7 @@ Only these licenses are permitted in **runtime dependencies**:
 - **ISC**
 - **0BSD**
 
-**Rationale**: Copyleft licenses (GPL, LGPL, AGPL) are excluded from **runtime dependencies** so published packages can be combined with permissively licensed libraries. This project itself is licensed under AGPL-3.0.
+**Rationale**: Copyleft licenses (GPL, LGPL, AGPL) are excluded from **runtime dependencies** so published packages can be combined with permissively licensed libraries. This project itself is licensed under Apache-2.0.
 
 **Enforcement**: CI workflow includes `license-checker-rseidelsohn` that fails builds on unapproved licenses.
 
@@ -174,4 +174,4 @@ Please see [SECURITY.md](SECURITY.md) for our vulnerability disclosure process.
 ---
 
 **Last Updated**: 2026-06-14  
-**Version**: 0.1.0
+**Version**: 1.0.2

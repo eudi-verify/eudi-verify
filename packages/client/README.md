@@ -224,4 +224,4 @@ Session-level outcomes (`rejected`, `expired`, `error`) come from `getSession()`
 
 ## License
 
-AGPL-3.0 — see [LICENSE](../../LICENSE).
+Apache-2.0 — see [LICENSE](../../LICENSE).

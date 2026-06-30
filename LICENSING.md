@@ -1,23 +1,32 @@
 # Licensing
 
-This project is available under two licenses:
+`eudi-verify` is open source under the **Apache License 2.0**. See [LICENSE](LICENSE).
 
-1. **AGPL-3.0** — Free for open source use. See [LICENSE](LICENSE).
-2. **Commercial License** — For use without AGPL obligations, open a [GitHub Discussion](https://github.com/eudi-verify/eudi-verify/discussions) with subject "Commercial license inquiry".
+## What this means for you
 
-## Licensing for integrators
+Apache-2.0 is a permissive license. You can use, modify, embed, and ship
+`eudi-verify` in open-source **or** proprietary products, including commercial
+and SaaS deployments, with no copyleft obligation on your own code.
 
-AGPL-3.0 is copyleft: if you **modify** this code and run it as a network service, you must share your modifications under the same license. It does **not** mean that using `eudi-verify` automatically makes your entire product open source.
+Your only obligations are the standard Apache-2.0 terms: keep the license and
+copyright notices, state significant changes you make to the files, and respect
+the trademark and patent terms in the license text.
 
-| Integration pattern                                           | Typical AGPL impact                                                        |
-| ------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| Import and configure `@eudi-verify/server` via its public API | Your application code stays yours                                          |
-| Embed `<eudi-verify>` widget and call your own backend        | Your application code stays yours                                          |
-| Build a custom UI with `@eudi-verify/client`                  | Your application code stays yours                                          |
-| Modify the verifier for commercial deployment                 | Contact us — AGPL compliance is complex, commercial license may be simpler |
+| Integration pattern                                           | Your obligation                      |
+| ------------------------------------------------------------- | ------------------------------------ |
+| Import and configure `@eudi-verify/server` via its public API | Standard Apache-2.0 attribution only |
+| Embed `<eudi-verify>` and call your own backend               | Standard Apache-2.0 attribution only |
+| Build a custom UI with `@eudi-verify/client`                  | Standard Apache-2.0 attribution only |
+| Modify the verifier and ship it (open or closed source)       | Standard Apache-2.0 attribution only |
 
-**Not a trigger:** calling a hosted verifier API, or using verification tokens from your backend. AGPL applies to the **software you run**, not to being a client of someone else's service.
+## Commercial services
 
-**When to contact us for a commercial license:** you need to modify the verifier and ship those changes in a closed-source product, or your organization's policy excludes AGPL dependencies.
+The packages themselves are and will remain free under Apache-2.0. Paid
+**services** may be offered in future once production wallets land — for example
+a hosted/managed verifier, enterprise support and SLAs, or trust-framework
+onboarding assistance. These are optional services around the open-source core,
+not a different license on the packages.
 
-This is not legal advice. If your use case is unclear, ask in [GitHub Discussions](https://github.com/eudi-verify/eudi-verify/discussions) or consult counsel.
+This is not legal advice. If your use case is unclear, ask in
+[GitHub Discussions](https://github.com/eudi-verify/eudi-verify/discussions) or
+consult counsel.

@@ -264,9 +264,29 @@ Please report security vulnerabilities via [GitHub Security Advisories](https://
 
 This project follows our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold it.
 
-## License
+## License & Developer Certificate of Origin (DCO)
 
-By contributing, you agree that your contributions will be licensed under the AGPL-3.0 License.
+By contributing, you agree that your contributions will be licensed under the Apache-2.0 License.
+
+We use the [Developer Certificate of Origin](DCO) (DCO 1.1). It is a lightweight
+way for you to certify that you wrote, or otherwise have the right to submit, the
+code you contribute. There is no CLA and no copyright assignment.
+
+Certify your agreement by adding a `Signed-off-by` line to each commit (using the
+real name and email on your Git config):
+
+```bash
+git commit -s -m "your message"
+```
+
+This appends a trailer like:
+
+```
+Signed-off-by: Jane Doe <jane@example.com>
+```
+
+Forgot to sign off? Amend the last commit with `git commit --amend -s`, or for a
+branch use `git rebase --signoff <base>`.
 
 ## Questions?
 

@@ -24,7 +24,7 @@
 // Side-effect import: registers <eudi-verify> custom element
 import "@eudi-verify/embed";
 
-export const VERSION = "0.1.0";
+export const VERSION = "1.0.2";
 
 export { EudiVerify } from "./EudiVerify.js";
 export { useEudiVerify } from "./useEudiVerify.js";

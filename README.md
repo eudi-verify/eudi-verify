@@ -1,7 +1,7 @@
 # EUDI Wallet Verifier Kit
 
 [![CI](https://github.com/eudi-verify/eudi-verify/actions/workflows/ci.yml/badge.svg)](https://github.com/eudi-verify/eudi-verify/actions/workflows/ci.yml)
-[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 [![OpenAPI 3.1](https://img.shields.io/badge/OpenAPI-3.1-green.svg)](openapi/eudi-verifier.yaml)
 [![Status](https://img.shields.io/badge/status-preview-orange.svg)](#current-limitations)
 
@@ -211,4 +211,4 @@ Ways to help: try the demo and open issues, contribute fixes or examples, share 
 
 ## License
 
-AGPL-3.0 for open source use. Commercial licenses available for use without AGPL obligations. See [LICENSING.md](LICENSING.md) for details on integration patterns and when a commercial license is needed.
+Apache-2.0 — permissive, usable in open-source and proprietary projects alike. See [LICENSING.md](LICENSING.md) for details and notes on optional future commercial services.

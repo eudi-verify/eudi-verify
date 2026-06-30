@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**Project:** `eudi-verify` — open-source, framework-agnostic EUDI Wallet _verifier_ kit (captcha-style `<eudi-verify>` widget + REST API + OpenAPI), built on `@openeudi/*` behind a swappable `VerifierEngine` interface. AGPL-3.0. EU-sovereignty constraints: no US proprietary services, no Lit/React in core, pnpm workspaces (no Turborepo).
+**Project:** `eudi-verify` — open-source, framework-agnostic EUDI Wallet _verifier_ kit (captcha-style `<eudi-verify>` widget + REST API + OpenAPI), built on `@openeudi/*` behind a swappable `VerifierEngine` interface. Apache-2.0. EU-sovereignty constraints: no US proprietary services, no Lit/React in core, pnpm workspaces (no Turborepo).
 
 **Key decisions (settled):** name `eudi-verify`; vanilla Custom Elements (no Lit); html-vanilla + Node reference demo (Next deferred); all-public monorepo; Sphereon OID4VC as documented engine fallback; theming = 6 CSS vars via open Shadow DOM.
 
@@ -19,7 +19,7 @@ Four core artifacts in WP0–WP7 (server, client, embed, demo, security docs, in
 ### WP0 — Scaffold ✓
 
 - pnpm workspaces: `packages/{server,client,embed}`, `openapi/`, `examples/html-vanilla/`
-- TS strict, Vitest, GitHub Actions (test + license allowlist: Apache-2.0/MIT/BSD/ISC), AGPL-3.0 LICENSE, README stub
+- TS strict, Vitest, GitHub Actions (test + license allowlist: Apache-2.0/MIT/BSD/ISC), Apache-2.0 LICENSE, README stub
 - **Accept:** `pnpm install && pnpm test` green in CI
 
 ### WP1 — Contracts (keystone) ✓

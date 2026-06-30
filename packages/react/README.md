@@ -284,4 +284,4 @@ You can use `<eudi-verify>` directly in React with `ref` + `addEventListener` (s
 
 ## License
 
-AGPL-3.0 — see [LICENSE](../../LICENSE).
+Apache-2.0 — see [LICENSE](../../LICENSE).
