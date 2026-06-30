@@ -20,7 +20,7 @@ import {
 describe("@eudi-verify/client", () => {
   describe("exports", () => {
     it("exports VERSION", () => {
-      expect(VERSION).toBe("0.1.0");
+      expect(VERSION).toBe("1.0.2");
     });
 
     it("exports createVerification", () => {

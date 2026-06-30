@@ -3,7 +3,12 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [
-    ["@eudi-verify/server", "@eudi-verify/client", "@eudi-verify/embed"]
+    [
+      "@eudi-verify/server",
+      "@eudi-verify/client",
+      "@eudi-verify/embed",
+      "@eudi-verify/react"
+    ]
   ],
   "linked": [],
   "access": "public",

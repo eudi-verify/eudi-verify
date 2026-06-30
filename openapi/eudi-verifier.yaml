@@ -21,10 +21,10 @@ info:
 
     Demo mode returns simulated credentials. Never use in production.
     Demo responses include `X-Eudi-Mode: demo` header.
-  version: 0.1.0
+  version: 1.0.0
   license:
-    name: AGPL-3.0
-    url: https://www.gnu.org/licenses/agpl-3.0.html
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
   contact:
     name: eudi-verify
     url: https://github.com/eudi-verify/eudi-verify

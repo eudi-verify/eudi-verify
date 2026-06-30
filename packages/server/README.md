@@ -264,4 +264,4 @@ See [openapi/eudi-verifier.yaml](../../openapi/eudi-verifier.yaml) for the full 
 
 ## License
 
-AGPL-3.0 — see [LICENSE](../../LICENSE).
+Apache-2.0 — see [LICENSE](../../LICENSE).

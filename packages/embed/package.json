@@ -46,7 +46,7 @@
     "url": "https://github.com/eudi-verify/eudi-verify.git",
     "directory": "packages/embed"
   },
-  "license": "AGPL-3.0",
+  "license": "Apache-2.0",
   "dependencies": {
     "@eudi-verify/client": "workspace:*"
   },

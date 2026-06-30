@@ -23,7 +23,7 @@ import {
 
 describe("@eudi-verify/server", () => {
   it("exports a VERSION constant", () => {
-    expect(VERSION).toBe("0.1.0");
+    expect(VERSION).toBe("1.0.2");
   });
 });
 
