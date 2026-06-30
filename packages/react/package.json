@@ -1,6 +1,6 @@
 {
   "name": "@eudi-verify/react",
-  "version": "0.2.0",
+  "version": "1.0.2",
   "description": "React wrapper for @eudi-verify/embed web component",
   "type": "module",
   "engines": {

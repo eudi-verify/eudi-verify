@@ -12,6 +12,15 @@ For day-to-day contribution (setup, PRs, tests), see [CONTRIBUTING.md](../CONTRI
 
 ## 1. Bump versions
 
+Preview what will be released first — this lists every package and its computed
+next version without changing anything:
+
+```bash
+pnpm changeset status --verbose
+```
+
+If the versions look right, apply the bumps:
+
 ```bash
 pnpm changeset version
 ```
