@@ -338,7 +338,7 @@ function App() {
         <footer className="site-footer">
           <p>
             Open source under{" "}
-            <a href="https://github.com/eudi-verify/eudi-verify">AGPL-3.0</a>.
+            <a href="https://github.com/eudi-verify/eudi-verify">Apache-2.0</a>.
             Designed for EU-sovereign deployment.
           </p>
         </footer>

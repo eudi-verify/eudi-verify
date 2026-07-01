@@ -64,8 +64,10 @@
           <div id="receipt-panel" class="card" hidden style="text-align: left">
             <h3>Server verification receipt</h3>
             <p class="receipt-note">
-              Claims below were returned by <code>POST /tokens/verify</code> on
-              the server — not from the browser widget.
+              Claims below were verified server-side during
+              <code>POST /api/checkout</code> (same
+              <code>verifyToken</code> handler as
+              <code>POST /tokens/verify</code>) — not from the browser widget.
             </p>
             <dl class="receipt-table">
               <dt>Session ID</dt>
@@ -108,9 +110,17 @@
               </li>
               <li>Wallet sent verifiable presentation to callback</li>
               <li>Server minted single-use token</li>
-              <li>Widget received token, submitted form</li>
-              <li>Server validated token via <code>/tokens/verify</code></li>
-              <li>Access granted (this page)</li>
+              <li>Widget received token, submitted checkout form</li>
+              <li>
+                Server validated token during
+                <code>POST /api/checkout</code> (same handler as
+                <code>POST /tokens/verify</code>)
+              </li>
+              <li>
+                Browser redirected here; this page fetched the stored receipt
+                via
+                <code>GET /api/demo/receipt/:id</code>
+              </li>
             </ol>
           </div>
 
@@ -124,7 +134,7 @@
       <footer class="site-footer">
         <p>
           Open source under
-          <a href="https://github.com/eudi-verify/eudi-verify">AGPL-3.0</a>.
+          <a href="https://github.com/eudi-verify/eudi-verify">Apache-2.0</a>.
           Designed for EU-sovereign deployment.
         </p>
       </footer>

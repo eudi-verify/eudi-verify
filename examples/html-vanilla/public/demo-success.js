@@ -10,9 +10,13 @@ const auditLog = document.getElementById("api-audit-log");
 
 const logCard = document.querySelector(".log-card");
 
-function inspectLink(href, label = "inspect") {
-  const view = `/inspect?url=${encodeURIComponent(href)}`;
-  return `<a href="${view}" target="_blank" rel="noopener">${label}</a>`;
+function inspectLink(href, label = "inspect", { method = "GET", body } = {}) {
+  const q = new URLSearchParams({ url: href });
+  if (method !== "GET") q.set("method", method);
+  if (body != null) {
+    q.set("body", typeof body === "string" ? body : JSON.stringify(body));
+  }
+  return `<a href="/inspect?${q}" target="_blank" rel="noopener">${label}</a>`;
 }
 
 function receiptInspectUrl(rid) {
@@ -90,7 +94,7 @@ btnReplay.addEventListener("click", async () => {
   btnReplay.textContent = "Submitting…";
 
   log(
-    `POST /api/demo/replay (→ POST /api/eudi/tokens/verify) – ${inspectLink(receiptInspectUrl(rid), "inspect receipt")}`,
+    `POST /api/demo/replay (same verifyToken handler as POST /api/eudi/tokens/verify) – ${inspectLink("/api/demo/replay", "inspect", { method: "POST", body: { rid } })}`,
     true,
   );
 
