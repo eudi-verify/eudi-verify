@@ -52,6 +52,20 @@ function truncateToken(token: string): string {
   return `${token.slice(0, 12)}…${token.slice(-8)}`;
 }
 
+// ponytail: read sid from verified token payload; safe only after verifyToken succeeds
+function sessionIdFromToken(token: string): string | undefined {
+  const parts = token.split(".");
+  if (parts.length !== 3) return undefined;
+  try {
+    const payload = JSON.parse(Buffer.from(parts[1], "base64url").toString());
+    return typeof payload.sid === "string" && payload.sid
+      ? payload.sid
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function receiptToDTO(receipt: DemoReceipt): DemoReceiptDTO {
   return {
     sessionId: receipt.sessionId,
@@ -290,12 +304,17 @@ const server = createServer(async (req, res) => {
     const verifyResult = result.body as {
       valid: boolean;
       claims?: VerifiedClaims;
+      sessionId?: string;
     };
 
     if (verifyResult.valid && verifyResult.claims) {
       const rid = randomUUID();
       const receipt: DemoReceipt = {
-        sessionId,
+        sessionId:
+          verifyResult.sessionId ||
+          sessionId ||
+          sessionIdFromToken(token) ||
+          "",
         claims: verifyResult.claims,
         verifiedAt: new Date().toISOString(),
         token,

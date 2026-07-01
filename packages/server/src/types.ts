@@ -199,6 +199,8 @@ export interface VerifyTokenInput {
 export interface VerifyTokenResult {
   valid: boolean;
   claims?: VerifiedClaims;
+  /** Session the token was minted for (present when valid is true) */
+  sessionId?: string;
   error?:
     | "invalid_token"
     | "expired"
