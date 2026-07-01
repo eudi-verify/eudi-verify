@@ -86,7 +86,8 @@ Three independent layers — use what you need:
 | API    | `@eudi-verify/server` | Verifier REST handlers for Node.js            |
 | Widget | `@eudi-verify/embed`  | Drop-in `<eudi-verify>` web component         |
 | Client | `@eudi-verify/client` | Typed client and state machine for custom UIs |
-| React  | `@eudi-verify/react`  | React wrapper with typed props                |
+
+React apps: `@eudi-verify/react` wraps `@eudi-verify/embed` with typed props and callbacks (see [Packages](#packages)).
 
 The OpenAPI spec is stack-independent — any backend can implement the same endpoints. Only the Node.js handler library ships today.
 
