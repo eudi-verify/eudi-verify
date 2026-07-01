@@ -570,6 +570,7 @@ eudi-verify {
   background: var(--color-background);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
+  text-align: left;
 }
 
 .verification-log li {
