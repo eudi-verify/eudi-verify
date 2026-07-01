@@ -9,6 +9,7 @@ import { join, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const SHARED_DIR = join(__dirname, "../shared");
 const PORT = parseInt(process.env.PORT || "3001", 10);
 const API_PORT = parseInt(process.env.API_PORT || "3000", 10);
 
@@ -37,6 +38,20 @@ async function serveStatic(
       headers["X-Robots-Tag"] = "noindex";
     }
     res.writeHead(200, headers);
+    res.end(content);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function serveShared(
+  res: ServerResponse,
+  fileName: string,
+): Promise<boolean> {
+  try {
+    const content = await readFile(join(SHARED_DIR, fileName));
+    res.writeHead(200, { "Content-Type": "application/javascript" });
     res.end(content);
     return true;
   } catch {
@@ -117,6 +132,8 @@ const server = createServer(async (req, res) => {
   if (!extname(filePath)) filePath += ".html";
 
   if (await serveStatic(res, filePath)) return;
+
+  if (filePath.endsWith(".js") && (await serveShared(res, filePath))) return;
 
   res.writeHead(404, { "Content-Type": "text/plain" });
   res.end("Not found");

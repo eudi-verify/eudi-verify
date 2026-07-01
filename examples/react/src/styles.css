@@ -575,7 +575,64 @@ eudi-verify {
 
 .verification-log li {
   margin-bottom: 0.4rem;
-  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+.verification-log .inspect-inline {
+  display: inline;
+}
+
+.verification-log .inspect-inline--open {
+  display: block;
+  margin-top: 0.35rem;
+}
+
+.verification-log .inspect-toggle {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  color: var(--color-eu-blue);
+  cursor: pointer;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+.verification-log .inspect-toggle:hover {
+  text-decoration: underline;
+}
+
+.verification-log .inspect-toggle:focus-visible {
+  outline: 2px solid var(--color-eu-blue);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.verification-log .inspect-caret::before {
+  content: "▸";
+  font-size: 0.75em;
+}
+
+.verification-log .inspect-toggle[aria-expanded="true"] .inspect-caret::before {
+  content: "▾";
+}
+
+.verification-log .inspect-panel {
+  margin: 0.35rem 0 0;
+  padding: 0.5rem 0.65rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
 }
 
 .verification-log a {

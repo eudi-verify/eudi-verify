@@ -1,3 +1,6 @@
+import { inspectLink, wireInspectLog } from "/demo-inspect.js";
+import { appendVerifierAuditLi, clearVerifierAudit } from "/demo-audit-log.js";
+
 const widget = document.querySelector("eudi-verify");
 const form = document.getElementById("checkout-form");
 const tokenInput = document.getElementById("eudi-token");
@@ -9,14 +12,12 @@ const demoWalletLink = document.getElementById("demo-wallet-link");
 const curlHint = document.getElementById("curl-hint");
 const curlCommand = document.getElementById("curl-command");
 
+wireInspectLog(verificationLog);
+
 let currentSessionId = null;
 let lastLoggedStatus = null;
 let hasActiveSession = false;
 
-function inspectLink(href, label = "inspect") {
-  const view = `/inspect?url=${encodeURIComponent(href)}`;
-  return `<a href="${view}" target="_blank" rel="noopener">${label}</a>`;
-}
 function sessionInspectUrl(id) {
   return `/api/eudi/sessions/${encodeURIComponent(id)}`;
 }
@@ -29,16 +30,7 @@ function receiptInspectUrl(rid) {
 
 const logCard = document.querySelector(".log-card");
 function log(message, html) {
-  if (logCard?.hidden) logCard.hidden = false;
-  const li = document.createElement("li");
-  const time = new Date().toLocaleTimeString("en-GB", { hour12: false });
-  if (html) {
-    li.innerHTML = `${time}  ${message}`;
-  } else {
-    li.textContent = `${time}  ${message}`;
-  }
-  verificationLog.appendChild(li);
-  verificationLog.scrollTop = verificationLog.scrollHeight;
+  appendVerifierAuditLi(verificationLog, logCard, message, html);
 }
 
 function truncateToken(token) {
@@ -103,6 +95,8 @@ widget.addEventListener("state-change", (e) => {
 
   switch (status) {
     case "loading":
+      clearVerifierAudit();
+      verificationLog.replaceChildren();
       log("Starting verification…");
       resetSessionUi();
       clearError();

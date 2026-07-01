@@ -1,3 +1,5 @@
+import { inspectLink, wireInspectLog } from "/demo-inspect.js";
+
 const params = new URLSearchParams(window.location.search);
 const sessionId = params.get("state");
 
@@ -10,18 +12,42 @@ const doneEl = document.getElementById("wallet-done");
 const btnApprove = document.getElementById("btn-approve");
 const btnDecline = document.getElementById("btn-decline");
 
-function inspectLink(href, label = "inspect") {
-  const view = `/inspect?url=${encodeURIComponent(href)}`;
-  return `<a href="${view}" target="_blank" rel="noopener">${label}</a>`;
-}
+wireInspectLog(auditLog);
+
 function sessionInspectUrl(id) {
   return `/api/eudi/sessions/${encodeURIComponent(id)}`;
 }
 function requestInspectUrl(id) {
   return `/api/eudi/request/${encodeURIComponent(id)}`;
 }
-function receiptInspectUrl(rid) {
-  return `/api/demo/receipt/${encodeURIComponent(rid)}`;
+function callbackInspectLink(id) {
+  const body = new URLSearchParams({ response: "demo", state: id }).toString();
+  return inspectLink("/api/eudi/callback", "inspect", {
+    method: "POST",
+    body,
+    encoding: "form",
+  });
+}
+
+function cancelInspectLink(id) {
+  return inspectLink(
+    `/api/eudi/sessions/${encodeURIComponent(id)}/cancel`,
+    "inspect",
+    { method: "POST" },
+  );
+}
+
+async function logResponseSummary(res) {
+  const text = await res.text();
+  let detail = "";
+  try {
+    const body = JSON.parse(text);
+    detail = body.message || body.status || body.error || "";
+  } catch {
+    detail = text.trim();
+  }
+  const suffix = detail ? ` ${detail}` : "";
+  log(`→ ${res.status}${suffix}`);
 }
 
 const logCard = document.querySelector(".log-card");
@@ -168,7 +194,7 @@ async function approve() {
 
   const body = new URLSearchParams({ response: "demo", state: sessionId });
   log(
-    `POST /api/eudi/callback (response=demo&state=${sessionId}) – ${inspectLink(sessionInspectUrl(sessionId))}`,
+    `POST /api/eudi/callback (response=demo&state=${sessionId}) – ${callbackInspectLink(sessionId)}`,
     true,
   );
 
@@ -187,7 +213,14 @@ async function approve() {
     return;
   }
 
-  log(`→ ${res.status}`);
+  await logResponseSummary(res);
+  if (!res.ok) {
+    btnApprove.disabled = false;
+    btnDecline.disabled = false;
+    btnApprove.textContent = "Approve";
+    return;
+  }
+
   actionsEl.hidden = true;
   doneEl.hidden = false;
   document.getElementById("wallet-done-title").textContent = "Credential sent";
@@ -201,7 +234,7 @@ async function decline() {
   btnApprove.disabled = true;
   btnDecline.disabled = true;
   log(
-    `POST /api/eudi/sessions/${sessionId}/cancel – ${inspectLink(sessionInspectUrl(sessionId))}`,
+    `POST /api/eudi/sessions/${sessionId}/cancel – ${cancelInspectLink(sessionId)}`,
     true,
   );
 
@@ -218,7 +251,13 @@ async function decline() {
     return;
   }
 
-  log(`→ ${res.status}`);
+  await logResponseSummary(res);
+  if (!res.ok) {
+    btnApprove.disabled = false;
+    btnDecline.disabled = false;
+    return;
+  }
+
   actionsEl.hidden = true;
   doneEl.hidden = false;
   document.getElementById("wallet-done-title").textContent = "Request declined";

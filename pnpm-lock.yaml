@@ -18,6 +18,9 @@ importers:
       '@stoplight/spectral-cli':
         specifier: ^6.16.0
         version: 6.16.0
+      happy-dom:
+        specifier: ^20.8.9
+        version: 20.10.3
       prettier:
         specifier: ^3.8.4
         version: 3.8.4

@@ -1,3 +1,9 @@
+import { inspectLink, wireInspectLog } from "/demo-inspect.js";
+import {
+  appendVerifierAuditLi,
+  restoreVerifierAudit,
+} from "/demo-audit-log.js";
+
 const params = new URLSearchParams(window.location.search);
 const rid = params.get("rid");
 
@@ -10,30 +16,15 @@ const auditLog = document.getElementById("api-audit-log");
 
 const logCard = document.querySelector(".log-card");
 
-function inspectLink(href, label = "inspect", { method = "GET", body } = {}) {
-  const q = new URLSearchParams({ url: href });
-  if (method !== "GET") q.set("method", method);
-  if (body != null) {
-    q.set("body", typeof body === "string" ? body : JSON.stringify(body));
-  }
-  return `<a href="/inspect?${q}" target="_blank" rel="noopener">${label}</a>`;
-}
+wireInspectLog(auditLog);
+restoreVerifierAudit(auditLog, logCard);
 
 function receiptInspectUrl(rid) {
   return `/api/demo/receipt/${encodeURIComponent(rid)}`;
 }
 
 function log(message, html) {
-  if (logCard?.hidden) logCard.hidden = false;
-  const li = document.createElement("li");
-  const time = new Date().toLocaleTimeString("en-GB", { hour12: false });
-  if (html) {
-    li.innerHTML = `${time}  ${message}`;
-  } else {
-    li.textContent = `${time}  ${message}`;
-  }
-  auditLog.appendChild(li);
-  auditLog.scrollTop = auditLog.scrollHeight;
+  appendVerifierAuditLi(auditLog, logCard, message, html);
 }
 
 async function loadReceipt() {

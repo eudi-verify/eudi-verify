@@ -1,5 +1,10 @@
 import { useRef, useState, useEffect } from "react";
 import { EudiVerify, type EudiVerifyRef } from "@eudi-verify/react";
+import { inspectLink, wireInspectLog } from "../../shared/demo-inspect.js";
+import {
+  clearVerifierAudit,
+  pushVerifierAudit,
+} from "../../shared/demo-audit-log.js";
 
 interface LogEntry {
   time: string;
@@ -7,9 +12,6 @@ interface LogEntry {
   html?: boolean;
 }
 
-function inspectLink(href: string, label = "inspect") {
-  return `<a href="${href}" target="_blank" rel="noopener">${label}</a>`;
-}
 function sessionInspectUrl(id: string) {
   return `/api/eudi/sessions/${encodeURIComponent(id)}`;
 }
@@ -26,10 +28,15 @@ function App() {
   const [showCurlHint, setShowCurlHint] = useState(false);
   const widgetRef = useRef<EudiVerifyRef>(null);
   const errorAlertRef = useRef<HTMLDivElement>(null);
+  const logRef = useRef<HTMLOListElement>(null);
+
+  useEffect(() => {
+    if (logRef.current) wireInspectLog(logRef.current);
+  }, []);
 
   const log = (message: string, html = false) => {
-    const time = new Date().toLocaleTimeString("en-GB", { hour12: false });
-    setLogs((prev) => [...prev, { time, message, html }]);
+    const entry = pushVerifierAudit(message, html);
+    setLogs((prev) => [...prev, entry]);
   };
 
   const truncateToken = (token: string) => {
@@ -81,6 +88,8 @@ function App() {
 
     switch (status) {
       case "loading":
+        clearVerifierAudit();
+        setLogs([]);
         log("Starting verification…");
         resetSessionUi();
         clearError();
@@ -290,7 +299,7 @@ function App() {
             {logs.length > 0 && (
               <div className="card log-card">
                 <h3>Verification log</h3>
-                <ol className="verification-log">
+                <ol className="verification-log" ref={logRef}>
                   {logs.map((entry, i) =>
                     entry.html ? (
                       <li
