@@ -404,6 +404,10 @@ components:
           description: Whether the token is valid
         claims:
           $ref: "#/components/schemas/VerifiedClaims"
+        sessionId:
+          type: string
+          format: uuid
+          description: Session the token was minted for (present when valid is true)
         error:
           type: string
           description: Error reason if valid is false
@@ -416,6 +420,7 @@ components:
         valid: true
         claims:
           age_over_18: true
+        sessionId: "550e8400-e29b-41d4-a716-446655440000"
 
     Error:
       type: object

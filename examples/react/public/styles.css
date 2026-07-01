@@ -825,9 +825,10 @@ eudi-verify {
   --timeline-dot-size: 0.625rem;
   --timeline-marker-col: 1.75rem;
   --timeline-line-x: calc(var(--timeline-marker-col) / 2);
-  --timeline-dot-offset: 0.55rem;
+  --timeline-item-pad-y: 0.3rem;
   text-align: left;
-  margin: 0;
+  margin: 0 auto;
+  max-width: 36rem;
   padding: 0;
   list-style: none;
   position: relative;
@@ -838,33 +839,34 @@ eudi-verify {
   position: absolute;
   left: var(--timeline-line-x);
   transform: translateX(-50%);
-  top: calc(var(--timeline-dot-offset) + var(--timeline-dot-size) / 2);
-  bottom: calc(var(--timeline-dot-offset) + var(--timeline-dot-size) / 2);
+  top: calc(var(--timeline-item-pad-y) + 0.5lh);
+  bottom: calc(var(--timeline-item-pad-y) + 0.5lh);
   width: 2px;
   background: var(--color-border-strong);
 }
 
 .timeline li {
   position: relative;
-  padding: 0.3rem 0 0.3rem var(--timeline-marker-col);
+  padding: var(--timeline-item-pad-y) 0 var(--timeline-item-pad-y)
+    var(--timeline-marker-col);
   font-size: 0.9375rem;
   color: var(--color-text-muted);
 }
 
-.timeline li:not(:last-child)::before {
-  display: none;
-}
-
-.timeline li::after {
+.timeline li::before {
   content: "";
   position: absolute;
   left: calc(var(--timeline-line-x) - var(--timeline-dot-size) / 2);
-  top: var(--timeline-dot-offset);
+  top: calc(var(--timeline-item-pad-y) + (1lh - var(--timeline-dot-size)) / 2);
   width: var(--timeline-dot-size);
   height: var(--timeline-dot-size);
   border-radius: 50%;
   background: var(--color-eu-blue);
   z-index: 1;
+}
+
+.timeline li::after {
+  display: none;
 }
 
 /* ── Footer ──────────────────────────────────────────────────── */

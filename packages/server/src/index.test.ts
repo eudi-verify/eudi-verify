@@ -418,6 +418,7 @@ describe("TokenService", () => {
 
       expect(result.valid).toBe(true);
       expect(result.claims).toEqual(claims);
+      expect(result.sessionId).toBe("session-123");
     });
 
     it("rejects malformed tokens", async () => {
@@ -731,6 +732,7 @@ describe("Handlers", () => {
       expect(verifyResponse.status).toBe(200);
       expect((verifyResponse.body as any).valid).toBe(true);
       expect((verifyResponse.body as any).claims).toBeDefined();
+      expect((verifyResponse.body as any).sessionId).toBe(sessionId);
     });
 
     it("rejects invalid token", async () => {

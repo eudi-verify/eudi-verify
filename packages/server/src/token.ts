@@ -152,7 +152,11 @@ export function createTokenService(config: TokenServiceConfig): TokenService {
         return { valid: false, error: "invalid_token" };
       }
 
-      return { valid: true, claims: storedData.claims };
+      return {
+        valid: true,
+        claims: storedData.claims,
+        sessionId: storedData.sessionId,
+      };
     },
   };
 }
