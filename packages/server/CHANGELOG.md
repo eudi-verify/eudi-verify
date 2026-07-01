@@ -1,5 +1,11 @@
 # @eudi-verify/server
 
+## 1.0.3
+
+### Patch Changes
+
+- ebfbdf7: Return sessionId from verifyToken response so callers can correlate receipts without decoding the JWT
+
 ## 1.0.2
 
 ### Patch Changes

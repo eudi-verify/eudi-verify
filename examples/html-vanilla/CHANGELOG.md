@@ -1,5 +1,11 @@
 # @eudi-verify/demo-html-vanilla
 
+## 0.0.6
+
+### Patch Changes
+
+- @eudi-verify/embed@1.0.3
+
 ## 0.0.5
 
 ### Patch Changes

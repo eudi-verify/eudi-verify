@@ -1,5 +1,12 @@
 # example-server
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies [ebfbdf7]
+  - @eudi-verify/server@1.0.3
+
 ## 0.1.2
 
 ### Patch Changes
