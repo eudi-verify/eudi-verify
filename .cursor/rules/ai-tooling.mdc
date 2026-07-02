@@ -14,7 +14,7 @@ Third-party AI and agent tooling is **optional**. It is **not** a project depend
 
 ## `.cursor/rules` vs project conventions
 
-Files under `.cursor/rules/` are **Cursor-side copies** of project conventions (commit style, docs sync, public-docs accuracy, etc.). The conventions apply to **all** contributors; only reading the `.cursor/rules` files is optional if you do not use Cursor. Canonical policy for humans lives in `CONTRIBUTING.md` and `docs/`.
+Files under `.cursor/rules/` are **Cursor-side copies** of project conventions (commit style, docs sync, public-docs accuracy, etc.). The conventions apply to **all** contributors; only reading the `.cursor/rules` files is optional if you do not use Cursor. Canonical policy for humans lives in **[AGENTS.md](../../AGENTS.md)**, `CONTRIBUTING.md`, and `docs/`.
 
 ## Public documentation
 

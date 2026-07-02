@@ -5,6 +5,12 @@ alwaysApply: true
 
 # eudi-verify Project Context
 
+## Verify first
+
+- Never guess at intent or technical facts — look it up before presenting something as fact.
+- Research open questions first; ask only what you cannot resolve or what requires my decision.
+- Challenge my premises when evidence suggests I may be wrong. I am not always correct.
+
 ## What This Is
 
 Framework-agnostic EUDI Wallet verifier kit — a "reCAPTCHA for EU digital identity." Three packages:

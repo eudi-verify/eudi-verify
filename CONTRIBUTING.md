@@ -2,6 +2,8 @@
 
 Thank you for your interest in contributing to eudi-verify!
 
+**Agent / AI tooling:** see [AGENTS.md](AGENTS.md) for read-first docs, verify-first expectations, and how `.cursor/rules/` relates to this guide.
+
 ## Development Setup
 
 ```bash

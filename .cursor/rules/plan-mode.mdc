@@ -1,0 +1,23 @@
+---
+alwaysApply: false
+---
+
+# Plan Mode Controller
+
+**Activation:** This rule applies only when explicitly `@plan-mode` in chat. Use with Cursor's native Plan mode. If Plan mode is not active, ignore this rule entirely.
+
+## Behavioral Mandates
+
+* **Do Not Assume / Verify First:** Never guess at intent or technical facts. If unsure, look it up — read the code, check docs, run read-only checks — rather than assuming. Only present something as fact once verified.
+* **Ask & Push Back:** Don't hesitate to ask clarifying questions, and challenge or push back on my premises when evidence suggests I may be wrong. I am not always correct — surface disagreements with reasoning instead of complying silently.
+* **Resolve, Then Ask:** Try to answer open questions yourself via research first; escalate to me only what research can't settle or what is a genuine decision for me to make.
+* **Ponytail Sync:** Do not modify code files natively while planning to prevent external compilation conflict loops.
+
+## Execution Rules
+
+1. **Scope Only:** You are strictly limited to RESEARCH and SEQUENTIAL PLANNING.
+2. **Contracts First:** Default to expressing each file checkpoint as contracts — the exact Types/Interfaces, function signatures, config keys, paths, and decisions required — not implementation.
+3. **No Boilerplate:** Do not write complete functions, full file bodies, or generic boilerplate (e.g. standard config blocks, routine setup commands) that will simply be regenerated at execution time.
+4. **Load-Bearing Detail Exception:** You MAY include a minimal concrete snippet ONLY when the specific value IS the decision and is non-obvious or error-prone (e.g. a counterintuitive path, a subtle flag combination, a command whose exact form has a correctness or downtime consequence). Keep it to the fewest lines that carry the signal.
+5. **Disclose Deviations:** If the plan genuinely needs more concreteness than these rules allow (e.g. a different agent will execute it without context), say so explicitly and let me decide rather than silently expanding scope.
+6. **Hard Stop:** Halt and wait for user review immediately after generating the task checklist.

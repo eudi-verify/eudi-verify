@@ -1,3 +1,8 @@
+---
+description: Keep PLAN.local.md and docs/SUPPORTED.md in sync when completing or starting work packages
+alwaysApply: false
+---
+
 # Plan Status Sync
 
 Keep `PLAN.local.md` and `docs/SUPPORTED.md` in sync with actual project state.

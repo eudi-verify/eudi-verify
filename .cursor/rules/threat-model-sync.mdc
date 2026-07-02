@@ -1,3 +1,8 @@
+---
+description: Keep THREAT_MODEL.md in sync when changing security controls or closing security issues
+alwaysApply: false
+---
+
 # Threat Model Sync
 
 ## Purpose
