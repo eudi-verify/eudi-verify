@@ -9,4 +9,5 @@ dist/
 *.local.txt
 scripts/deploy.sh
 scripts/provision-server.sh
+scripts/provision-base.conf
 .cursor/rules/ponytail.mdc

@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# Example APP_HOOK for eudi-verify demo. Copy to server as /root/post-provision.sh,
+# edit values, then: APP_HOOK=/root/post-provision.sh provision-base.sh
+#
+set -euo pipefail
+
+DEPLOY_USER="${DEPLOY_USER:-deploy}"
+APP_DIR="/opt/eudi-verify"
+REPO_URL="https://github.com/eudi-verify/eudi-verify"
+DOMAIN="demo.eudi-verify.eu"
+SERVICE_NAME="eudi-verify"
+ENV_FILE="$APP_DIR/examples/html-vanilla/.env"
+WORK_DIR="$APP_DIR/examples/html-vanilla"
+
+if [[ ! -d "$APP_DIR/.git" ]]; then
+  sudo git clone "$REPO_URL" "$APP_DIR"
+  sudo chown -R "$DEPLOY_USER:$DEPLOY_USER" "$APP_DIR"
+fi
+
+cd "$APP_DIR"
+sudo -u "$DEPLOY_USER" pnpm install
+sudo -u "$DEPLOY_USER" pnpm build
+
+if [[ ! -f "$ENV_FILE" ]]; then
+  TOKEN_SECRET=$(openssl rand -base64 32)
+  sudo tee "$ENV_FILE" > /dev/null << EOF
+TOKEN_SECRET=$TOKEN_SECRET
+PORT=3000
+NODE_ENV=production
+BASE_URL=https://$DOMAIN/api/eudi
+EOF
+  sudo chown "$DEPLOY_USER:$DEPLOY_USER" "$ENV_FILE"
+  sudo chmod 600 "$ENV_FILE"
+fi
+
+sudo tee "/etc/systemd/system/${SERVICE_NAME}.service" > /dev/null << EOF
+[Unit]
+Description=EUDI Verify Demo
+After=network.target
+
+[Service]
+Type=simple
+User=$DEPLOY_USER
+WorkingDirectory=$WORK_DIR
+EnvironmentFile=$ENV_FILE
+ExecStart=/usr/bin/node --import tsx server.ts
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now "$SERVICE_NAME"
+
+ROOT_DOMAIN="${DOMAIN#demo.}"
+sudo tee /etc/nginx/sites-available/app > /dev/null << EOF
+server {
+    listen 80;
+    server_name $DOMAIN;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+}
+
+server {
+    listen 80;
+    server_name $ROOT_DOMAIN www.$ROOT_DOMAIN;
+    return 302 https://$DOMAIN\$request_uri;
+}
+EOF
+
+sudo nginx -t && sudo systemctl reload nginx

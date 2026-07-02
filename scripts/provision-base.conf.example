@@ -1,0 +1,29 @@
+# Copy to provision-base.conf and customize (provision-base.conf is gitignored).
+# Source it before running provision-base.sh, or export these vars inline.
+#
+#   cp scripts/provision-base.conf.example scripts/provision-base.conf
+#   # edit scripts/provision-base.conf
+#   ssh root@SERVER 'bash -s' < scripts/provision-base.sh
+
+# --- Required for HTTPS / nginx site blocks ---
+DOMAINS="app.example.com www.example.com"
+# Primary domain (first in DOMAINS) is used in certbot instructions.
+
+# --- Identity ---
+DEPLOY_USER="deploy"
+
+# --- Stack (toggle per project) ---
+INSTALL_NODE=false          # true → Node.js via NodeSource
+NODE_MAJOR=22
+INSTALL_NGINX=true          # reverse proxy + certbot packages
+INSTALL_FAIL2BAN=true       # recommended when security matters
+INSTALL_UNATTENDED_UPGRADES=true
+
+# --- App hook (optional) ---
+# Bash script on the server, run as DEPLOY_USER after base setup.
+# Use for: git clone, build, systemd unit, env files, project-specific nginx.
+# APP_HOOK="/root/post-provision-myapp.sh"
+
+# --- Behaviour ---
+INTERACTIVE=0               # 1 → pause before irreversible steps (SSH lockdown)
+SSH_PORT=22                 # if changed, open the new port in UFW *before* reloading sshd
