@@ -18,9 +18,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "sync:version": "node ../../scripts/generate-package-versions.mjs react",
+    "build": "node ../../scripts/generate-package-versions.mjs react && tsup src/index.ts --format esm --dts --clean",
+    "typecheck": "node ../../scripts/generate-package-versions.mjs react && tsc --noEmit",
+    "test": "node ../../scripts/generate-package-versions.mjs react && vitest run",
     "test:watch": "vitest",
     "prepublishOnly": "pnpm build"
   },

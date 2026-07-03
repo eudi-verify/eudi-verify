@@ -1,3 +1,4 @@
+import { createRequire } from "node:module";
 import { VerificationType } from "@openeudi/core";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
@@ -26,9 +27,12 @@ import {
   requestToCoreType,
 } from "./engines/openeudi-mappers.js";
 
+const require = createRequire(import.meta.url);
+const packageJson = require("../package.json") as { version: string };
+
 describe("@eudi-verify/server", () => {
   it("exports a VERSION constant", () => {
-    expect(VERSION).toBe("1.3.0");
+    expect(VERSION).toBe(packageJson.version);
   });
 });
 

@@ -18,9 +18,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "sync:version": "node ../../scripts/generate-package-versions.mjs client",
+    "build": "node ../../scripts/generate-package-versions.mjs client && tsup src/index.ts --format esm --dts --clean",
+    "typecheck": "node ../../scripts/generate-package-versions.mjs client && tsc --noEmit",
+    "test": "node ../../scripts/generate-package-versions.mjs client && vitest run",
     "size": "pnpm build && gzip -c dist/index.js | wc -c",
     "prepublishOnly": "pnpm build"
   },

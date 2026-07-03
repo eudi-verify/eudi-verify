@@ -33,7 +33,7 @@
 // consumer importing from the package root, regardless of import order.
 import "reflect-metadata";
 
-export const VERSION = "1.3.0";
+export { VERSION } from "./version.js";
 
 // Types
 export type {

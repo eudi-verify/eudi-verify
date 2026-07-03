@@ -18,9 +18,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "sync:version": "node ../../scripts/generate-package-versions.mjs server",
+    "build": "node ../../scripts/generate-package-versions.mjs server && tsup src/index.ts --format esm --dts --clean",
+    "typecheck": "node ../../scripts/generate-package-versions.mjs server && tsc --noEmit",
+    "test": "node ../../scripts/generate-package-versions.mjs server && vitest run",
     "prepublishOnly": "pnpm build"
   },
   "keywords": [
