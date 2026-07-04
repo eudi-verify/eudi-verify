@@ -52,52 +52,70 @@ npm install @eudi-verify/server
 
 ```js
 // verifier.mjs
-import { createVerifierHandlers, OpenEudiEngine, MemoryKVStore } from '@eudi-verify/server';
-import http from 'node:http';
+import {
+  createVerifierHandlers,
+  OpenEudiEngine,
+  MemoryKVStore,
+} from "@eudi-verify/server";
+import http from "node:http";
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3000/api/eudi';
+const BASE_URL = process.env.BASE_URL || "http://localhost:3000/api/eudi";
 
 const handlers = createVerifierHandlers({
-  engine: new OpenEudiEngine({ mode: 'demo', baseUrl: BASE_URL }),
+  engine: new OpenEudiEngine({ mode: "demo", baseUrl: BASE_URL }),
   store: new MemoryKVStore(),
   baseUrl: BASE_URL,
-  mode: 'demo',
+  mode: "demo",
   tokenSecret: process.env.TOKEN_SECRET, // 32+ chars, required
 });
 
 function ctx(req, params = {}, body = undefined) {
-  return { ip: req.socket.remoteAddress ?? '127.0.0.1', params, body };
+  return { ip: req.socket.remoteAddress ?? "127.0.0.1", params, body };
 }
 
 const server = http.createServer(async (req, res) => {
   let result;
-  const url = new URL(req.url, 'http://localhost');
-  const body = req.method !== 'GET'
-    ? await new Promise(r => { let d = ''; req.on('data', c => d += c); req.on('end', () => r(JSON.parse(d || '{}'))) })
-    : undefined;
+  const url = new URL(req.url, "http://localhost");
+  const body =
+    req.method !== "GET"
+      ? await new Promise((r) => {
+          let d = "";
+          req.on("data", (c) => (d += c));
+          req.on("end", () => r(JSON.parse(d || "{}")));
+        })
+      : undefined;
 
-  if (req.method === 'POST' && url.pathname === '/api/eudi/sessions') {
+  if (req.method === "POST" && url.pathname === "/api/eudi/sessions") {
     result = await handlers.createSession(ctx(req, {}, body));
-  } else if (req.method === 'GET' && url.pathname.startsWith('/api/eudi/sessions/')) {
-    const sessionId = url.pathname.split('/')[4];
+  } else if (
+    req.method === "GET" &&
+    url.pathname.startsWith("/api/eudi/sessions/")
+  ) {
+    const sessionId = url.pathname.split("/")[4];
     result = await handlers.getSession(ctx(req, { sessionId }));
-  } else if (req.method === 'POST' && url.pathname.endsWith('/cancel')) {
-    const sessionId = url.pathname.split('/')[4];
+  } else if (req.method === "POST" && url.pathname.endsWith("/cancel")) {
+    const sessionId = url.pathname.split("/")[4];
     result = await handlers.cancelSession(ctx(req, { sessionId }));
-  } else if (req.method === 'POST' && url.pathname === '/api/eudi/tokens/verify') {
+  } else if (
+    req.method === "POST" &&
+    url.pathname === "/api/eudi/tokens/verify"
+  ) {
     result = await handlers.verifyToken(ctx(req, {}, body));
-  } else if (req.method === 'POST' && url.pathname === '/api/eudi/callback') {
+  } else if (req.method === "POST" && url.pathname === "/api/eudi/callback") {
     result = await handlers.handleCallback(ctx(req));
   } else {
-    res.writeHead(404).end(JSON.stringify({ error: 'not_found' }));
+    res.writeHead(404).end(JSON.stringify({ error: "not_found" }));
     return;
   }
 
-  res.writeHead(result.status, { 'Content-Type': 'application/json', ...result.headers });
+  res.writeHead(result.status, {
+    "Content-Type": "application/json",
+    ...result.headers,
+  });
   res.end(JSON.stringify(result.body));
 });
 
-server.listen(3000, () => console.log('Verifier running on :3000'));
+server.listen(3000, () => console.log("Verifier running on :3000"));
 ```
 
 For a full server example see the [Express integration guide](./INTEGRATION.md) or [examples/server](../examples/server/).
@@ -160,7 +178,7 @@ Point `api-url` at your PHP proxy path, not at the Node service directly:
 
 ```html
 <script type="module">
-  import 'https://cdn.jsdelivr.net/npm/@eudi-verify/embed/dist/embed.js';
+  import "https://cdn.jsdelivr.net/npm/@eudi-verify/embed/dist/embed.js";
 </script>
 
 <eudi-verify
@@ -169,18 +187,20 @@ Point `api-url` at your PHP proxy path, not at the Node service directly:
 ></eudi-verify>
 
 <script>
-  document.querySelector('eudi-verify').addEventListener('verified', async (e) => {
-    const { token } = e.detail;
+  document
+    .querySelector("eudi-verify")
+    .addEventListener("verified", async (e) => {
+      const { token } = e.detail;
 
-    // Send token to your PHP checkout endpoint for server-side validation
-    const resp = await fetch('/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ eudiToken: token }),
+      // Send token to your PHP checkout endpoint for server-side validation
+      const resp = await fetch("/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ eudiToken: token }),
+      });
+
+      if (resp.ok) window.location.href = "/success";
     });
-
-    if (resp.ok) window.location.href = '/success';
-  });
 </script>
 ```
 
@@ -278,12 +298,12 @@ echo json_encode(['status' => 'ok']);
 
 ### Token properties
 
-| Property      | Value                                                           |
-| ------------- | --------------------------------------------------------------- |
-| Single-use    | Consumed on first successful verify; replays return `already_consumed` |
-| TTL           | 5 minutes from issuance                                         |
-| Signature     | HMAC-signed with `TOKEN_SECRET`; tamper returns `invalid_signature` |
-| Format        | `eudi_v1.<base64url-payload>.<hmac>`                           |
+| Property   | Value                                                                  |
+| ---------- | ---------------------------------------------------------------------- |
+| Single-use | Consumed on first successful verify; replays return `already_consumed` |
+| TTL        | 5 minutes from issuance                                                |
+| Signature  | HMAC-signed with `TOKEN_SECRET`; tamper returns `invalid_signature`    |
+| Format     | `eudi_v1.<base64url-payload>.<hmac>`                                   |
 
 ---
 
@@ -295,14 +315,14 @@ Choose this path only when a Node sidecar is not possible and you need a fully s
 
 The [OpenAPI contract](../openapi/eudi-verifier.yaml) defines six endpoints:
 
-| Endpoint                       | Who calls it        | Notes                                                    |
-| ------------------------------ | ------------------- | -------------------------------------------------------- |
-| `POST /api/eudi/sessions`      | Browser / widget    | Creates session, returns `qrUrl`                        |
-| `GET /api/eudi/sessions/:id`   | Browser / widget    | Polls status; returns `token` when `verified`           |
-| `POST /api/eudi/sessions/:id/cancel` | Browser / widget | Cancels active session                             |
-| `POST /api/eudi/tokens/verify` | Your PHP server     | Validates token — the captcha step                      |
-| `POST /api/eudi/callback`      | EUDI Wallet         | Receives encrypted VP (`direct_post.jwt`) from wallet   |
-| `GET /api/eudi/request/:id`    | EUDI Wallet         | Serves the OpenID4VP authorization request object       |
+| Endpoint                             | Who calls it     | Notes                                                 |
+| ------------------------------------ | ---------------- | ----------------------------------------------------- |
+| `POST /api/eudi/sessions`            | Browser / widget | Creates session, returns `qrUrl`                      |
+| `GET /api/eudi/sessions/:id`         | Browser / widget | Polls status; returns `token` when `verified`         |
+| `POST /api/eudi/sessions/:id/cancel` | Browser / widget | Cancels active session                                |
+| `POST /api/eudi/tokens/verify`       | Your PHP server  | Validates token — the captcha step                    |
+| `POST /api/eudi/callback`            | EUDI Wallet      | Receives encrypted VP (`direct_post.jwt`) from wallet |
+| `GET /api/eudi/request/:id`          | EUDI Wallet      | Serves the OpenID4VP authorization request object     |
 
 The `/callback` and `/request/:id` endpoints are called by the EUDI Wallet itself — not by your frontend — and require implementing the [OpenID4VP](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html) protocol, including JWE decryption and Verifiable Presentation verification. **No PHP library for the EUDI protocol exists today.** This is a significant undertaking.
 
