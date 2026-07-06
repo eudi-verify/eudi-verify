@@ -2,13 +2,29 @@
 
 How to cut a release and publish `@eudi-verify/*` packages to npm.
 
-For day-to-day contribution (setup, PRs, tests), see [CONTRIBUTING.md](../CONTRIBUTING.md). Contributors run `pnpm changeset` on feature branches and merge the generated `.changeset/*.md` with their PRs ([Changesets section](../CONTRIBUTING.md#changesets)); maintainers run the steps below when it is time to ship.
+For day-to-day contribution (setup, PRs, tests), see [CONTRIBUTING.md](../CONTRIBUTING.md). Maintainers add a changeset on the PR branch before merging package changes ([Changesets section](../CONTRIBUTING.md#changesets)); the steps below are for cutting a release.
 
 ## Prerequisites
 
 - Maintainer access to the `@eudi-verify` npm org (publish permission on scoped packages)
 - Node.js 22+ and `pnpm` (same as [CONTRIBUTING.md](../CONTRIBUTING.md))
 - At least one merged changeset on `main` (or your release branch) since the last publish
+
+## Before merging package PRs
+
+When a PR changes `@eudi-verify/server`, `client`, or `embed`:
+
+```bash
+git fetch origin pull/<PR>/head:pr-<PR> && git switch pr-<PR>   # or checkout the fork branch
+pnpm changeset          # interactive — pick package(s), semver, changelog line
+git add .changeset/
+git commit -m "chore: add changeset for #<PR>"
+git push                # to the PR branch, then merge
+```
+
+Published packages are **lockstep-versioned** (`.changeset/config.json` `fixed` group) — bumping one bumps all three at release. Select only packages the PR changed; default to **patch** for bugfixes, **minor** for features, **major** only for breaking changes.
+
+Contributors are not required to add changesets. Skip this for docs-only, CI, or example-only PRs.
 
 ## 1. Bump versions
 

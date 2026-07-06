@@ -167,10 +167,11 @@ See [.cursor/rules/commit-style.mdc](.cursor/rules/commit-style.mdc) for full co
 1. Fork the repository
 2. Create a feature branch (`git switch -c feat/my-feature`)
 3. Make your changes with tests
-4. If the PR changes a **published package** (`@eudi-verify/server`, `client`, or `embed`), run `pnpm changeset` and commit the generated `.changeset/*.md` file (see [Changesets](#changesets) below). Do **not** run `pnpm changeset version` on a feature branch.
-5. Run `pnpm verify` to ensure everything passes (or `pnpm test` + `pnpm typecheck` + `pnpm format:check` for a quicker check). If format check fails, run `pnpm format`.
-6. Commit your changes following the commit message format above
-7. Push to your fork (`git push -u origin feat/my-feature` on first push) and submit a pull request
+4. Run `pnpm verify` to ensure everything passes (or `pnpm test` + `pnpm typecheck` + `pnpm format:check` for a quicker check). If format check fails, run `pnpm format`.
+5. Commit your changes following the commit message format above
+6. Push to your fork (`git push -u origin feat/my-feature` on first push) and submit a pull request
+
+You do **not** need to add a changeset — maintainers add one at merge when your PR changes a published package ([Changesets](#changesets)).
 
 ## Testing
 
@@ -201,54 +202,41 @@ The project maintains strict framework-agnostic design: no React/Vue/Lit in core
 
 ## Changesets
 
-This project uses [Changesets](https://github.com/changesets/changesets) for version management. Contributors record **release intent** in each PR; maintainers apply version bumps when cutting a release.
+This project uses [Changesets](https://github.com/changesets/changesets) for version management. **Maintainers** add a changeset when merging PRs that change published packages; contributors do not need to.
+
+Contributors may still include a changeset if you want to propose changelog wording — maintainers can edit or replace it at merge.
 
 ### Two commands (do not confuse them)
 
-| Command                  | When                                         | Who                                                      |
-| ------------------------ | -------------------------------------------- | -------------------------------------------------------- |
-| `pnpm changeset`         | On a **feature branch**, before opening a PR | Contributors                                             |
-| `pnpm changeset version` | On **`main`**, when ready to ship to npm     | Maintainers — see [docs/RELEASING.md](docs/RELEASING.md) |
+| Command                  | When                                                               | Who                                                      |
+| ------------------------ | ------------------------------------------------------------------ | -------------------------------------------------------- |
+| `pnpm changeset`         | On the **PR branch**, before merge (when the PR changes a package) | Maintainers (optional for contributors)                  |
+| `pnpm changeset version` | On **`main`**, when ready to ship to npm                           | Maintainers — see [docs/RELEASING.md](docs/RELEASING.md) |
 
 `pnpm changeset` creates a small `.changeset/*.md` file (changelog line + semver bump type). It does **not** change `package.json` versions.
 
 `pnpm changeset version` consumes all merged changeset files, bumps versions, updates changelogs, and deletes those files. That becomes the `chore: release` commit — not part of normal PRs.
 
-### When a changeset is required
+### When a changeset is needed
 
-| PR touches                                                               | Changeset? |
-| ------------------------------------------------------------------------ | ---------- |
-| `packages/server`, `client`, or `embed` (behavior, API, exports)         | **Yes**    |
-| Docs, examples, CI, OpenAPI-only with no package change                  | **No**     |
-| `@eudi-verify/demo-html-vanilla` or other unpublished workspace packages | **No**     |
+| PR touches                                                               | Changeset? | Who adds it |
+| ------------------------------------------------------------------------ | ---------- | ----------- |
+| `packages/server`, `client`, or `embed` (behavior, API, exports)         | **Yes**    | Maintainer  |
+| Docs, examples, CI, OpenAPI-only with no package change                  | **No**     | —           |
+| `@eudi-verify/demo-html-vanilla` or other unpublished workspace packages | **No**     | —           |
 
-Do not add a changeset to “catch up” for older merged commits. Changesets are forward-looking: each PR documents what **that PR** contributes to the **next** release.
+Do not add a changeset to “catch up” for older merged commits. Changesets are forward-looking: each merged PR documents what **that PR** contributes to the **next** release.
 
-### Feature-branch workflow
-
-On your branch, after code changes and before push:
-
-```bash
-pnpm changeset          # interactive — see below
-git add .changeset/
-git commit -m "..."     # can be same commit as the fix or a separate one
-pnpm verify             # pre-push hook runs this; pre-commit formats staged files
-git push -u origin your-branch
-```
-
-Open a PR to `main`. After merge, the changeset file sits on `main` until a maintainer runs the [release steps](docs/RELEASING.md).
-
-**Branch hygiene:** Do changeset work on a feature branch, not on `main`. If you applied changes on `main` by mistake, move them with `git stash push -u`, `git switch -c your-branch` (or `git switch -C your-branch` to reset an existing branch to current `main`), then `git stash pop`.
+Maintainers add the changeset on the PR branch before merge — see [docs/RELEASING.md § Before merging package PRs](docs/RELEASING.md#before-merging-package-prs). After merge, the file sits on `main` until a maintainer runs the [release steps](docs/RELEASING.md).
 
 ### What to select in `pnpm changeset`
 
 Published packages are **lockstep-versioned** (`.changeset/config.json` `fixed` group): bumping one of `server`, `client`, or `embed` bumps all three at release time.
 
-1. **Packages** — select only the published package(s) your PR actually changed (usually one, e.g. `@eudi-verify/client`). Skip `@eudi-verify/demo-html-vanilla` and unchanged packages.
+1. **Packages** — select only the published package(s) the PR actually changed (usually one, e.g. `@eudi-verify/client`). Skip `@eudi-verify/demo-html-vanilla` and unchanged packages.
 2. **Major bump?** — leave empty unless the change is breaking (Enter).
 3. **Minor bump?** — leave empty unless the change is a new feature (Enter). What remains is a **patch** (typical for bugfixes).
 4. **Summary** — one line for the changelog (e.g. “Fix QR code generation for wallet URLs.”).
-5. Commit the generated `.changeset/*.md` file with your PR.
 
 ### What contributors do not do
 
@@ -256,7 +244,7 @@ Published packages are **lockstep-versioned** (`.changeset/config.json` `fixed` 
 - Do not bump `package.json` versions manually in PRs
 - Do not edit changelogs for the next release in PRs (Changesets generates them at release time)
 
-Maintainers: see [docs/RELEASING.md](docs/RELEASING.md) for `chore: release`, npm publish, signed tags, and GitHub releases.
+Maintainers: see [docs/RELEASING.md](docs/RELEASING.md) for pre-merge changesets, `chore: release`, npm publish, signed tags, and GitHub releases.
 
 ## Security
 
