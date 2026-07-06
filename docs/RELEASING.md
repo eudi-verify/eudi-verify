@@ -140,8 +140,10 @@ git rev-parse 'v0.X.Y^{commit}'   # should match the chore: release commit on ma
 ## 5. GitHub release
 
 ```bash
-gh release create v0.X.Y --title "v0.X.Y" --notes "<paste changelog summary>"
+gh release create v0.X.Y --title "v0.X.Y" --generate-notes
 ```
+
+`--generate-notes` auto-generates the release body from merged PRs since the last tag, grouped by category (via `.github/release.yml`) and including a **"New Contributors"** section — no manual changelog paste needed. To prepend a hand-written highlight above the generated list, add `--notes "<intro>"` alongside `--generate-notes` (the two combine; `--notes` content comes first).
 
 Create the release **after** pushing the signed tag from the CLI (`gh release create` above, or the GitHub UI by **selecting** the existing tag — do not type a new tag name in the UI; that creates a conflicting lightweight tag).
 

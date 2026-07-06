@@ -19,6 +19,7 @@
     "hooks:install": "bash scripts/install-git-hooks.sh"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.7.0",
     "@changesets/cli": "^2.31.0",
     "@stoplight/spectral-cli": "^6.16.0",
     "happy-dom": "^20.8.9",
