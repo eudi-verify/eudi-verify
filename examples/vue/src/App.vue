@@ -290,6 +290,7 @@ onMounted(() => {
         <div class="card card--widget widget-section">
           <eudi-verify
             api-url="/api/eudi"
+            demo-mode
             :request="request"
             @state-change="handleStateChange"
             @verified="handleVerified"
