@@ -8,6 +8,7 @@ export default defineConfig({
   clean: true,
   sourcemap: true,
   minify: false,
+  noExternal: ["@eudi-verify/client", "qrcode"],
   splitting: false,
   outExtension({ format }) {
     switch (format) {
