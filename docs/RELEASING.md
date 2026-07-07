@@ -43,6 +43,15 @@ pnpm changeset version
 
 Review generated version bumps, changelogs, and `package.json` / lockfile changes.
 
+Update public version strings to match (same version as `packages/server/package.json`):
+
+- `docs/SUPPORTED.md` — `**Current release:** vX.Y.Z`
+- `THREAT_MODEL.md` and `DEPENDENCY.md` — footer `**Version**: X.Y.Z`
+
+`pnpm verify` runs `scripts/check-docs-version.sh` and fails if those lag.
+
+Package `VERSION` exports are generated from each `package.json` via `scripts/generate-package-versions.mjs` (merge [#14](https://github.com/eudi-verify/eudi-verify/pull/14)) — do not edit `packages/*/src/index.ts` by hand.
+
 Commit:
 
 ```bash
@@ -168,7 +177,8 @@ Create the release **after** pushing the signed tag from the CLI (`gh release cr
 - [ ] Changesets merged since last release
 - [ ] `pnpm verify` passes on the release commit
 - [ ] `pnpm changeset version` committed as `chore: release`
-- [ ] Packages published to npm (`@eudi-verify/server`, `@eudi-verify/client`, `@eudi-verify/embed`)
+- [ ] `docs/SUPPORTED.md`, `THREAT_MODEL.md`, `DEPENDENCY.md` version strings updated
+- [ ] Packages published to npm (`@eudi-verify/server`, `@eudi-verify/client`, `@eudi-verify/embed`, `@eudi-verify/react`)
 - [ ] Git tag `v0.X.Y` pushed (**signed** with `git tag -s` when signing is configured)
 - [ ] `git tag -v v0.X.Y` passes locally
 - [ ] GitHub release created with changelog notes; tag shows **Verified** on GitHub
