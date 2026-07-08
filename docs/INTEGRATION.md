@@ -504,3 +504,4 @@ In demo mode:
 - [Client package documentation](../packages/client/README.md)
 - [OpenAPI specification](../openapi/eudi-verifier.yaml)
 - [Deployment guide](./deploy-eu.md)
+- [CDN / reverse proxy examples](./deploy-cdn-examples.md)

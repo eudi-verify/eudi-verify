@@ -113,6 +113,18 @@ ln -s /etc/nginx/sites-available/eudi-verify /etc/nginx/sites-enabled/
 nginx -t && systemctl reload nginx
 ```
 
+If a CDN or reverse proxy sits in front of nginx, configure trusted-proxy real IP handling so rate limiting sees visitor IPs, not edge/proxy IPs.
+
+At minimum, ensure:
+
+- nginx trusts only your proxy/CDN egress ranges (`set_real_ip_from`)
+- nginx rewrites client IP from forwarded headers (`real_ip_header` + `real_ip_recursive on`)
+- your app uses the restored client IP (`X-Real-IP`/trusted forwarded chain), not raw socket IP
+
+See [deploy-cdn-examples.md](./deploy-cdn-examples.md) for provider-specific setup notes.
+
+The demo API and static servers bind to `127.0.0.1` by default (`HOST` in `.env` overrides). Keep them off the public interface so clients cannot spoof `X-Real-IP` by bypassing nginx.
+
 ### 6. Enable HTTPS
 
 ```bash
@@ -121,9 +133,9 @@ certbot --nginx -d demo.your-domain.eu
 
 ### 7. CDN in front of origin (optional)
 
-Many demos put a CDN (e.g. [Bunny](https://bunny.net)) in front of the public hostname for static assets. API routes must not be cached.
+Many demos put a CDN in front of the public hostname for static assets. API routes must not be cached.
 
-**Recommended edge rule** (Bunny Edge Rules; adapt for your CDN):
+**Recommended edge rule** (provider-agnostic):
 
 | Setting      | Value                                         |
 | ------------ | --------------------------------------------- |
@@ -132,11 +144,13 @@ Many demos put a CDN (e.g. [Bunny](https://bunny.net)) in front of the public ho
 
 **Why:** HTML/JS/CSS benefit from edge cache; `/api/eudi/*` must always hit origin.
 
+**Rate limiting behind CDN:** Without trusted-proxy real-IP config, the app may rate-limit per edge/proxy IP (false positives when many users share a PoP). Keep the Node API bound to `127.0.0.1`, and configure nginx real-IP trust for your chosen CDN/proxy provider. See [deploy-cdn-examples.md](./deploy-cdn-examples.md).
+
 **Widget demo detection:** Do not rely on `HEAD /sessions` through a CDN — some pull zones return 404 for `HEAD` on dynamic paths even with cache bypass. The `<eudi-verify>` widget reads `X-Eudi-Mode` from `POST /sessions`, or use the `demo-mode` attribute on hosted demo pages.
 
 **Optional split hostname:** Serve static via CDN on `demo.your-domain.eu` and add `origin.your-domain.eu` (same nginx server block) for direct API testing. Browser API calls can use either hostname if CORS is open (demo server sets `Access-Control-Allow-Origin: *`).
 
-**Secrets:** Never commit CDN API keys or pull zone IDs to the repo. Store `BUNNY_API_KEY` and `BUNNY_PULL_ZONE_ID` in `.env` on the server only (used for post-deploy cache purge).
+**Secrets:** Never commit CDN API keys or zone IDs to the repo. Store provider credentials in `.env` on the server only.
 
 ### 8. One-time migration (legacy nginx → static PORT)
 
