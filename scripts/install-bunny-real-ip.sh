@@ -19,14 +19,13 @@ curl -fsSL "https://bunnycdn.com/api/system/edgeserverlist" -o "$TMP"
   echo "real_ip_recursive on;"
   python3 - "$TMP" <<'PY'
 import sys
-import xml.etree.ElementTree as ET
+import json
 
-ns = {"i": "http://www.w3.org/2001/XMLSchema-instance"}
-root = ET.parse(sys.argv[1]).getroot()
-for ip in root.findall(".//{*}string"):
-    value = (ip.text or "").strip()
-    if value:
-        print(f"set_real_ip_from {value};")
+with open(sys.argv[1]) as f:
+    ips = json.load(f)
+for ip in ips:
+    if ip.strip():
+        print(f"set_real_ip_from {ip};")
 PY
 } | sudo tee "$OUT" > /dev/null
 
