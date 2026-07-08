@@ -1,5 +1,11 @@
 # @eudi-verify/client
 
+## 1.1.0
+
+### Minor Changes
+
+- [#24](https://github.com/eudi-verify/eudi-verify/pull/24) [`aad374b`](https://github.com/eudi-verify/eudi-verify/commit/aad374bb1a707b897c9ff08a2f3b3fba451c531b) Thanks [@mkascel](https://github.com/mkascel)! - Detect demo mode without HEAD probe; add demo-mode attribute; createSession returns { session, eudiMode }; harden demo process lifecycle.
+
 ## 1.0.3
 
 ## 1.0.2

@@ -174,4 +174,4 @@ Please see [SECURITY.md](SECURITY.md) for our vulnerability disclosure process.
 ---
 
 **Last Updated**: 2026-07-07  
-**Version**: 1.0.3
+**Version**: 1.1.0

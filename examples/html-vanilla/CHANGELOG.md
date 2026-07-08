@@ -1,5 +1,12 @@
 # @eudi-verify/demo-html-vanilla
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies [[`aad374b`](https://github.com/eudi-verify/eudi-verify/commit/aad374bb1a707b897c9ff08a2f3b3fba451c531b)]:
+  - @eudi-verify/embed@1.1.0
+
 ## 0.0.6
 
 ### Patch Changes
