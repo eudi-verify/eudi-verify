@@ -9,6 +9,26 @@ For day-to-day contribution (setup, PRs, tests), see [CONTRIBUTING.md](../CONTRI
 - Maintainer access to the `@eudi-verify` npm org (publish permission on scoped packages)
 - Node.js 22+ and `pnpm` (same as [CONTRIBUTING.md](../CONTRIBUTING.md))
 - At least one merged changeset on `main` (or your release branch) since the last publish
+- `GITHUB_TOKEN` in your environment when running `pnpm changeset version` (see below)
+
+### GitHub token for changelog generation
+
+`.changeset/config.json` uses `@changesets/changelog-github`, which calls the GitHub API to link PRs and authors in **package** `CHANGELOG.md` files. This is separate from GitHub **release** notes (§5). `pnpm changeset version` fails without `GITHUB_TOKEN`.
+
+**Recommended (classic PAT):** one-time setup, no `gh` required:
+
+1. Create a token with `read:user` and `repo:status` only ([GitHub token settings](https://github.com/settings/tokens/new?scopes=read:user,repo:status&description=changesets)).
+2. Add to `~/.zshrc` or `~/.bashrc`:
+
+```bash
+export GITHUB_TOKEN=ghp_…   # your PAT — read:user + repo:status only
+```
+
+3. Open a new shell (or `source` your profile), then run `pnpm changeset version`.
+
+No `repo` or `write` scope is needed. After the `export` is in your profile, you should not see this error again unless the token is revoked or expires.
+
+**Optional (`gh` shortcut):** if you use GitHub CLI elsewhere, `export GITHUB_TOKEN=$(gh auth token)` works for the current shell; refresh with `gh auth refresh` when it expires.
 
 ## Before merging package PRs
 
@@ -35,7 +55,7 @@ next version without changing anything:
 pnpm changeset status --verbose
 ```
 
-If the versions look right, apply the bumps:
+If the versions look right, apply the bumps (`GITHUB_TOKEN` must be set — see [GitHub token](#github-token-for-changelog-generation)):
 
 ```bash
 pnpm changeset version
@@ -164,13 +184,24 @@ git rev-parse 'v0.X.Y^{commit}'   # should match the chore: release commit on ma
 
 ## 5. GitHub release
 
+Create the release **after** pushing the signed tag (§4). Use the GitHub UI so you can preview auto-generated notes before publishing:
+
+1. Repo → **Releases** → **Draft a new release**
+2. **Choose a tag:** select the existing `v0.X.Y` tag (do **not** type a new tag name — that creates a conflicting lightweight tag)
+3. Click **Generate release notes** — GitHub builds the body from merged PRs since the last tag, grouped by [`.github/release.yml`](../.github/release.yml) (Breaking Changes, Features, Bug Fixes, etc.)
+4. Review and edit the draft; add a short intro at the top if you want a highlight
+5. **Publish release**
+
+<details>
+<summary>CLI alternative (`gh`)</summary>
+
 ```bash
 gh release create v0.X.Y --title "v0.X.Y" --generate-notes
 ```
 
-`--generate-notes` auto-generates the release body from merged PRs since the last tag, grouped by category (via `.github/release.yml`) and including a **"New Contributors"** section — no manual changelog paste needed. To prepend a hand-written highlight above the generated list, add `--notes "<intro>"` alongside `--generate-notes` (the two combine; `--notes` content comes first).
+`--generate-notes` uses the same config as the UI. To prepend a hand-written intro, add `--notes "<intro>"` alongside `--generate-notes`. The CLI publishes immediately — no preview step — so prefer the UI when you want to review first.
 
-Create the release **after** pushing the signed tag from the CLI (`gh release create` above, or the GitHub UI by **selecting** the existing tag — do not type a new tag name in the UI; that creates a conflicting lightweight tag).
+</details>
 
 ## Checklist
 
