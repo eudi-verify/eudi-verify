@@ -161,6 +161,8 @@ interface VerifierConfig {
 }
 ```
 
+Behind a reverse proxy or CDN, pass the restored client IP into handler context (see `clientIpFromHeaders` and [deploy-eu.md](../../docs/deploy-eu.md)).
+
 ## Handlers
 
 | Handler                    | Route                       | Description                 |

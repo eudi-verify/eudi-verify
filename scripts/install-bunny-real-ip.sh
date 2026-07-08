@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Generate nginx real_ip trust list for Bunny CDN edge servers.
-# Run on the origin host after nginx is installed; re-run periodically (Bunny IPs change).
+# See docs/deploy-cdn-examples.md#bunnynet. Re-run periodically (edge IPs change).
 set -euo pipefail
 
 OUT="${1:-/etc/nginx/conf.d/bunny-real-ip.conf}"

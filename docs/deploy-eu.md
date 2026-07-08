@@ -121,14 +121,7 @@ At minimum, ensure:
 - nginx rewrites client IP from forwarded headers (`real_ip_header` + `real_ip_recursive on`)
 - your app uses the restored client IP (`X-Real-IP`/trusted forwarded chain), not raw socket IP
 
-### Example: Bunny CDN real-IP setup
-
-Use the helper script to generate nginx `real_ip` trust entries from Bunny edge IP ranges:
-
-```bash
-bash /opt/eudi-verify/scripts/install-bunny-real-ip.sh
-# Re-run periodically (monthly is a practical default) because provider edge IP ranges can change
-```
+See [deploy-cdn-examples.md](./deploy-cdn-examples.md) for provider-specific setup notes.
 
 The demo API and static servers bind to `127.0.0.1` by default (`HOST` in `.env` overrides). Keep them off the public interface so clients cannot spoof `X-Real-IP` by bypassing nginx.
 
@@ -151,9 +144,7 @@ Many demos put a CDN in front of the public hostname for static assets. API rout
 
 **Why:** HTML/JS/CSS benefit from edge cache; `/api/eudi/*` must always hit origin.
 
-**Rate limiting behind CDN:** Without trusted-proxy real-IP config, the app may rate-limit per edge/proxy IP (false positives when many users share a PoP). Keep the Node API bound to `127.0.0.1`, and configure nginx real-IP trust for your chosen CDN/proxy provider.
-
-**Provider-specific note (Bunny):** Bunny-specific helper script: `scripts/install-bunny-real-ip.sh`.
+**Rate limiting behind CDN:** Without trusted-proxy real-IP config, the app may rate-limit per edge/proxy IP (false positives when many users share a PoP). Keep the Node API bound to `127.0.0.1`, and configure nginx real-IP trust for your chosen CDN/proxy provider. See [deploy-cdn-examples.md](./deploy-cdn-examples.md).
 
 **Widget demo detection:** Do not rely on `HEAD /sessions` through a CDN — some pull zones return 404 for `HEAD` on dynamic paths even with cache bypass. The `<eudi-verify>` widget reads `X-Eudi-Mode` from `POST /sessions`, or use the `demo-mode` attribute on hosted demo pages.
 

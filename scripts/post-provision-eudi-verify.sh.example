@@ -81,5 +81,5 @@ EOF
 
 sudo nginx -t && sudo systemctl reload nginx
 
-# If demo hostname uses Bunny CDN in front of nginx
-sudo bash "$APP_DIR/scripts/install-bunny-real-ip.sh"
+# Optional: if a CDN sits in front of nginx, see docs/deploy-cdn-examples.md
+# Example (Bunny): sudo bash "$APP_DIR/scripts/install-bunny-real-ip.sh"
