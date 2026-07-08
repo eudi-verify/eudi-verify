@@ -70,7 +70,14 @@ Update public version strings to match (same version as `packages/server/package
 
 `pnpm verify` runs `scripts/check-docs-version.sh` and fails if those lag.
 
-Package `VERSION` exports are generated from each `package.json` via `scripts/generate-package-versions.mjs` (merge [#14](https://github.com/eudi-verify/eudi-verify/pull/14)) — do not edit `packages/*/src/index.ts` by hand.
+**Temporary manual step** (until [#10](https://github.com/eudi-verify/eudi-verify/issues/10) merges): Update hardcoded `VERSION` constants in:
+
+- `packages/server/src/index.ts`
+- `packages/client/src/index.ts`
+- `packages/embed/src/index.ts`
+- `packages/react/src/index.ts`
+
+Change each `export const VERSION = "X.Y.Z"` to match the new package version. This will be automated once package versions are derived from `package.json` at build time.
 
 Commit:
 
@@ -209,6 +216,7 @@ gh release create v0.X.Y --title "v0.X.Y" --generate-notes
 - [ ] `pnpm verify` passes on the release commit
 - [ ] `pnpm changeset version` committed as `chore: release`
 - [ ] `docs/SUPPORTED.md`, `THREAT_MODEL.md`, `DEPENDENCY.md` version strings updated
+- [ ] **Temporary:** `VERSION` constants updated in `packages/*/src/index.ts` (until [#10](https://github.com/eudi-verify/eudi-verify/issues/10))
 - [ ] Packages published to npm (`@eudi-verify/server`, `@eudi-verify/client`, `@eudi-verify/embed`, `@eudi-verify/react`)
 - [ ] Git tag `v0.X.Y` pushed (**signed** with `git tag -s` when signing is configured)
 - [ ] `git tag -v v0.X.Y` passes locally

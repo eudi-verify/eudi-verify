@@ -256,5 +256,5 @@ See [.cursor/rules/threat-model-sync.mdc](.cursor/rules/threat-model-sync.mdc) f
 
 ---
 
-**Last Updated**: 2026-07-07  
-**Version**: 1.1.0 (demo mode)
+**Last Updated**: 2026-07-08  
+**Version**: 1.1.1 (demo mode)
