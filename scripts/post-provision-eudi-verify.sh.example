@@ -7,7 +7,7 @@ set -euo pipefail
 DEPLOY_USER="${DEPLOY_USER:-deploy}"
 APP_DIR="/opt/eudi-verify"
 REPO_URL="https://github.com/eudi-verify/eudi-verify"
-DOMAIN="demo.eudi-verify.eu"
+DOMAIN="demo.your-domain.eu"
 SERVICE_NAME="eudi-verify"
 ENV_FILE="$APP_DIR/examples/html-vanilla/.env"
 WORK_DIR="$APP_DIR/examples/html-vanilla"
@@ -25,7 +25,8 @@ if [[ ! -f "$ENV_FILE" ]]; then
   TOKEN_SECRET=$(openssl rand -base64 32)
   sudo tee "$ENV_FILE" > /dev/null << EOF
 TOKEN_SECRET=$TOKEN_SECRET
-PORT=3000
+PORT=3001
+API_PORT=3000
 NODE_ENV=production
 BASE_URL=https://$DOMAIN/api/eudi
 EOF
@@ -43,9 +44,10 @@ Type=simple
 User=$DEPLOY_USER
 WorkingDirectory=$WORK_DIR
 EnvironmentFile=$ENV_FILE
-ExecStart=/usr/bin/node --import tsx server.ts
+ExecStart=$APP_DIR/examples/html-vanilla/start.sh
 Restart=on-failure
 RestartSec=5
+KillMode=control-group
 
 [Install]
 WantedBy=multi-user.target
@@ -61,7 +63,7 @@ server {
     server_name $DOMAIN;
 
     location / {
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://127.0.0.1:3001;
         proxy_http_version 1.1;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;

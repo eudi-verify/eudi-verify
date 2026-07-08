@@ -34,7 +34,12 @@ export interface EudiVerifyEventMap {
 /**
  * Observed attributes for the custom element.
  */
-const OBSERVED_ATTRIBUTES = ["api-url", "request", "auto-start"] as const;
+const OBSERVED_ATTRIBUTES = [
+  "api-url",
+  "request",
+  "auto-start",
+  "demo-mode",
+] as const;
 type ObservedAttribute = (typeof OBSERVED_ATTRIBUTES)[number];
 
 /** States where the in-widget demo banner is shown (active verification only). */
@@ -127,6 +132,21 @@ export class EudiVerifyElement extends HTMLElement {
   }
 
   /**
+   * Whether demo mode is declared on the host page (shows in-widget demo banner).
+   */
+  get demoMode(): boolean {
+    return this.hasAttribute("demo-mode");
+  }
+
+  set demoMode(value: boolean) {
+    if (value) {
+      this.setAttribute("demo-mode", "");
+    } else {
+      this.removeAttribute("demo-mode");
+    }
+  }
+
+  /**
    * Current verification state (read-only).
    */
   get state(): VerificationState | null {
@@ -156,6 +176,11 @@ export class EudiVerifyElement extends HTMLElement {
     if (name === "api-url" && this.#verification) {
       this.#cleanup();
     }
+
+    if (name === "demo-mode") {
+      this.#applyDemoModeAttribute();
+      this.#updateDemoBanner(this.state ?? { status: "idle" });
+    }
   }
 
   /**
@@ -183,8 +208,8 @@ export class EudiVerifyElement extends HTMLElement {
   /**
    * Cancel the current verification.
    */
-  cancel(): void {
-    this.#verification?.cancel();
+  cancel(): Promise<void> {
+    return this.#verification?.cancel() ?? Promise.resolve();
   }
 
   /**
@@ -231,32 +256,25 @@ export class EudiVerifyElement extends HTMLElement {
   #ensureVerification(): void {
     if (this.#verification) return;
 
+    this.#applyDemoModeAttribute();
+
     this.#verification = createVerification({
       apiUrl: this.apiUrl,
+      onEudiMode: (mode) => {
+        if (this.#isDemo !== null) return;
+        this.#isDemo = mode === "demo";
+        this.#updateDemoBanner(this.state ?? { status: "idle" });
+      },
     });
 
     this.#unsubscribe = this.#verification.subscribe((state) => {
       this.#handleStateChange(state);
     });
-
-    // Detect demo mode on first API interaction
-    this.#detectDemoMode();
   }
 
-  async #detectDemoMode(): Promise<void> {
-    if (this.#isDemo !== null || !this.apiUrl) return;
-
-    try {
-      const response = await fetch(`${this.apiUrl}/sessions`, {
-        method: "HEAD",
-      });
-      const mode = response.headers.get("X-Eudi-Mode");
-      this.#isDemo = mode === "demo";
-      this.#updateDemoBanner(this.state ?? { status: "idle" });
-    } catch {
-      // If detection fails, don't show banner (fail safely)
-      this.#isDemo = false;
-      this.#updateDemoBanner(this.state ?? { status: "idle" });
+  #applyDemoModeAttribute(): void {
+    if (this.demoMode) {
+      this.#isDemo = true;
     }
   }
 
@@ -411,6 +429,7 @@ export class EudiVerifyElement extends HTMLElement {
     }
 
     this.#lastStatus = null;
+    this.#isDemo = this.demoMode ? true : null;
   }
 }
 

@@ -52,14 +52,14 @@ Terminal 2 — examples/html-vanilla/  http://localhost:3001 (static + /api prox
 
 ## Files
 
-| File                  | Purpose                                   |
-| --------------------- | ----------------------------------------- |
-| `start.sh`            | Production entrypoint (API + static)      |
-| `server.ts`           | Static file server + API proxy to `:3000` |
-| `public/index.html`   | Landing page                              |
-| `public/verify.html`  | Age verification with widget              |
-| `public/success.html` | Post-verification page                    |
-| `public/styles.css`   | EU-themed styling                         |
+| File                  | Purpose                                                    |
+| --------------------- | ---------------------------------------------------------- |
+| `start.sh`            | Production entrypoint (API + static; nginx targets `PORT`) |
+| `server.ts`           | Static file server + API proxy to `:3000`                  |
+| `public/index.html`   | Landing page                                               |
+| `public/verify.html`  | Age verification with widget                               |
+| `public/success.html` | Post-verification page                                     |
+| `public/styles.css`   | EU-themed styling                                          |
 
 ## Running with Docker
 

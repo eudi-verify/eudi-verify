@@ -41,6 +41,7 @@ export const EudiVerify = forwardRef<EudiVerifyRef, EudiVerifyProps>(
       apiUrl,
       request,
       autoStart,
+      demoMode,
       className,
       style,
       onVerified,
@@ -64,7 +65,10 @@ export const EudiVerify = forwardRef<EudiVerifyRef, EudiVerifyProps>(
       if (autoStart !== undefined) {
         el.autoStart = autoStart;
       }
-    }, [apiUrl, request, autoStart]);
+      if (demoMode !== undefined) {
+        el.demoMode = demoMode;
+      }
+    }, [apiUrl, request, autoStart, demoMode]);
 
     // Wire event listeners
     useEffect(() => {
@@ -137,7 +141,7 @@ export const EudiVerify = forwardRef<EudiVerifyRef, EudiVerifyProps>(
       ref,
       () => ({
         start: () => elementRef.current?.start(),
-        cancel: () => elementRef.current?.cancel(),
+        cancel: () => elementRef.current?.cancel() ?? Promise.resolve(),
         reset: () => elementRef.current?.reset(),
         get state() {
           return elementRef.current?.state ?? null;

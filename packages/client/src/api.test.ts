@@ -48,7 +48,8 @@ describe("createApiClient", () => {
       const request: VerificationRequest = { age_over_18: true };
       const result = await client.createSession(request);
 
-      expect(result).toEqual(mockSession);
+      expect(result.session).toEqual(mockSession);
+      expect(result.eudiMode).toBeNull();
       expect(mockFetch).toHaveBeenCalledWith(
         "https://api.example.com/sessions",
         expect.objectContaining({
@@ -56,6 +57,28 @@ describe("createApiClient", () => {
           body: JSON.stringify({ request }),
         }),
       );
+    });
+
+    it("reads X-Eudi-Mode from createSession response", async () => {
+      const mockSession: Session = {
+        id: "session-123",
+        status: "pending",
+        qrUrl: "openid4vp://verify?request_uri=...",
+        createdAt: "2024-01-01T00:00:00Z",
+        expiresAt: "2024-01-01T00:05:00Z",
+      };
+
+      const mockFetch = createMockFetch([
+        {
+          status: 201,
+          body: mockSession,
+          headers: { "X-Eudi-Mode": "demo" },
+        },
+      ]);
+      const client = createApiClient({ baseUrl, fetch: mockFetch });
+
+      const result = await client.createSession({ age_over_18: true });
+      expect(result.eudiMode).toBe("demo");
     });
 
     it("handles rate limiting", async () => {

@@ -38,6 +38,8 @@ export {
   createApiClient,
   type EudiApiClient,
   type ApiClientConfig,
+  type CreateSessionResult,
+  type EudiMode,
 } from "./api.js";
 
 export { createPoller, type Poller, type PollingConfig } from "./polling.js";
