@@ -1,5 +1,12 @@
 # example-server
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [[`aa62611`](https://github.com/eudi-verify/eudi-verify/commit/aa62611b29b6f6921ab529bff748e9de7c863678)]:
+  - @eudi-verify/server@1.1.1
+
 ## 0.1.4
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @eudi-verify/server
 
+## 1.1.1
+
+### Patch Changes
+
+- [#25](https://github.com/eudi-verify/eudi-verify/pull/25) [`aa62611`](https://github.com/eudi-verify/eudi-verify/commit/aa62611b29b6f6921ab529bff748e9de7c863678) Thanks [@mkascel](https://github.com/mkascel)! - Fix client IP extraction behind reverse proxies/CDNs so rate limiting keys on real visitor IP instead of edge IP.
+
 ## 1.1.0
 
 ## 1.0.3
