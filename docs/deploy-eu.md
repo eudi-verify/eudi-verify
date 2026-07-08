@@ -77,6 +77,7 @@ EnvironmentFile=/opt/eudi-verify/examples/html-vanilla/.env
 ExecStart=/opt/eudi-verify/examples/html-vanilla/start.sh
 Restart=on-failure
 RestartSec=5
+KillMode=control-group
 
 [Install]
 WantedBy=multi-user.target
@@ -118,6 +119,39 @@ nginx -t && systemctl reload nginx
 certbot --nginx -d demo.your-domain.eu
 ```
 
+### 7. CDN in front of origin (optional)
+
+Many demos put a CDN (e.g. [Bunny](https://bunny.net)) in front of the public hostname for static assets. API routes must not be cached.
+
+**Recommended edge rule** (Bunny Edge Rules; adapt for your CDN):
+
+| Setting      | Value                                         |
+| ------------ | --------------------------------------------- |
+| Trigger path | `*/api/*`                                     |
+| Action       | Override Cache Time → `0` (bypass edge cache) |
+
+**Why:** HTML/JS/CSS benefit from edge cache; `/api/eudi/*` must always hit origin.
+
+**Widget demo detection:** Do not rely on `HEAD /sessions` through a CDN — some pull zones return 404 for `HEAD` on dynamic paths even with cache bypass. The `<eudi-verify>` widget reads `X-Eudi-Mode` from `POST /sessions`, or use the `demo-mode` attribute on hosted demo pages.
+
+**Optional split hostname:** Serve static via CDN on `demo.your-domain.eu` and add `origin.your-domain.eu` (same nginx server block) for direct API testing. Browser API calls can use either hostname if CORS is open (demo server sets `Access-Control-Allow-Origin: *`).
+
+**Secrets:** Never commit CDN API keys or pull zone IDs to the repo. Store `BUNNY_API_KEY` and `BUNNY_PULL_ZONE_ID` in `.env` on the server only (used for post-deploy cache purge).
+
+### 8. One-time migration (legacy nginx → static PORT)
+
+If nginx currently proxies to `API_PORT` (3000) instead of `PORT` (3001):
+
+```bash
+sudo systemctl stop eudi-verify
+sudo fuser -k 3000/tcp 3001/tcp 3002/tcp 2>/dev/null || true
+# Edit nginx: proxy_pass http://127.0.0.1:3001;
+sudo nginx -t && sudo systemctl reload nginx
+# Ensure .env has PORT=3001 and API_PORT=3000
+sudo systemctl start eudi-verify
+pgrep -af server.ts   # API should not be orphaned (PPID 1)
+```
+
 ---
 
 ## Option 2: Docker
@@ -142,7 +176,7 @@ docker build -t eudi-verify-demo -f examples/html-vanilla/Dockerfile .
 docker run -d \
   --name eudi-verify \
   --restart unless-stopped \
-  -p 3000:3000 \
+  -p 3001:3001 \
   -e TOKEN_SECRET="$(openssl rand -base64 32)" \
   -e NODE_ENV=production \
   eudi-verify-demo

@@ -53,14 +53,15 @@ See [`@eudi-verify/react`](../react/README.md) for typed props, callbacks, and t
 | `api-url`    | string      | Yes      | Base URL for your verifier API                        |
 | `request`    | JSON string | Yes      | Verification request (e.g., `'{"age_over_18":true}'`) |
 | `auto-start` | boolean     | No       | Start verification automatically on page load         |
+| `demo-mode`  | boolean     | No       | Show in-widget demo banner (hosted demo pages)        |
 
 ## Methods
 
-| Method     | Description                     |
-| ---------- | ------------------------------- |
-| `start()`  | Start the verification flow     |
-| `cancel()` | Cancel the current verification |
-| `reset()`  | Reset to idle state             |
+| Method     | Description                                               |
+| ---------- | --------------------------------------------------------- |
+| `start()`  | Start the verification flow                               |
+| `cancel()` | Cancel the current verification (returns `Promise<void>`) |
+| `reset()`  | Reset to idle state                                       |
 
 ```js
 const widget = document.querySelector("eudi-verify");

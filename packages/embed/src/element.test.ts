@@ -20,13 +20,22 @@ const mockSession: Session = {
   expiresAt: "2024-01-01T00:05:00Z",
 };
 
-function createMockFetch() {
-  return vi.fn(async () => ({
-    ok: true,
-    status: 201,
-    json: async () => mockSession,
-    headers: new Headers(),
-  })) as unknown as typeof fetch;
+function createMockFetch(session: Session = mockSession) {
+  return vi.fn(async (_input: string | URL | Request, init?: RequestInit) => {
+    const method =
+      init?.method ??
+      (typeof _input !== "string" && !(_input instanceof URL)
+        ? _input.method
+        : "GET");
+
+    return {
+      ok: true,
+      status:
+        method === "POST" && String(_input).includes("/sessions") ? 201 : 200,
+      json: async () => session,
+      headers: new Headers({ "X-Eudi-Mode": "demo" }),
+    } as Response;
+  }) as unknown as typeof fetch;
 }
 
 beforeAll(() => {
@@ -49,10 +58,11 @@ describe("EudiVerifyElement", () => {
   });
 
   describe("observedAttributes", () => {
-    it("observes api-url, request, auto-start", () => {
+    it("observes api-url, request, auto-start, demo-mode", () => {
       expect(EudiVerifyElement.observedAttributes).toContain("api-url");
       expect(EudiVerifyElement.observedAttributes).toContain("request");
       expect(EudiVerifyElement.observedAttributes).toContain("auto-start");
+      expect(EudiVerifyElement.observedAttributes).toContain("demo-mode");
     });
   });
 
@@ -243,23 +253,13 @@ describe("EudiVerifyElement", () => {
               : input instanceof URL
                 ? input.href
                 : input.url;
-          const method =
-            init?.method ?? (input instanceof Request ? input.method : "GET");
-
-          if (method === "HEAD") {
-            return {
-              ok: true,
-              status: 200,
-              headers: new Headers({ "X-Eudi-Mode": "demo" }),
-            } as Response;
-          }
 
           if (url.endsWith("/cancel")) {
             return {
               ok: true,
               status: 200,
               json: async () => cancelledSession,
-              headers: new Headers(),
+              headers: new Headers({ "X-Eudi-Mode": "demo" }),
             } as Response;
           }
 
@@ -268,7 +268,7 @@ describe("EudiVerifyElement", () => {
               ok: true,
               status: 200,
               json: async () => mockSession,
-              headers: new Headers(),
+              headers: new Headers({ "X-Eudi-Mode": "demo" }),
             } as Response;
           }
 
@@ -276,13 +276,14 @@ describe("EudiVerifyElement", () => {
             ok: true,
             status: 201,
             json: async () => mockSession,
-            headers: new Headers(),
+            headers: new Headers({ "X-Eudi-Mode": "demo" }),
           } as Response;
         },
       );
 
       vi.stubGlobal("fetch", mockFetch);
       document.body.appendChild(element);
+      element.setAttribute("demo-mode", "");
       element.apiUrl = "https://api.example.com";
       element.request = '{"age_over_18":true}';
 
@@ -292,10 +293,11 @@ describe("EudiVerifyElement", () => {
       element.start();
 
       await vi.waitFor(() => {
+        expect(element.state?.status).toBe("showQR");
         expect(banner()?.hasAttribute("hidden")).toBe(false);
       });
 
-      element.cancel();
+      await element.cancel();
 
       await vi.waitFor(() => {
         expect(element.state?.status).toBe("idle");

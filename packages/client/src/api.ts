@@ -5,6 +5,21 @@
  */
 
 import type { Session, VerificationRequest, ApiError } from "./types.js";
+
+/** Server mode from `X-Eudi-Mode` response header. */
+export type EudiMode = "demo" | "production";
+
+/** Result of POST /sessions including response headers. */
+export interface CreateSessionResult {
+  session: Session;
+  eudiMode: EudiMode | null;
+}
+
+function parseEudiMode(headers: Headers): EudiMode | null {
+  const mode = headers.get("X-Eudi-Mode");
+  if (mode === "demo" || mode === "production") return mode;
+  return null;
+}
 import {
   ApiResponseError,
   NetworkError,
@@ -29,7 +44,7 @@ export interface ApiClientConfig {
  */
 export interface EudiApiClient {
   /** Create a new verification session */
-  createSession(request: VerificationRequest): Promise<Session>;
+  createSession(request: VerificationRequest): Promise<CreateSessionResult>;
   /** Get the current state of a session */
   getSession(sessionId: string): Promise<Session>;
   /** Cancel a pending session */
@@ -49,7 +64,7 @@ export function createApiClient(config: ApiClientConfig): EudiApiClient {
     method: string,
     path: string,
     body?: unknown,
-  ): Promise<T> {
+  ): Promise<{ data: T; headers: Headers }> {
     const url = `${normalizedBaseUrl}${path}`;
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -72,7 +87,7 @@ export function createApiClient(config: ApiClientConfig): EudiApiClient {
       }
 
       const data = (await response.json()) as T;
-      return data;
+      return { data, headers: response.headers };
     } catch (error) {
       clearTimeout(timeoutId);
 
@@ -131,24 +146,27 @@ export function createApiClient(config: ApiClientConfig): EudiApiClient {
   return {
     async createSession(
       verificationRequest: VerificationRequest,
-    ): Promise<Session> {
-      return request<Session>("POST", "/sessions", {
+    ): Promise<CreateSessionResult> {
+      const { data, headers } = await request<Session>("POST", "/sessions", {
         request: verificationRequest,
       });
+      return { session: data, eudiMode: parseEudiMode(headers) };
     },
 
     async getSession(sessionId: string): Promise<Session> {
-      return request<Session>(
+      const { data } = await request<Session>(
         "GET",
         `/sessions/${encodeURIComponent(sessionId)}`,
       );
+      return data;
     },
 
     async cancelSession(sessionId: string): Promise<Session> {
-      return request<Session>(
+      const { data } = await request<Session>(
         "POST",
         `/sessions/${encodeURIComponent(sessionId)}/cancel`,
       );
+      return data;
     },
   };
 }
