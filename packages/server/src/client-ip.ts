@@ -2,7 +2,7 @@
  * Resolve the client IP for rate limiting behind reverse proxies / CDNs.
  *
  * Prefer X-Real-IP (set by nginx after real_ip) over X-Forwarded-For.
- * When only XFF is present, use the rightmost hop — Bunny sends "edge, client".
+ * When only XFF is present, use the rightmost hop.
  */
 
 function headerValue(value: string | string[] | undefined): string | undefined {
