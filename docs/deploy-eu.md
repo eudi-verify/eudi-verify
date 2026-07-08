@@ -113,6 +113,15 @@ ln -s /etc/nginx/sites-available/eudi-verify /etc/nginx/sites-enabled/
 nginx -t && systemctl reload nginx
 ```
 
+If a CDN (Bunny, etc.) sits in front of nginx, install trusted-proxy real IP handling so rate limiting sees visitor IPs, not the CDN edge:
+
+```bash
+bash /opt/eudi-verify/scripts/install-bunny-real-ip.sh
+# Re-run monthly or after CDN connectivity issues (Bunny edge IPs change)
+```
+
+The demo API and static servers bind to `127.0.0.1` by default (`HOST` in `.env` overrides). Keep them off the public interface so clients cannot spoof `X-Real-IP` by bypassing nginx.
+
 ### 6. Enable HTTPS
 
 ```bash
@@ -131,6 +140,8 @@ Many demos put a CDN (e.g. [Bunny](https://bunny.net)) in front of the public ho
 | Action       | Override Cache Time → `0` (bypass edge cache) |
 
 **Why:** HTML/JS/CSS benefit from edge cache; `/api/eudi/*` must always hit origin.
+
+**Rate limiting behind CDN:** Bunny sends `X-Forwarded-For: <edge-ip>, <client-ip>`. Without nginx `real_ip` trust for Bunny ranges, the app would rate-limit per CDN edge IP (false positives when many users share a PoP). Run `scripts/install-bunny-real-ip.sh` on the origin and keep the Node API bound to `127.0.0.1`.
 
 **Widget demo detection:** Do not rely on `HEAD /sessions` through a CDN — some pull zones return 404 for `HEAD` on dynamic paths even with cache bypass. The `<eudi-verify>` widget reads `X-Eudi-Mode` from `POST /sessions`, or use the `demo-mode` attribute on hosted demo pages.
 

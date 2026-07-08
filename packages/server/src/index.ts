@@ -97,6 +97,9 @@ export type {
 } from "./rate-limit.js";
 export { createRateLimiter } from "./rate-limit.js";
 
+// Client IP (rate limiting behind CDN / reverse proxy)
+export { clientIpFromHeaders } from "./client-ip.js";
+
 // Handlers
 export type {
   VerifierConfig,

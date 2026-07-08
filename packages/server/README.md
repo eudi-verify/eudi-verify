@@ -15,6 +15,7 @@ import {
   createVerifierHandlers,
   OpenEudiEngine,
   MemoryKVStore,
+  clientIpFromHeaders,
 } from "@eudi-verify/server";
 
 // 1. Create engine and store
@@ -44,7 +45,7 @@ import http from "node:http";
 
 function buildContext(req, params = {}, body = undefined) {
   return {
-    ip: req.socket.remoteAddress ?? "127.0.0.1",
+    ip: clientIpFromHeaders(req.headers, req.socket.remoteAddress),
     origin: req.headers.origin,
     params,
     body,
@@ -116,8 +117,15 @@ import { Hono } from "hono";
 const app = new Hono();
 
 function buildContext(c, params = {}, body = undefined) {
+  const realIp = c.req.header("x-real-ip");
+  const forwarded = c.req.header("x-forwarded-for");
+  const fallbackIp =
+    forwarded
+      ?.split(",")
+      .map((part) => part.trim())
+      .pop() ?? "127.0.0.1";
   return {
-    ip: c.req.header("x-forwarded-for") ?? "127.0.0.1",
+    ip: realIp ?? fallbackIp,
     origin: c.req.header("origin"),
     params,
     body,

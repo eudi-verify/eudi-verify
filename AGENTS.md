@@ -19,6 +19,7 @@ Framework-agnostic EUDI Wallet verifier kit. See [README.md](README.md) for over
 
 ## Hard constraints
 
+- **No live deploys or commits** unless the user explicitly requests them in that message — no `scp`/`rsync`/remote restarts/provision scripts; give deploy steps for the user to run (see `.cursor/rules/no-live-deploy.mdc`)
 - **Node.js 22+**, pnpm workspaces, TypeScript strict mode
 - **Public accuracy**: `docs/SUPPORTED.md` is canonical — do not claim unsupported platforms or packages exist
 - **Sovereignty**: no US identity SaaS in core; see `.cursor/rules/project-context.mdc`
