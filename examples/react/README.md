@@ -13,18 +13,22 @@ React application demonstrating `@eudi-verify/react` wrapper for EUDI Wallet ver
 
 ## Quick Start
 
+**Once, from the repository root** (`eudi-verify/`):
+
+```bash
+pnpm install && pnpm build
+```
+
 **Terminal 1 — Start shared API server:**
 
 ```bash
-cd examples/server
-pnpm start
+cd examples/server && pnpm start
 ```
 
-**Terminal 2 — Start React dev server:**
+**Terminal 2 — Start React dev server** (new terminal, repo root):
 
 ```bash
-cd examples/react
-pnpm start
+cd examples/react && pnpm start
 ```
 
 Open http://localhost:3001

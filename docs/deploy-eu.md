@@ -29,9 +29,8 @@ ssh root@your-server
 curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 apt install -y nodejs
 
-# Install pnpm
-corepack enable
-corepack prepare pnpm@latest --activate
+# Install pnpm (see package.json "packageManager" for the version used in CI)
+npm install -g pnpm@11.5.3
 
 # Install nginx and certbot
 apt install -y nginx certbot python3-certbot-nginx

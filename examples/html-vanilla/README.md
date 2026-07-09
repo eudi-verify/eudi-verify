@@ -6,17 +6,22 @@ Uses the `<eudi-verify>` web component with no framework.
 
 ## Quick Start
 
+**Once, from the repository root** (`eudi-verify/`, not this folder):
+
+```bash
+pnpm install && pnpm build
+```
+
 **Terminal 1 — Start API server:**
 
 ```bash
-cd ../server
-pnpm start
+cd examples/server && pnpm start
 ```
 
-**Terminal 2 — Start static server:**
+**Terminal 2 — Start static server** (new terminal, repo root):
 
 ```bash
-pnpm start
+cd examples/html-vanilla && pnpm start
 ```
 
 Open http://localhost:3001

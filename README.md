@@ -53,19 +53,25 @@ See the [integration guide](docs/INTEGRATION.md) for end-to-end setup.
 
 ## Quick start
 
+**Requirements:** Node.js 22+, [pnpm](https://pnpm.io/).
+
+**1. Clone and build packages** — run from the **repository root** (`eudi-verify/`):
+
 ```bash
 git clone https://github.com/eudi-verify/eudi-verify.git
 cd eudi-verify
 pnpm install && pnpm build
 ```
 
-Terminal 1 — shared API server:
+`pnpm build` compiles `packages/*`. Example apps under `examples/` only expose `start` or `dev` — there is no `build` script there.
+
+**2. Terminal 1 — shared API server** (new terminal; `cd` to your clone root first):
 
 ```bash
 cd examples/server && pnpm start
 ```
 
-Terminal 2 — HTML demo:
+**3. Terminal 2 — HTML demo** (another new terminal; clone root):
 
 ```bash
 cd examples/html-vanilla && pnpm start

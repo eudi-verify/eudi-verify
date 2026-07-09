@@ -174,8 +174,7 @@ if [[ "$INSTALL_NODE" == "true" ]]; then
   echo "→ [6/7] Node.js ${NODE_MAJOR}..."
   curl -fsSL "https://deb.nodesource.com/setup_${NODE_MAJOR}.x" | bash -
   apt-get install -y -qq nodejs
-  corepack enable
-  corepack prepare pnpm@latest --activate
+  npm install -g pnpm@11.5.3
 else
   echo "→ [6/7] Node.js skipped."
 fi

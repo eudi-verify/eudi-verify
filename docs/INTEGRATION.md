@@ -116,13 +116,20 @@ app.listen(3000);
 
 ### Running the repo examples
 
-All frontend examples use a shared backend server ([`examples/server/`](../examples/server/)). Start the API server first, then run your chosen frontend in a second terminal:
+All frontend examples use a shared backend server ([`examples/server/`](../examples/server/)). **Build packages once from the repository root** (`pnpm install && pnpm build` — not from `examples/*`, which have no `build` script). Then start the API server and your chosen frontend in separate terminals:
 
 ```bash
-# Terminal 1 — API (port 3000)
-cd examples/server && pnpm start
+# Once — repo root
+pnpm install && pnpm build
+```
 
-# Terminal 2 — html-vanilla (port 3001) or React (port 3001)
+```bash
+# Terminal 1 — API (port 3000), from repo root
+cd examples/server && pnpm start
+```
+
+```bash
+# Terminal 2 — html-vanilla (port 3001) or React (port 3001), from repo root
 cd examples/html-vanilla && pnpm start
 # or
 cd examples/react && pnpm dev

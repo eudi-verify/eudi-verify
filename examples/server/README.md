@@ -2,6 +2,17 @@
 
 Reference backend for all eudi-verify frontend examples.
 
+## Prerequisites
+
+From the **repository root** (not this directory):
+
+```bash
+cd eudi-verify   # path to your clone
+pnpm install && pnpm build
+```
+
+Example folders have no `build` script — only `packages/*` are built at the root.
+
 ## Quick Start
 
 ```bash
