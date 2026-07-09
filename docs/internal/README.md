@@ -6,18 +6,13 @@ Files named `*.local.md` in this directory are **gitignored** (see root `.gitign
 
 **Committed (public):** this README only.
 
-**Gitignored examples:**
-
-| File                  | Purpose                                      |
-| --------------------- | -------------------------------------------- |
-| `cdn-origin.local.md` | CDN origin lockdown, cron, DNS cutover notes |
-
-**Also gitignored at repo root:** `PLAN.local.md` — funding strategy and session bootstrap (not infra runbooks).
+**Gitignored pattern:** `docs/internal/<topic>.local.md` — one focused file per topic (CDN cutover, deploy paths, cron, etc.). Do not commit these files or link to them from public docs.
 
 **Related public docs:**
 
+- `docs/deploy-eu.md` — provider-generic EU deployment
 - `docs/deploy-cdn-examples.md` — provider-generic CDN supplements
 
-Off-repo reusable playbooks live on the maintainer machine; see `docs-boundary.mdc`.
+Distill generic guidance into public `docs/`; keep hostnames, IPs, SSH aliases, and real cron paths in gitignored notes only. See `docs-boundary.mdc` for the full boundary.
 
-When adding a new private note, prefer a focused `*.local.md` file here over growing `PLAN.local.md`.
+When adding private context, prefer a new `*.local.md` file here over growing any other local-only note at the repo root.

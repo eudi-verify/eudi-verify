@@ -8,7 +8,7 @@ alwaysApply: true
 ## Hard stops
 
 - **Never commit** git changes unless the user explicitly asks in that message.
-- **Never deploy** to production or the live demo server (`kascel`, `demo.eudi-verify.eu`, `/opt/eudi-verify`, or any remote host) unless the user explicitly asks in that message.
+- **Never deploy** to production, a live demo server, or any remote host unless the user explicitly asks in that message.
 - **Never** `scp`, `rsync`, `git push`, `systemctl restart`, nginx reload, or run install/provision scripts on a remote host unless explicitly requested for that action.
 
 ## Allowed without explicit deploy/commit request

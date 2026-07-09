@@ -63,4 +63,4 @@ Avoid:
 
 ## Session Context
 
-Private maintainer notes (`PLAN.local.md`, `docs/internal/*.local.md`): see [docs-boundary.mdc](./docs-boundary.mdc).
+Optional gitignored private notes may exist per `.gitignore`; see [docs-boundary.mdc](./docs-boundary.mdc).

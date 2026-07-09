@@ -11,5 +11,6 @@ scripts/deploy.sh
 scripts/provision-server.sh
 scripts/provision-base.conf
 .cursor/rules/ponytail.mdc
+.cursor/rules/maintainer-local.mdc
 
 .DS_Store

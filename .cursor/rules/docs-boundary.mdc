@@ -21,43 +21,25 @@ This is a **public open-source repo**. Anything committed must make sense to str
 | `FUNDING.md` | Sponsor-facing funding info only |
 | `packages/*/README.md`, `THREAT_MODEL.md`, `SECURITY.md` | Package API, security policy |
 | `.github/internal/wp/` | WP acceptance criteria (dev process — **not** secret; name means “not user-facing marketing”) |
-| `docs/internal/README.md` | **Only** committed file under `docs/internal/` — index for maintainers/agents |
+| `docs/internal/README.md` | **Only** committed file under `docs/internal/` — maintainer index (no secret content) |
 
 Public docs must be **self-contained**. Do not link to or reference gitignored `*.local.md` files.
 
 ---
 
-## Private (not committed)
+## Private (gitignored — may exist locally)
 
-### `*.local.md` (gitignored — root `.gitignore`)
+Root `.gitignore` excludes optional local files. **Do not commit these.** Most contributors will not have them.
 
-| Path | Use for |
-|------|---------|
-| `PLAN.local.md` | Funding strategy, session bootstrap, short pointers to other private notes |
-| `docs/internal/<topic>.local.md` | Ops runbooks, infra decisions, server cron/DNS, cutover notes |
-
-### Other gitignored maintainer files (`.gitignore`)
-
-| Path | Use for |
-|------|---------|
+| Pattern | Typical use (project lead only) |
+|---------|--------------------------------|
+| `*.local.md`, `*.local.txt` | Private runbooks, session notes |
+| `PLAN.local.md` | Funding/session bootstrap |
+| `docs/internal/<topic>.local.md` | Ops runbooks with real hostnames and cutover detail |
 | `scripts/deploy.sh`, `scripts/provision-server.sh`, `scripts/provision-base.conf` | Server-specific deploy |
-| `.env` | Secrets |
+| `.env` | Secrets — use a password manager, not git |
 
-### Off-repo (maintainer machine)
-
-Private ops playbooks on the maintainer's machine — distill generic parts into public `docs/` when appropriate. Public docs must not require access to off-repo paths.
-
----
-
-## Agents — document private decisions here
-
-When the maintainer asks to record **private** context (deploy paths, cron, DNS, funding, server IPs, credential pointers):
-
-1. Write body text to `docs/internal/<topic>.local.md` (ops) or append `PLAN.local.md` (funding/session only).
-2. At most a **one-line pointer** in `PLAN.local.md` — not the full runbook.
-3. Read `docs/internal/README.md` for the index of existing private runbooks.
-
-`PLAN.local.md` is maintainer-owned: read before edit; **append only** — never overwrite the whole file.
+Distill generic guidance into public `docs/`; keep host-specific detail in gitignored files or off-repo.
 
 ---
 
@@ -74,18 +56,9 @@ When the maintainer asks to record **private** context (deploy paths, cron, DNS,
 
 ## Boundary examples
 
-| Private (`*.local.md` or gitignored scripts) | Public (`docs/`) |
-|---------------------------------------------|------------------|
+| Private (gitignored) | Public (`docs/`) |
+|----------------------|------------------|
 | Production DNS cutover, apex hostname removal | Generic CDN pull-zone + `/api/*` cache bypass |
 | Firewall/cron with real paths on a named host | Generic install/refresh script usage |
 | Funding amounts, legal entity setup | `FUNDING.md` (sponsor-facing) |
 | `scripts/deploy.sh` with server host | `docs/deploy-eu.md` |
-
----
-
-## WP status sync (private ↔ public)
-
-When completing a work package, update **both**:
-
-- `PLAN.local.md` — private session snapshot (see [plan-sync.mdc](./plan-sync.mdc))
-- `docs/SUPPORTED.md` — public support matrix if platforms changed
