@@ -9,7 +9,7 @@ Framework-agnostic EUDI Wallet verifier kit. See [README.md](README.md) for over
 - [docs/INTEGRATION.md](docs/INTEGRATION.md) — end-to-end integration
 - [THREAT_MODEL.md](THREAT_MODEL.md) — security controls and threat status
 - [openapi/eudi-verifier.yaml](openapi/eudi-verifier.yaml) — API contract
-- `PLAN.local.md` (if present) — maintainer session context; not public
+- `.cursor/rules/docs-boundary.mdc` — public vs private docs (canonical); private notes in `*.local.md` / `docs/internal/`
 
 ## Verify first
 
@@ -34,7 +34,8 @@ Framework-agnostic EUDI Wallet verifier kit. See [README.md](README.md) for over
 | Rule                    | When                                                             |
 | ----------------------- | ---------------------------------------------------------------- |
 | `project-context.mdc`   | Always — architecture, standards                                 |
-| `public-docs.mdc`       | Always — supported vs roadmap wording                            |
+| `docs-boundary.mdc`     | Always — public vs private docs (canonical)                      |
+| `public-docs.mdc`       | Always — supported vs roadmap wording (within public docs)       |
 | `docs-sync.mdc`         | When editing packages/docs (globs)                               |
 | `plan-mode.mdc`         | Manual `@plan-mode` — structured planning                        |
 | `plan-sync.mdc`         | WP / roadmap status changes                                      |

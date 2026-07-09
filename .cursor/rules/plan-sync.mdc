@@ -5,7 +5,7 @@ alwaysApply: false
 
 # Plan Status Sync
 
-Keep `PLAN.local.md` and `docs/SUPPORTED.md` in sync with actual project state.
+`PLAN.local.md` is **private** — see [docs-boundary.mdc](./docs-boundary.mdc). Keep it and `docs/SUPPORTED.md` in sync with actual project state.
 
 ## When completing a work package
 
