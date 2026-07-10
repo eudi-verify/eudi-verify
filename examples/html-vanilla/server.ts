@@ -129,6 +129,15 @@ const server = createServer(async (req, res) => {
     return proxyApi(req, res, path, url.search);
   }
 
+  // Browsers auto-request these; serve the EU emblem SVG (same as <link rel="icon">).
+  if (
+    path === "/favicon.ico" ||
+    path === "/apple-touch-icon.png" ||
+    path === "/apple-touch-icon-precomposed.png"
+  ) {
+    if (await serveStatic(res, "eu-emblem.svg")) return;
+  }
+
   let filePath = path === "/" ? "index.html" : path.slice(1);
   if (!extname(filePath)) filePath += ".html";
 
