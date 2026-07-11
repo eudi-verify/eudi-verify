@@ -26,18 +26,23 @@ Path B — Implement endpoints from OpenAPI in PHP
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  Browser                                            │
-│    <eudi-verify api-url="/eudi-proxy">              │
+│  EUDI Wallet (user's phone)                         │
+│    calls response_uri / request_uri from QR code   │
 └─────────────────┬───────────────────────────────────┘
+                  │ PUBLIC_BASE_URL (internet-reachable)
+┌─────────────────┼───────────────────────────────────┐
+│  Browser        │                                   │
+│    <eudi-verify api-url="/eudi-proxy">              │
+└─────────────────┼───────────────────────────────────┘
                   │ HTTP /eudi-proxy/*
 ┌─────────────────▼───────────────────────────────────┐
-│  PHP Application                                    │
+│  PHP Application  (public, e.g. shop.example.com)  │
 │    proxy route → curl → Node service               │
 │    checkout handler → verifyEudiToken()             │
 └────────┬──────────────────────────┬─────────────────┘
-         │ proxy (all routes)        │ POST /api/eudi/tokens/verify
+         │ EUDI_NODE_URL (private)   │ EUDI_NODE_URL (private)
 ┌────────▼──────────────────────────▼─────────────────┐
-│  Node verifier service (sidecar, port 3000)         │
+│  Node verifier service (sidecar, localhost:3000)    │
 │    @eudi-verify/server                              │
 └─────────────────────────────────────────────────────┘
 ```
@@ -50,6 +55,18 @@ Install Node.js 22+ and run the verifier service alongside your PHP app.
 npm install @eudi-verify/server
 ```
 
+Two environment variables control the sidecar:
+
+| Variable          | What it is                                                                                  | Example                               |
+| ----------------- | ------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `PUBLIC_BASE_URL` | Public PHP proxy URL — embedded in QR codes; the EUDI Wallet on the user's phone calls this | `https://shop.example.com/eudi-proxy` |
+| `TOKEN_SECRET`    | HMAC secret for signing tokens                                                              | 32+ random characters                 |
+
+> **Why `PUBLIC_BASE_URL` must be the PHP proxy URL, not the Node address:**
+> When the sidecar creates a session it embeds `response_uri` and `request_uri` inside the QR code.
+> The EUDI Wallet scans the QR on a user's phone and calls those URLs directly — it cannot reach a private `localhost:3000`.
+> The Node sidecar's own address (`EUDI_NODE_URL` in PHP) is only used for PHP → Node communication and must never appear in QR codes.
+
 ```js
 // verifier.mjs
 import {
@@ -59,7 +76,11 @@ import {
 } from "@eudi-verify/server";
 import http from "node:http";
 
-const BASE_URL = process.env.BASE_URL || "http://localhost:3000/api/eudi";
+// PUBLIC_BASE_URL is the URL wallets reach via your PHP proxy, e.g.
+// https://shop.example.com/eudi-proxy. For local dev only, localhost is fine
+// because the demo engine simulates the wallet without real network calls.
+const BASE_URL =
+  process.env.PUBLIC_BASE_URL || "http://localhost:3000/api/eudi";
 
 const handlers = createVerifierHandlers({
   engine: new OpenEudiEngine({ mode: "demo", baseUrl: BASE_URL }),
@@ -176,7 +197,7 @@ header('Content-Type: application/json');
 echo $body;
 ```
 
-> **Security:** Do not expose `EUDI_NODE_URL` to the browser. The Node service should only be reachable from your PHP server (e.g. bind to `127.0.0.1` or a private network interface).
+> **Security:** `EUDI_NODE_URL` is a private address used only for PHP → Node communication. Never expose it to the browser or embed it in QR codes. Bind the Node sidecar to `127.0.0.1` or a private network interface. `PUBLIC_BASE_URL` is the separate, internet-reachable address the wallet uses — always set it to your PHP proxy's public URL in production.
 
 ### Step 3: Configure the widget
 
