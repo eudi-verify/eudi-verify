@@ -69,24 +69,23 @@ const handlers = createVerifierHandlers({
   tokenSecret: process.env.TOKEN_SECRET, // 32+ chars, required
 });
 
-function ctx(req, params = {}, body = undefined) {
-  return { ip: req.socket.remoteAddress ?? "127.0.0.1", params, body };
+async function readBody(req) {
+  const chunks = [];
+  for await (const chunk of req) chunks.push(chunk);
+  return Buffer.concat(chunks).toString();
+}
+
+function ctx(req, params = {}, body = undefined, rawBody = undefined) {
+  return { ip: req.socket.remoteAddress ?? "127.0.0.1", params, body, rawBody };
 }
 
 const server = http.createServer(async (req, res) => {
   let result;
   const url = new URL(req.url, "http://localhost");
-  const body =
-    req.method !== "GET"
-      ? await new Promise((r) => {
-          let d = "";
-          req.on("data", (c) => (d += c));
-          req.on("end", () => r(JSON.parse(d || "{}")));
-        })
-      : undefined;
 
   if (req.method === "POST" && url.pathname === "/api/eudi/sessions") {
-    result = await handlers.createSession(ctx(req, {}, body));
+    const raw = await readBody(req);
+    result = await handlers.createSession(ctx(req, {}, JSON.parse(raw), raw));
   } else if (
     req.method === "GET" &&
     url.pathname.startsWith("/api/eudi/sessions/")
@@ -100,9 +99,13 @@ const server = http.createServer(async (req, res) => {
     req.method === "POST" &&
     url.pathname === "/api/eudi/tokens/verify"
   ) {
-    result = await handlers.verifyToken(ctx(req, {}, body));
+    const raw = await readBody(req);
+    result = await handlers.verifyToken(ctx(req, {}, JSON.parse(raw), raw));
   } else if (req.method === "POST" && url.pathname === "/api/eudi/callback") {
-    result = await handlers.handleCallback(ctx(req));
+    // The wallet posts application/x-www-form-urlencoded — do not JSON.parse.
+    // Pass the raw body string so the handler can decode the form fields itself.
+    const raw = await readBody(req);
+    result = await handlers.handleCallback(ctx(req, {}, undefined, raw));
   } else {
     res.writeHead(404).end(JSON.stringify({ error: "not_found" }));
     return;
@@ -134,15 +137,18 @@ $nodeBase = rtrim(getenv('EUDI_NODE_URL') ?: 'http://localhost:3000', '/');
 $upstreamPath = preg_replace('#^/eudi-proxy#', '/api/eudi', $_SERVER['REQUEST_URI']);
 $target = $nodeBase . $upstreamPath;
 
-$method  = $_SERVER['REQUEST_METHOD'];
-$rawBody = file_get_contents('php://input');
+$method      = $_SERVER['REQUEST_METHOD'];
+$rawBody     = file_get_contents('php://input');
+// Pass through the client's Content-Type unchanged. The EUDI Wallet posts
+// application/x-www-form-urlencoded to /callback; other routes use application/json.
+$contentType = $_SERVER['CONTENT_TYPE'] ?? 'application/json';
 
 $ch = curl_init($target);
 curl_setopt_array($ch, [
     CURLOPT_CUSTOMREQUEST  => $method,
     CURLOPT_POSTFIELDS     => $rawBody ?: null,
     CURLOPT_HTTPHEADER     => [
-        'Content-Type: application/json',
+        "Content-Type: $contentType",
         'Accept: application/json',
     ],
     CURLOPT_RETURNTRANSFER => true,
