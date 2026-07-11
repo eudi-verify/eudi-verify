@@ -2,7 +2,7 @@
 
 Add EUDI Wallet identity verification to a PHP application using the verifier REST API.
 
-> **No server library for PHP exists today.** Two integration paths are available — choose based on your deployment constraints. For the full platform support matrix, see [SUPPORTED.md](./SUPPORTED.md).
+> There is no `@eudi-verify/php` package. Two integration paths are available — choose based on your deployment constraints. For the full platform support matrix, see [SUPPORTED.md](./SUPPORTED.md).
 
 ## Two paths at a glance
 
@@ -16,7 +16,7 @@ Path B — Implement endpoints from OpenAPI in PHP
 
 **Path A** runs the Node verifier service as a sidecar, proxies `/api/eudi/*` requests from PHP to it, and calls `POST /tokens/verify` server-side to validate tokens. This is the recommended starting point for most teams.
 
-**Path B** is for teams who cannot run a Node sidecar and are willing to implement the full [OpenAPI contract](../openapi/eudi-verifier.yaml) in PHP themselves, including the OpenID4VP protocol and Verifiable Presentation verification. No PHP library for this exists today — it is a manual undertaking.
+**Path B** is for teams who cannot run a Node sidecar and are willing to implement the full [OpenAPI contract](../openapi/eudi-verifier.yaml) in PHP themselves, including the OpenID4VP protocol and Verifiable Presentation verification. No pre-built PHP library for the EUDI protocol is available yet — this path requires implementing the protocol from scratch or adapting a generic OpenID library.
 
 ---
 
@@ -52,7 +52,7 @@ Path B — Implement endpoints from OpenAPI in PHP
 Install Node.js 22+ and run the verifier service alongside your PHP app.
 
 ```bash
-npm install @eudi-verify/server
+pnpm add @eudi-verify/server
 ```
 
 Two environment variables control the sidecar:
@@ -228,9 +228,7 @@ echo $body;
 Point `api-url` at your PHP proxy path, not at the Node service directly:
 
 ```html
-<script type="module">
-  import "https://cdn.jsdelivr.net/npm/@eudi-verify/embed/dist/embed.js";
-</script>
+<script type="module" src="https://unpkg.com/@eudi-verify/embed"></script>
 
 <eudi-verify
   api-url="/eudi-proxy"
@@ -297,7 +295,12 @@ function verifyEudiToken(string $token, string $verifierBase): array
         throw new RuntimeException("Verifier service returned HTTP $status");
     }
 
-    return json_decode($response, true);
+    $data = json_decode($response, true);
+    if (!is_array($data)) {
+        throw new RuntimeException('Invalid JSON from verifier service');
+    }
+
+    return $data;
 }
 ```
 
@@ -309,7 +312,8 @@ function verifyEudiToken(string $token, string $verifierBase): array
 
 header('Content-Type: application/json');
 
-$token = json_decode(file_get_contents('php://input'), true)['eudiToken'] ?? '';
+$input = json_decode(file_get_contents('php://input'), true);
+$token = is_array($input) ? ($input['eudiToken'] ?? '') : '';
 
 if (empty($token)) {
     http_response_code(400);
@@ -375,7 +379,7 @@ The [OpenAPI contract](../openapi/eudi-verifier.yaml) defines six endpoints:
 | `POST /api/eudi/callback`            | EUDI Wallet      | Receives encrypted VP (`direct_post.jwt`) from wallet |
 | `GET /api/eudi/request/:id`          | EUDI Wallet      | Serves the OpenID4VP authorization request object     |
 
-The `/callback` and `/request/:id` endpoints are called by the EUDI Wallet itself — not by your frontend — and require implementing the [OpenID4VP](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html) protocol, including JWE decryption and Verifiable Presentation verification. **No PHP library for the EUDI protocol exists today.** This is a significant undertaking.
+The `/callback` and `/request/:id` endpoints are called by the EUDI Wallet itself — not by your frontend — and require implementing the [OpenID4VP](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html) protocol, including JWE decryption and Verifiable Presentation verification. No pre-built PHP library for the EUDI protocol is available yet — this is a significant undertaking.
 
 ### Minimal PHP skeleton for session storage
 
