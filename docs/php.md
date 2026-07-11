@@ -169,7 +169,19 @@ $upstreamPath = preg_replace('#^/eudi-proxy#', '/api/eudi', $_SERVER['REQUEST_UR
 $target = $nodeBase . $upstreamPath;
 
 $method      = $_SERVER['REQUEST_METHOD'];
-$rawBody     = file_get_contents('php://input');
+
+// Block POST /tokens/verify from the public proxy — it is server-to-server only.
+// PHP handlers call verifyEudiToken() directly against EUDI_NODE_URL; the browser
+// must never be able to reach this endpoint and extract claims without going through
+// your protected checkout handler.
+if ($method === 'POST' && str_ends_with(parse_url($upstreamPath, PHP_URL_PATH), '/tokens/verify')) {
+    http_response_code(404);
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'not_found']);
+    exit;
+}
+
+$rawBody = file_get_contents('php://input');
 // Pass through the client's Content-Type unchanged. The EUDI Wallet posts
 // application/x-www-form-urlencoded to /callback; other routes use application/json.
 $contentType = $_SERVER['CONTENT_TYPE'] ?? 'application/json';
@@ -208,6 +220,8 @@ echo $body;
 ```
 
 > **Security:** `EUDI_NODE_URL` is a private address used only for PHP → Node communication. Never expose it to the browser or embed it in QR codes. Bind the Node sidecar to `127.0.0.1` or a private network interface. `PUBLIC_BASE_URL` is the separate, internet-reachable address the wallet uses — always set it to your PHP proxy's public URL in production.
+>
+> `POST /tokens/verify` is deliberately blocked in the proxy and returns 404. Token validation must only happen inside your protected PHP handlers via `verifyEudiToken()`, which calls `EUDI_NODE_URL` directly. If the browser could reach `/eudi-proxy/tokens/verify`, it could extract verified claims without going through your checkout logic.
 
 ### Step 3: Configure the widget
 
