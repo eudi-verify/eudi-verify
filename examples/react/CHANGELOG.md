@@ -1,5 +1,19 @@
 # example-react
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @eudi-verify/react@1.1.1
+
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies [[`aad374b`](https://github.com/eudi-verify/eudi-verify/commit/aad374bb1a707b897c9ff08a2f3b3fba451c531b)]:
+  - @eudi-verify/react@1.1.0
+
 ## 0.1.3
 
 ### Patch Changes

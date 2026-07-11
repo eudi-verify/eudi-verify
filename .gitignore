@@ -8,6 +8,11 @@ dist/
 *.local.md
 *.local.txt
 scripts/deploy.sh
+scripts/ops-watch.sh
 scripts/provision-server.sh
 scripts/provision-base.conf
 .cursor/rules/ponytail.mdc
+.cursor/rules/maintainer-local.mdc
+.tmp-ops-state/
+
+.DS_Store

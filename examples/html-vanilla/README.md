@@ -6,17 +6,22 @@ Uses the `<eudi-verify>` web component with no framework.
 
 ## Quick Start
 
+**Once, from the repository root** (`eudi-verify/`, not this folder):
+
+```bash
+pnpm install && pnpm build
+```
+
 **Terminal 1 — Start API server:**
 
 ```bash
-cd ../server
-pnpm start
+cd examples/server && pnpm start
 ```
 
-**Terminal 2 — Start static server:**
+**Terminal 2 — Start static server** (new terminal, repo root):
 
 ```bash
-pnpm start
+cd examples/html-vanilla && pnpm start
 ```
 
 Open http://localhost:3001
@@ -52,14 +57,14 @@ Terminal 2 — examples/html-vanilla/  http://localhost:3001 (static + /api prox
 
 ## Files
 
-| File                  | Purpose                                   |
-| --------------------- | ----------------------------------------- |
-| `start.sh`            | Production entrypoint (API + static)      |
-| `server.ts`           | Static file server + API proxy to `:3000` |
-| `public/index.html`   | Landing page                              |
-| `public/verify.html`  | Age verification with widget              |
-| `public/success.html` | Post-verification page                    |
-| `public/styles.css`   | EU-themed styling                         |
+| File                  | Purpose                                                    |
+| --------------------- | ---------------------------------------------------------- |
+| `start.sh`            | Production entrypoint (API + static; nginx targets `PORT`) |
+| `server.ts`           | Static file server + API proxy to `:3000`                  |
+| `public/index.html`   | Landing page                                               |
+| `public/verify.html`  | Age verification with widget                               |
+| `public/success.html` | Post-verification page                                     |
+| `public/styles.css`   | EU-themed styling                                          |
 
 ## Running with Docker
 

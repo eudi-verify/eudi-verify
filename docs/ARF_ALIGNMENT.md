@@ -192,15 +192,20 @@ Only requested + disclosed attributes appear in verified claims. ARF-compliant s
 
 ---
 
+## Security Documentation (WP6 — Complete)
+
+Baseline security documentation for open-source release:
+
+- Threat model ([`THREAT_MODEL.md`](../THREAT_MODEL.md))
+- Security disclosure policy ([`SECURITY.md`](../SECURITY.md))
+- Dependency audit ([`DEPENDENCY.md`](../DEPENDENCY.md))
+- CI license allowlist gate; demo-mode warnings (console, `X-Eudi-Mode` header, embed banner)
+
+---
+
 ## Production Roadmap
 
 Planned work to achieve full ARF compliance:
-
-### WP6 — Security Documentation (In Progress)
-
-- Threat model (✅ complete)
-- Security disclosure policy (✅ complete)
-- Dependency audit (`DEPENDENCY.md` ✅ complete)
 
 ### Post-Demo Milestones
 

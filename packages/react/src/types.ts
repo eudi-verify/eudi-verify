@@ -23,6 +23,9 @@ export interface EudiVerifyProps {
   /** Start verification automatically on mount */
   autoStart?: boolean;
 
+  /** Show in-widget demo banner (hosted demo pages) */
+  demoMode?: boolean;
+
   /** CSS class name for the host element */
   className?: string;
 
@@ -57,7 +60,7 @@ export interface EudiVerifyRef {
   start: () => void;
 
   /** Cancel the current verification */
-  cancel: () => void;
+  cancel: () => Promise<void>;
 
   /** Reset to idle state */
   reset: () => void;

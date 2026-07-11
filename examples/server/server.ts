@@ -4,12 +4,14 @@ import {
   createVerifierHandlers,
   OpenEudiEngine,
   MemoryKVStore,
+  clientIpFromHeaders,
   type RequestContext,
   type HandlerResponse,
   type VerifiedClaims,
 } from "@eudi-verify/server";
 
 const PORT = parseInt(process.env.PORT || "3000", 10);
+const HOST = process.env.HOST || "127.0.0.1";
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}/api/eudi`;
 const DEMO_RECEIPT_TTL_MS = 5 * 60 * 1000;
 
@@ -89,10 +91,7 @@ function buildContext(
   rawBody?: string,
 ): RequestContext {
   return {
-    ip:
-      (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ||
-      req.socket.remoteAddress ||
-      "127.0.0.1",
+    ip: clientIpFromHeaders(req.headers, req.socket.remoteAddress),
     origin: req.headers.origin,
     params,
     body,
@@ -334,9 +333,9 @@ const server = createServer(async (req, res) => {
   );
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, HOST, () => {
   console.log(
-    `\n🔵 EUDI Verify API Server running at http://localhost:${PORT}\n`,
+    `\n🔵 EUDI Verify API Server running at http://${HOST}:${PORT}\n`,
   );
   console.log("Frontend examples should proxy /api/* to this server.\n");
   console.warn(

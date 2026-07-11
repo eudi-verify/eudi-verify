@@ -176,7 +176,7 @@
 
 **Residual Risk**: Medium - sophisticated attacks may need CDN/WAF
 
-**Notes**: Rate limiting uses in-memory store by default. Production deployments should consider Redis-backed rate limiting for multi-instance setups.
+**Notes**: Rate limiting uses in-memory store by default. Production deployments should consider Redis-backed rate limiting for multi-instance setups. Behind a CDN or reverse proxy, configure trusted-proxy real IP at nginx (see `docs/deploy-eu.md` and `docs/deploy-cdn-examples.md`) and bind the API to localhost so rate limits key on visitor IPs, not edge nodes.
 
 ---
 
@@ -256,5 +256,5 @@ See [.cursor/rules/threat-model-sync.mdc](.cursor/rules/threat-model-sync.mdc) f
 
 ---
 
-**Last Updated**: 2026-06-14  
-**Version**: 1.0.2 (demo mode)
+**Last Updated**: 2026-07-08  
+**Version**: 1.1.1 (demo mode)

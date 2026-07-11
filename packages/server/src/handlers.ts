@@ -137,7 +137,7 @@ export function createVerifierHandlers(
     : null;
 
   function modeHeader(): Record<string, string> {
-    return { "X-Eudi-Mode": mode };
+    return { "X-Eudi-Mode": mode, "Cache-Control": "no-store" };
   }
 
   function logDemoWarning(): void {

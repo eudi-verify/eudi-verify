@@ -6,7 +6,7 @@
 
 import type { VerificationRequest, VerifiedClaims, Session } from "./types.js";
 import { isTerminalStatus } from "./types.js";
-import { createApiClient, type EudiApiClient } from "./api.js";
+import { createApiClient, type EudiApiClient, type EudiMode } from "./api.js";
 import { createPoller, type PollingConfig } from "./polling.js";
 import { generateQRDataUrl, type QRCodeOptions } from "./qr.js";
 
@@ -40,6 +40,8 @@ export interface VerificationConfig {
   qr?: QRCodeOptions;
   /** Optional fetch implementation (for testing) */
   fetch?: typeof fetch;
+  /** Called when `X-Eudi-Mode` is read from POST /sessions (if present) */
+  onEudiMode?: (mode: EudiMode | null) => void;
 }
 
 /**
@@ -76,7 +78,7 @@ export interface Verification {
  * ```
  */
 export function createVerification(config: VerificationConfig): Verification {
-  const { apiUrl, polling, qr, fetch: fetchFn } = config;
+  const { apiUrl, polling, qr, fetch: fetchFn, onEudiMode } = config;
 
   const client: EudiApiClient = createApiClient({
     baseUrl: apiUrl,
@@ -198,7 +200,8 @@ export function createVerification(config: VerificationConfig): Verification {
       setState({ status: "loading" });
 
       try {
-        const session = await client.createSession(request);
+        const { session, eudiMode } = await client.createSession(request);
+        onEudiMode?.(eudiMode);
         currentSessionId = session.id;
 
         const newState = mapSessionToState(session);

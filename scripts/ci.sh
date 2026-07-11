@@ -30,6 +30,9 @@ npx --yes license-checker-rseidelsohn \
   --onlyAllow "Apache-2.0;MIT;BSD-2-Clause;BSD-3-Clause;ISC;0BSD" \
   --excludePrivatePackages
 
+echo "==> Docs version sync"
+bash scripts/check-docs-version.sh
+
 echo "==> Security audit"
 pnpm audit --audit-level=high
 

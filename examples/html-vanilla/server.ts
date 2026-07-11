@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const SHARED_DIR = join(__dirname, "../shared");
 const PORT = parseInt(process.env.PORT || "3001", 10);
+const HOST = process.env.HOST || "127.0.0.1";
 const API_PORT = parseInt(process.env.API_PORT || "3000", 10);
 
 const MIME: Record<string, string> = {
@@ -128,6 +129,15 @@ const server = createServer(async (req, res) => {
     return proxyApi(req, res, path, url.search);
   }
 
+  // Browsers auto-request these; serve the EU emblem SVG (same as <link rel="icon">).
+  if (
+    path === "/favicon.ico" ||
+    path === "/apple-touch-icon.png" ||
+    path === "/apple-touch-icon-precomposed.png"
+  ) {
+    if (await serveStatic(res, "eu-emblem.svg")) return;
+  }
+
   let filePath = path === "/" ? "index.html" : path.slice(1);
   if (!extname(filePath)) filePath += ".html";
 
@@ -139,8 +149,8 @@ const server = createServer(async (req, res) => {
   res.end("Not found");
 });
 
-server.listen(PORT, () => {
-  console.log(`\n📁 Static server running at http://localhost:${PORT}\n`);
+server.listen(PORT, HOST, () => {
+  console.log(`\n📁 Static server running at http://${HOST}:${PORT}\n`);
   console.log(
     "Make sure the API server is running: cd ../server && pnpm start\n",
   );

@@ -25,6 +25,9 @@ jobs:
       - name: Format check
         run: pnpm format:check
 
+      - name: Docs version sync
+        run: bash scripts/check-docs-version.sh
+
       - name: Build
         run: pnpm build
 

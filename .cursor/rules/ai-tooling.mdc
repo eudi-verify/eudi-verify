@@ -18,9 +18,7 @@ Files under `.cursor/rules/` are **Cursor-side copies** of project conventions (
 
 ## Public documentation
 
-Do **not** add unevaluated third-party agent plugins, rulesets, or skills to public-facing docs (`README.md`, `docs/*`, package READMEs).
-
-Public "supported" claims for tooling follow the same bar as product features: see [docs/SUPPORTED.md](../docs/SUPPORTED.md). See also [public-docs.mdc](./public-docs.mdc).
+Do **not** add unevaluated third-party agent plugins, rulesets, or skills to public-facing docs — see [docs-boundary.mdc](./docs-boundary.mdc). Public "supported" claims for tooling follow the same bar as product features: [docs/SUPPORTED.md](../docs/SUPPORTED.md), [public-docs.mdc](./public-docs.mdc).
 
 ## Adding or changing rules
 

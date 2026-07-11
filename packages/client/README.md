@@ -129,9 +129,10 @@ import { createApiClient } from "@eudi-verify/client";
 
 const api = createApiClient({ baseUrl: "https://your-api.example.com" });
 
-// Create session
-const session = await api.createSession({ age_over_18: true });
+// Create session (includes X-Eudi-Mode from response headers when present)
+const { session, eudiMode } = await api.createSession({ age_over_18: true });
 console.log(session.qrUrl); // URL for QR code
+console.log(eudiMode); // 'demo' | 'production' | null
 
 // Poll status
 const status = await api.getSession(session.id);

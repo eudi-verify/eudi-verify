@@ -63,4 +63,4 @@ Avoid:
 
 ## Session Context
 
-For extended project context beyond this technical overview, read `PLAN.local.md` at the repo root if it exists.
+Optional gitignored private notes may exist per `.gitignore`; see [docs-boundary.mdc](./docs-boundary.mdc).
