@@ -128,15 +128,25 @@ const server = http.createServer(async (req, res) => {
     const raw = await readBody(req);
     result = await handlers.handleCallback(ctx(req, {}, undefined, raw));
   } else {
-    res.writeHead(404).end(JSON.stringify({ error: "not_found" }));
-    return;
+    const requestMatch = url.pathname.match(/^\/api\/eudi\/request\/([^/]+)$/);
+    if (requestMatch && req.method === "GET") {
+      result = await handlers.getRequest(
+        ctx(req, { requestId: requestMatch[1] }),
+      );
+    } else {
+      res.writeHead(404).end(JSON.stringify({ error: "not_found" }));
+      return;
+    }
   }
 
   res.writeHead(result.status, {
     "Content-Type": "application/json",
     ...result.headers,
   });
-  res.end(JSON.stringify(result.body));
+  // result.body may be a string (e.g. a JWT from getRequest) — do not double-encode.
+  res.end(
+    typeof result.body === "string" ? result.body : JSON.stringify(result.body),
+  );
 });
 
 server.listen(3000, () => console.log("Verifier running on :3000"));
