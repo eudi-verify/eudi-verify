@@ -216,10 +216,28 @@
 - Dependabot security alerts enabled
 - License allowlist enforcement in CI
 - Minimal dependency surface (only `@openeudi/core` in runtime)
+- Socket Firewall Free wraps `pnpm install` in CI (known-malware blocking)
 
 **Residual Risk**: Medium - standard supply chain risk
 
 **Notes**: See [DEPENDENCY.md](DEPENDENCY.md) for full dependency analysis.
+
+---
+
+### T11: Trojan Source / Hidden Code in PRs
+
+**Status:** `[IMPLEMENTED]`
+
+**Threat**: Attacker hides malicious logic in contributed source via Unicode bidi, invisible characters, or off-screen space padding.
+
+**Implemented Mitigations**:
+
+- `anti-trojan-source` on committed code files in CI (`scripts/check-source-security.sh`)
+- Bidi / zero-width scan on committed markdown
+- Consecutive-space and max line-length checks on code (off-screen padding)
+- Human review + branch protection
+
+**Residual Risk**: Low–medium — novel obfuscation or non-text assets may evade pattern scans
 
 ---
 
