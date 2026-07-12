@@ -116,13 +116,15 @@ pnpm ls --depth=10
 
 ### Current Controls
 
-| Control              | Status      | Notes                                   |
-| -------------------- | ----------- | --------------------------------------- |
-| Lockfile committed   | ✅ Enabled  | `pnpm-lock.yaml` in version control     |
-| Dependabot alerts    | ✅ Enabled  | Weekly scans, no auto-PRs               |
-| CI audit checks      | ✅ Enabled  | Fails on high/critical findings         |
-| License allowlist    | ✅ Enforced | CI blocks unapproved licenses           |
-| Minimal dependencies | ✅ Policy   | Only `@openeudi/core` in server runtime |
+| Control              | Status      | Notes                                                                 |
+| -------------------- | ----------- | --------------------------------------------------------------------- |
+| Lockfile committed   | ✅ Enabled  | `pnpm-lock.yaml` in version control                                   |
+| Dependabot alerts    | ✅ Enabled  | Weekly scans, no auto-PRs                                             |
+| CI audit checks      | ✅ Enabled  | Fails on high/critical findings                                       |
+| License allowlist    | ✅ Enforced | CI blocks unapproved licenses                                         |
+| Minimal dependencies | ✅ Policy   | Only `@openeudi/core` in server runtime                               |
+| Socket Firewall Free | ✅ CI       | `sfw pnpm install` — known-malware block at install (PolyForm Shield) |
+| Source security scan | ✅ CI/local | `scripts/check-source-security.sh` — trojan-source + padding          |
 
 ### Planned Enhancements
 

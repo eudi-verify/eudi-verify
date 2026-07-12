@@ -339,6 +339,6 @@ server.listen(PORT, HOST, () => {
   );
   console.log("Frontend examples should proxy /api/* to this server.\n");
   console.warn(
-    "⚠️  DEMO MODE - Credentials are simulated. Do not use in production.\n",
+    "[!] DEMO MODE - Credentials are simulated. Do not use in production.\n",
   );
 });

@@ -22,6 +22,7 @@ Framework-agnostic EUDI Wallet verifier kit. See [README.md](README.md) for over
 - **No live deploys or commits** unless the user explicitly requests them in that message — no `scp`/`rsync`/remote restarts/provision scripts; give deploy steps for the user to run (see `.cursor/rules/no-live-deploy.mdc`)
 - **Node.js 22+**, pnpm workspaces, TypeScript strict mode
 - **Public accuracy**: `docs/SUPPORTED.md` is canonical — do not claim unsupported platforms or packages exist
+- **Public vs private docs**: classify before writing — maintainer ops and post-merge admin go in gitignored `*.local.md`, not `CONTRIBUTING.md` / PR templates / workflow comments; see `.cursor/rules/docs-boundary.mdc`
 - **Sovereignty**: no US identity SaaS in core; see `.cursor/rules/project-context.mdc`
 - **Security**: update [THREAT_MODEL.md](THREAT_MODEL.md) when changing security controls
 - **Verify locally**: `pnpm verify` mirrors CI before claiming checks pass
