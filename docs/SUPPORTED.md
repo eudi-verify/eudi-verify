@@ -15,7 +15,7 @@
 | **Node.js 22+**         | ✅ Supported             | `@eudi-verify/server` — mount handlers on Express, Hono, or raw `node:http`                                          |
 | PHP, Python, Java, etc. | ❌ No server library yet | Use the [OpenAPI spec](../openapi/eudi-verifier.yaml) to implement the REST API, or proxy to a Node verifier service |
 
-**Documented integration:** [INTEGRATION.md](./INTEGRATION.md) (Node/Express), [packages/server/README.md](../packages/server/README.md)
+**Documented integration:** [INTEGRATION.md](./INTEGRATION.md) (Node/Express), [php.md](./php.md) (proxy + OpenAPI paths), [packages/server/README.md](../packages/server/README.md)
 
 **Reference demo:** [examples/html-vanilla](../examples/html-vanilla/) (plain HTML + shared API server)
 
@@ -53,7 +53,7 @@ Items below are **not shipped** or **not yet documented**. See [PLAN.md](./PLAN.
 
 ### Adoption & docs (WP8)
 
-- Step-by-step guides for PHP, Python, and Java backends
+- Step-by-step guides for Python and Java backends (PHP guide shipped — see [php.md](./php.md))
 - `docs/PRODUCTION.md` — key management, hardening
 - `docs/EU_REGISTRATION.md` — trust framework enrollment
 - `docs/OPERATIONS.md` — monitoring, incident response

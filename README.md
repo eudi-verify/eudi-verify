@@ -181,7 +181,7 @@ Official references:
 
 ## Roadmap
 
-Planned areas include Vue example, WordPress plugin, PHP/Python/Java integration guides, and production wallet interoperability as national EUDI Wallets become available.
+Planned areas include Vue example, WordPress plugin, Python/Java integration guides, and production wallet interoperability as national EUDI Wallets become available. A PHP integration guide is available today — see [docs/php.md](docs/php.md).
 
 See [docs/PLAN.md](docs/PLAN.md) for the technical roadmap and [docs/SUPPORTED.md](docs/SUPPORTED.md) for the platform support matrix.
 
