@@ -3,7 +3,6 @@ name: CI
 on:
   push:
     branches: [main]
-  pull_request: # TEMP — drop this line before or right after merge; PR-branch workflow test only
   pull_request_target:
 
 jobs:

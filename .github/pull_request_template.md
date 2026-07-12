@@ -15,13 +15,12 @@
 
 ## Checklist
 
+<!-- Delete optional bullets at the bottom if they don't apply. -->
+
 - [ ] `pnpm verify` passes locally
 - [ ] Self-reviewed; I can explain the design decisions
 - [ ] All commits signed off per the [DCO](../DCO) (`git commit -s`)
 - [ ] No secrets or credentials committed; considered security/privacy impact
-
-<!-- Delete any bullets below that don't apply to this PR. -->
-
 - [ ] Docs / OpenAPI updated (`packages/*/README.md`, `docs/INTEGRATION.md`, `openapi/eudi-verifier.yaml`)
 - [ ] Tests added or updated for behavior changes
 - [ ] Embed E2E checked (`cd packages/embed && pnpm test:e2e`) — UI/a11y changes only
