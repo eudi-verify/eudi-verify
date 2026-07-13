@@ -77,9 +77,9 @@ cd examples/server && pnpm start
 cd examples/html-vanilla && pnpm start
 ```
 
-Open `http://localhost:3001`. The shared API server runs the full `@eudi-verify/server` implementation. Frontend examples (html-vanilla, React) connect to the same backend. The wallet side is simulated through a demo wallet page.
+Open `http://localhost:3001`. The shared API server runs the full `@eudi-verify/server` implementation. Frontend examples (html-vanilla, React, Vue) connect to the same backend. The wallet side is simulated through a demo wallet page.
 
-See [examples/html-vanilla/README.md](examples/html-vanilla/README.md) for testing instructions.
+See the [HTML](examples/html-vanilla/README.md), [React](examples/react/README.md), and [Vue](examples/vue/README.md) example guides for setup details.
 
 ---
 
@@ -181,7 +181,7 @@ Official references:
 
 ## Roadmap
 
-Planned areas include Vue example, WordPress plugin, PHP/Python/Java integration guides, and production wallet interoperability as national EUDI Wallets become available.
+Planned areas include a WordPress plugin, PHP/Python/Java integration guides, and production wallet interoperability as national EUDI Wallets become available.
 
 See [docs/PLAN.md](docs/PLAN.md) for the technical roadmap and [docs/SUPPORTED.md](docs/SUPPORTED.md) for the platform support matrix.
 

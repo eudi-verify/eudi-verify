@@ -21,16 +21,17 @@
 
 ### Frontend
 
-| Stack          | Status          | How                                                               |
-| -------------- | --------------- | ----------------------------------------------------------------- |
-| **Plain HTML** | ✅ Supported    | Import `@eudi-verify/embed`; use `<eudi-verify>`                  |
-| **React**      | ✅ Supported    | `@eudi-verify/react` — React wrapper with typed props + callbacks |
-| **Custom UI**  | ✅ Supported    | `@eudi-verify/client` (vanilla TS, zero framework deps)           |
-| **WordPress**  | 🟡 Manual embed | Add script + element in theme/block; no plugin yet                |
+| Stack          | Status          | How                                                                        |
+| -------------- | --------------- | -------------------------------------------------------------------------- |
+| **Plain HTML** | ✅ Supported    | Import `@eudi-verify/embed`; use `<eudi-verify>`                           |
+| **React**      | ✅ Supported    | `@eudi-verify/react` — React wrapper with typed props + callbacks          |
+| **Vue**        | ✅ Supported    | Import `@eudi-verify/embed`; configure `<eudi-verify>` as a custom element |
+| **Custom UI**  | ✅ Supported    | `@eudi-verify/client` (vanilla TS, zero framework deps)                    |
+| **WordPress**  | 🟡 Manual embed | Add script + element in theme/block; no plugin yet                         |
 
 **Documented integration:** [INTEGRATION.md](./INTEGRATION.md), [packages/embed/README.md](../packages/embed/README.md), [packages/react/README.md](../packages/react/README.md)
 
-**Reference demo:** [examples/react](../examples/react/) (React + TypeScript + Vite)
+**Reference demos:** [examples/html-vanilla](../examples/html-vanilla/) (plain HTML + shared API server), [examples/react](../examples/react/) (React + TypeScript + Vite), [examples/vue](../examples/vue/) (Vue + TypeScript + Vite)
 
 ### Packages (demo mode)
 
@@ -62,7 +63,6 @@ Items below are **not shipped** or **not yet documented**. See [PLAN.md](./PLAN.
 
 | Integration   | Status  | Deliverable                         |
 | ------------- | ------- | ----------------------------------- |
-| **Vue**       | Roadmap | Reference example                   |
 | **WordPress** | Roadmap | Plugin                              |
 | **Next.js**   | Roadmap | `@eudi-verify/next` (route helpers) |
 | **Auth.js**   | Roadmap | Adapter                             |

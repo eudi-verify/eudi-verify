@@ -2,7 +2,7 @@
 
 Add EU digital identity verification to your website in three steps.
 
-> **Platform support:** This guide covers **Node.js + plain HTML** (the reference path). For PHP, Python, Java, WordPress, and framework bindings, see [SUPPORTED.md](./SUPPORTED.md).
+> **Platform support:** This guide covers a **Node.js backend** with **plain HTML**, **React**, and **Vue** frontends. For PHP, Python, Java, WordPress, and other framework bindings, see [SUPPORTED.md](./SUPPORTED.md).
 
 ## Architecture
 
@@ -129,10 +129,12 @@ cd examples/server && pnpm start
 ```
 
 ```bash
-# Terminal 2 — html-vanilla (port 3001) or React (port 3001), from repo root
+# Terminal 2 — html-vanilla, React, or Vue (port 3001), from repo root
 cd examples/html-vanilla && pnpm start
 # or
 cd examples/react && pnpm dev
+# or
+cd examples/vue && pnpm dev
 ```
 
 This mirrors production: one backend, any frontend.
@@ -350,6 +352,97 @@ export default function VerificationPage() {
 ```
 
 See [packages/react/README.md](../packages/react/README.md) for full documentation and the [React example](../examples/react/) for a complete working app. Start the shared API server from [`examples/server/`](../examples/server/) before running any frontend example.
+
+## Step 2: Frontend — Option D: Vue
+
+Use the framework-agnostic embed package directly in Vue. Vue handles custom-element events natively, unlike React, so there is no need for an `@eudi-verify/vue` wrapper. Configure Vue to treat `<eudi-verify>` as a custom element and listen to the widget's DOM events.
+
+**Requirements:** Vue 3+
+
+```bash
+pnpm add @eudi-verify/embed
+```
+
+```ts
+// vite.config.ts
+import vue from "@vitejs/plugin-vue";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag === "eudi-verify",
+        },
+      },
+    }),
+  ],
+});
+```
+
+```vue
+<script setup lang="ts">
+import "@eudi-verify/embed";
+import type { EudiVerifyEventMap } from "@eudi-verify/embed";
+
+type VerifiedEvent = EudiVerifyEventMap["verified"];
+type ErrorEvent = EudiVerifyEventMap["error"];
+type StateChangeEvent = EudiVerifyEventMap["state-change"];
+
+const request = JSON.stringify({ age_over_18: true });
+let currentSessionId = "";
+
+function handleStateChange(event: Event) {
+  const { state } = (event as StateChangeEvent).detail;
+  if ("sessionId" in state) {
+    currentSessionId = state.sessionId;
+  }
+}
+
+async function handleVerified(event: Event) {
+  const { token, claims } = (event as VerifiedEvent).detail;
+  console.log("Verified claims", claims);
+
+  const response = await fetch("/api/checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      eudi_token: token,
+      eudi_session_id: currentSessionId,
+    }),
+  });
+
+  if (response.ok) {
+    const result = await response.json();
+    if (result.success && result.receiptId) {
+      window.location.href = `/success.html?rid=${encodeURIComponent(result.receiptId)}`;
+    }
+  }
+}
+
+function handleError(event: Event) {
+  console.error((event as ErrorEvent).detail.error);
+}
+</script>
+
+<template>
+  <section>
+    <h1>Age Verification Required</h1>
+
+    <eudi-verify
+      api-url="/api/eudi"
+      :request="request"
+      @state-change="handleStateChange"
+      @verified="handleVerified"
+      @rejected="() => alert('Verification declined')"
+      @error="handleError"
+    />
+  </section>
+</template>
+```
+
+See the [Vue example](../examples/vue/) for a complete Vite + Vue SPA using the shared demo server.
 
 ## Error Boundaries
 

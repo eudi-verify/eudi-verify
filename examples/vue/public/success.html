@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#003399" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href="https://demo.eudi-verify.eu/" />
+    <title>Verification Successful — EUDI Verify</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div class="demo-banner" role="status">
+      Simulated verification — credentials are fake. For local testing only.
+    </div>
+
+    <div class="page-shell">
+      <header class="site-header">
+        <a href="/" class="site-header__brand">
+          <img
+            class="eu-emblem"
+            src="/eu-emblem.svg"
+            alt=""
+            width="37"
+            height="25"
+            aria-hidden="true"
+          />
+          <span class="site-header__brand-text">
+            <span class="site-header__title">EUDI Verify</span>
+            <span class="site-header__subtitle">Verification complete</span>
+          </span>
+        </a>
+      </header>
+
+      <main id="main-content" class="page-main page-main--center" tabindex="-1">
+        <div class="page-panel">
+          <section class="success-hero">
+            <div class="success-badge" aria-hidden="true">✓</div>
+            <h1>Age Verified Successfully</h1>
+            <p class="lead">
+              Your age has been verified server-side. In a real application, you
+              would now have access to age-restricted content.
+            </p>
+          </section>
+
+          <div class="alert alert-success" role="status">
+            <strong>Token validated on server</strong>
+            The verification token was verified using HMAC signature checking.
+            The token is single-use and has now been consumed.
+          </div>
+
+          <div
+            id="receipt-missing"
+            class="alert alert-error"
+            role="alert"
+            tabindex="-1"
+            hidden
+          >
+            Receipt not found or expired. Complete a fresh verification from the
+            demo page.
+          </div>
+
+          <div id="receipt-panel" class="card" hidden style="text-align: left">
+            <h3>Server verification receipt</h3>
+            <p class="receipt-note">
+              Claims below were verified server-side during
+              <code>POST /api/checkout</code> (same
+              <code>verifyToken</code> handler as
+              <code>POST /tokens/verify</code>) — not from the browser widget.
+            </p>
+            <dl class="receipt-table">
+              <dt>Session ID</dt>
+              <dd><code id="receipt-session-id">—</code></dd>
+              <dt>Verified at (server)</dt>
+              <dd id="receipt-verified-at">—</dd>
+              <dt>Token format</dt>
+              <dd><code id="receipt-token-format">—</code></dd>
+              <dt>Token (truncated)</dt>
+              <dd><code id="receipt-token-preview">—</code></dd>
+              <dt>Claims</dt>
+              <dd><pre id="receipt-claims" class="replay-result">—</pre></dd>
+            </dl>
+          </div>
+
+          <div id="replay-panel" class="card" hidden style="text-align: left">
+            <h3>Prove single-use enforcement</h3>
+            <p>
+              The token was consumed during checkout. Submitting it again should
+              fail with
+              <code>already_consumed</code>.
+            </p>
+            <button type="button" class="btn btn-outline" id="btn-replay">
+              Try submitting the same token again
+            </button>
+            <pre id="replay-result" class="replay-result" hidden></pre>
+          </div>
+
+          <div class="card log-card" hidden>
+            <h3>API audit log</h3>
+            <ol id="api-audit-log" class="verification-log"></ol>
+          </div>
+
+          <div class="card card--accent" style="text-align: left">
+            <h3>What happened?</h3>
+            <ol class="timeline">
+              <li>Widget displayed QR code for wallet scanning</li>
+              <li>
+                User approved in the demo wallet (or via curl in developer mode)
+              </li>
+              <li>Wallet sent verifiable presentation to callback</li>
+              <li>Server minted single-use token</li>
+              <li>Widget received token, submitted checkout form</li>
+              <li>
+                Server validated token during
+                <code>POST /api/checkout</code> (same handler as
+                <code>POST /tokens/verify</code>)
+              </li>
+              <li>
+                Browser redirected here; this page fetched the stored receipt
+                via
+                <code>GET /api/demo/receipt/:id</code>
+              </li>
+            </ol>
+          </div>
+
+          <div class="btn-group">
+            <a href="/" class="btn btn-outline">Verify Again</a>
+            <a href="/" class="btn">Back to Home</a>
+          </div>
+        </div>
+      </main>
+
+      <footer class="site-footer">
+        <p>
+          Open source under
+          <a href="https://github.com/eudi-verify/eudi-verify">Apache-2.0</a>.
+          Designed for EU-sovereign deployment.
+        </p>
+      </footer>
+    </div>
+
+    <script type="module" src="/demo-success.js"></script>
+  </body>
+</html>
