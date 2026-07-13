@@ -7,7 +7,7 @@
 
 Framework-agnostic verifier kit for the European Digital Identity Wallet.
 
-`eudi-verify` provides a drop-in web component, typed client SDK, React wrapper, Node.js server handlers, and an OpenAPI specification for websites that want to experiment with EUDI Wallet-style verification flows.
+`eudi-verify` provides a drop-in web component, typed client SDK, optional React wrapper, Node.js server handlers, and an OpenAPI specification — with reference examples for plain HTML, React, and Vue.
 
 **Live demo:** https://demo.eudi-verify.eu/
 
@@ -94,6 +94,8 @@ Three independent layers — use what you need:
 | Client | `@eudi-verify/client` | Typed client and state machine for custom UIs |
 
 React apps: `@eudi-verify/react` wraps `@eudi-verify/embed` with typed props and callbacks (see [Packages](#packages)).
+
+Vue and similar frameworks: use `@eudi-verify/embed` directly — see [`examples/vue/`](examples/vue/) and [INTEGRATION.md Option D](docs/INTEGRATION.md).
 
 The OpenAPI spec is stack-independent — any backend can implement the same endpoints. Only the Node.js handler library ships today.
 

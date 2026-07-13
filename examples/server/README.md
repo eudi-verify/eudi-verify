@@ -27,8 +27,9 @@ Runs on http://localhost:3000. All `/api/*` endpoints are available.
 2. In another terminal, start any frontend example:
    - `examples/html-vanilla/`: `pnpm start` → http://localhost:3001
    - `examples/react/`: `pnpm dev` → http://localhost:3001
+   - `examples/vue/`: `pnpm start` → http://localhost:3001
 
-Each frontend proxies `/api/*` to this server. Only one frontend can run at a time (both use port 3001).
+Each frontend proxies `/api/*` to this server. Only one frontend can run at a time (all use port 3001).
 
 ## Endpoints
 

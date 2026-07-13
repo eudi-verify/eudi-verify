@@ -14,7 +14,7 @@
 
 ### MVP Scope
 
-Four core artifacts in WP0–WP7 (server, client, embed, demo, security docs, integration guide). **WP9 React** is the first post-MVP integration. Vue, WordPress, Next/Hono bindings, Auth.js, and production HAIP remain on the roadmap — see [SUPPORTED.md](./SUPPORTED.md).
+Four core artifacts in WP0–WP7 (server, client, embed, demo, security docs, integration guide). **WP9 React** and the Vue reference example are shipped. WordPress, Next/Hono bindings, Auth.js, and production HAIP remain on the roadmap — see [SUPPORTED.md](./SUPPORTED.md).
 
 ### WP0 — Scaffold ✓
 
@@ -109,7 +109,7 @@ The **product** is not a React or Next library. It is three stack-independent la
 **Framework integrations** (post-MVP):
 
 - **React** — [WP9](../.github/internal/wp/WP9.md): `@eudi-verify/react` + `examples/react`
-- **Vue** — reference example (roadmap)
+- **Vue** — reference example ✓ ([examples/vue](../examples/vue/))
 - **WordPress** — plugin (roadmap)
 - `@eudi-verify/next` — Next.js route adapter (after WP9)
 - `@eudi-verify/hono` — portable Node API mount
