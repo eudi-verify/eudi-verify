@@ -112,7 +112,7 @@ Cursor and other AI assistants are optional. You do not need them to contribute.
 
 This repository includes [`.cursor/rules/`](.cursor/rules/) — Cursor-side copies of project conventions for agents using that editor. **The conventions themselves are required** (commit message format, documentation sync, public-docs accuracy, etc.); they are documented in this file and `docs/`. You can ignore the `.cursor/rules` files if you do not use Cursor.
 
-- **Required (automated):** `pnpm verify` passes — mirrors CI (build, types, format, tests, OpenAPI lint, licenses, audit).
+- **Required (automated):** `pnpm verify` passes — mirrors CI (build, types, format, tests, OpenAPI lint, licenses, audit, source-security scan).
 - **Required (review):** Commit message format and documentation guidelines in this file; human review for security-sensitive changes.
 - **Optional:** Using Cursor, an AI assistant, or reading `.cursor/rules/` directly.
 - **Public docs:** Do not add unevaluated third-party agent plugins or rulesets to `README.md`, `docs/`, or package READMEs.

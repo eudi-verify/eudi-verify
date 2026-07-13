@@ -3,14 +3,31 @@ name: CI
 on:
   push:
     branches: [main]
-  pull_request:
+  pull_request_target:
 
 jobs:
+  source-security:
+    name: Source Security
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Scan committed source (trojan-source, padding)
+        run: bash scripts/check-source-security.sh
+
   build:
     name: Typecheck & Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - uses: pnpm/action-setup@v4
 
@@ -19,8 +36,12 @@ jobs:
           node-version: "22"
           cache: "pnpm"
 
+      - uses: SocketDev/action@v1
+        with:
+          mode: firewall-free
+
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: sfw pnpm install --frozen-lockfile
 
       - name: Format check
         run: pnpm format:check
@@ -45,6 +66,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - uses: pnpm/action-setup@v4
 
@@ -53,8 +76,12 @@ jobs:
           node-version: "22"
           cache: "pnpm"
 
+      - uses: SocketDev/action@v1
+        with:
+          mode: firewall-free
+
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: sfw pnpm install --frozen-lockfile
 
       - name: Check licenses
         run: >
@@ -67,6 +94,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - uses: pnpm/action-setup@v4
 
@@ -75,8 +104,12 @@ jobs:
           node-version: "22"
           cache: "pnpm"
 
+      - uses: SocketDev/action@v1
+        with:
+          mode: firewall-free
+
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: sfw pnpm install --frozen-lockfile
 
       - name: Audit dependencies
         run: pnpm audit --audit-level=high

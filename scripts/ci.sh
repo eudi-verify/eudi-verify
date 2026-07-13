@@ -7,7 +7,11 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$ROOT/scripts/ensure-node.sh"
 cd "$ROOT"
 
+echo "==> Source security (trojan-source, padding)"
+bash scripts/check-source-security.sh
+
 echo "==> Install (frozen lockfile)"
+echo "    (Socket Firewall wraps install in CI only — local install is plain pnpm)"
 pnpm install --frozen-lockfile
 
 echo "==> Format check"

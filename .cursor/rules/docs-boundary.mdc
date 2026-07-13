@@ -11,6 +11,28 @@ This is a **public open-source repo**. Anything committed must make sense to str
 
 ---
 
+## Before adding or editing committed content (agents)
+
+**Stop and classify first.** Do not draft into public files and relocate later.
+
+Ask:
+
+1. **Contributor or stranger?** — Would someone who cloned without your private files need this to build, test, or integrate?
+2. **Maintainer ops?** — GitHub Settings click paths, branch protection checklists, post-merge admin todos, deploy hostnames, cron paths, funding/session notes?
+3. **Product truth?** — Supported vs roadmap, API behavior, security controls contributors should know?
+
+| If… | Put it in… |
+|-----|------------|
+| Yes to (1) or (3), generic | Public `docs/`, `README.md`, `CONTRIBUTING.md`, package READMEs, `THREAT_MODEL.md` |
+| Yes to (2), or “my next steps after merge” | Gitignored `*.local.md` (any path — root or `docs/internal/`) |
+| Workflow YAML | Behavior only in committed files; **no** Settings → Branches step lists in comments |
+| PR template / CONTRIBUTING | Contributor checklist only — not maintainer admin runbooks |
+| `docs/internal/README.md` | Convention only — **not** a private folder; do not list runbook topics or admin todos here |
+
+**`docs/internal/` is not gitignored** — only `*.local.md` files are. When unsure: **private first**, distill a generic sentence into public docs if needed. Never link public docs to `*.local.md`.
+
+---
+
 ## Public (committed)
 
 | Location | Belongs here |
@@ -21,7 +43,7 @@ This is a **public open-source repo**. Anything committed must make sense to str
 | `FUNDING.md` | Sponsor-facing funding info only |
 | `packages/*/README.md`, `THREAT_MODEL.md`, `SECURITY.md` | Package API, security policy |
 | `.github/internal/wp/` | WP acceptance criteria (dev process — **not** secret; name means “not user-facing marketing”) |
-| `docs/internal/README.md` | **Only** committed file under `docs/internal/` — maintainer index (no secret content) |
+| `docs/internal/README.md` | **Only** committed file under `docs/internal/` — explains the `*.local.md` convention (no runbook topics or admin steps) |
 
 Public docs must be **self-contained**. Do not link to or reference gitignored `*.local.md` files.
 
@@ -46,7 +68,8 @@ Distill generic guidance into public `docs/`; keep host-specific detail in gitig
 ## Never put in public (committed) files
 
 - Grant applications, funding strategy, compliance correspondence, monetary amounts
-- Maintainer ops runbooks, production hostnames, origin IPs, SSH aliases, real cron paths
+- Maintainer ops runbooks, GitHub admin checklists (branch protection, org settings), production hostnames, origin IPs, SSH aliases, real cron paths
+- “After you merge, do X in Settings” reminders in `CONTRIBUTING.md`, PR templates, or workflow comment blocks
 - API keys, tokens, `.env` values, or pointers that expose secrets
 - Links to `*.local.md` files (absent for other clones)
 - New committed `docs/internal/*.md` beyond `docs/internal/README.md`
@@ -62,3 +85,4 @@ Distill generic guidance into public `docs/`; keep host-specific detail in gitig
 | Firewall/cron with real paths on a named host | Generic install/refresh script usage |
 | Funding amounts, legal entity setup | `FUNDING.md` (sponsor-facing) |
 | `scripts/deploy.sh` with server host | `docs/deploy-eu.md` |
+| GitHub branch protection / post-merge admin checklist | Any gitignored `*.local.md` (not under a “private” folder — the path is public until gitignored by name) |
