@@ -176,8 +176,12 @@ You do **not** need to add a changeset — maintainers add one at merge when you
 ## Testing
 
 - Unit tests: `pnpm test`
-- E2E tests (embed): `cd packages/embed && pnpm test:e2e`
+- E2E (Playwright): one-time browser install from repo root — `npx playwright install chromium`
+- E2E (embed widget / a11y): `cd packages/embed && pnpm test:e2e` — starts its own mock API and dev server
+- E2E (Vue example dev smoke): `cd examples/vue && pnpm test:e2e` — catches Vite dev-only breakage that `pnpm build` misses; run when changing `examples/vue/` or example Vite configs
 - Test coverage is tracked but not enforced
+
+**Maintainers:** after `pnpm verify`, run the e2e suite that matches the PR scope before merge — embed changes → embed e2e; `examples/vue/` → Vue e2e. React example e2e is not wired yet (follow-up).
 
 ## Documentation
 

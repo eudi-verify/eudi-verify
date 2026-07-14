@@ -23,7 +23,8 @@
 - [ ] No secrets or credentials committed; considered security/privacy impact
 - [ ] Docs / OpenAPI updated (`packages/*/README.md`, `docs/INTEGRATION.md`, `openapi/eudi-verifier.yaml`)
 - [ ] Tests added or updated for behavior changes
-- [ ] Embed E2E checked (`cd packages/embed && pnpm test:e2e`) — UI/a11y changes only
+- [ ] Embed E2E checked (`cd packages/embed && pnpm test:e2e`) — `packages/embed/` UI or a11y changes
+- [ ] Vue example E2E checked (`cd examples/vue && pnpm test:e2e`) — `examples/vue/` or its Vite config (requires `npx playwright install chromium` once)
 - [ ] [THREAT_MODEL.md](../THREAT_MODEL.md) updated — security control changes only
 
 **Maintainers:** add a changeset on the PR branch before merge if this changes a published package — see [RELEASING.md § Before merging](../docs/RELEASING.md#before-merging-package-prs).
