@@ -5,3 +5,5 @@ coverage
 pnpm-lock.yaml
 packages/embed/playwright-report
 packages/embed/test-results
+examples/vue/playwright-report
+examples/vue/test-results

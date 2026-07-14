@@ -81,6 +81,11 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (req.method === "GET" && path === `${BASE_PATH}/health`) {
+    json(res, 200, { ok: true });
+    return;
+  }
+
   if (req.method === "POST" && path === `${BASE_PATH}/sessions`) {
     let body = "";
     req.on("data", (chunk) => {

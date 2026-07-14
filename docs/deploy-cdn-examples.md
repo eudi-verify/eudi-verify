@@ -30,6 +30,30 @@ Reference: the public demo at [demo.eudi-verify.eu](https://demo.eudi-verify.eu/
 
 Use a dedicated origin hostname (not the CDN-facing hostname) to avoid CNAME loops.
 
+### Apex (root) domain with CDN-only origin lockdown
+
+Pull zones are reached via **CNAME** (`<zone>.b-cdn.net`). Bunny does not publish a stable anycast A record for pull zones, and most DNS panels (including Hetzner DNS and typical `.eu` registrars) do not allow CNAME at the zone apex. **Bunny DNS** can flatten apex CNAMEs; if you keep DNS elsewhere, do not add the apex as a pull-zone hostname unless you migrate nameservers.
+
+Common pattern when the apex has no app yet:
+
+| Hostname             | DNS                                 | Traffic                                       |
+| -------------------- | ----------------------------------- | --------------------------------------------- |
+| `demo.example.eu`    | CNAME → CDN                         | Public site via CDN                           |
+| `origin.example.eu`  | A → origin IP                       | CDN pull target only (firewall + origin auth) |
+| `example.eu` / `www` | A → origin IP, or `www` CNAME → CDN | Redirect to `demo`                            |
+
+If the origin firewall allows **only CDN edge IPs on :443**, apex must not upgrade HTTP to HTTPS on the origin (that sends visitors to a blocked port). On nginx, redirect apex `:80` straight to the canonical public URL:
+
+```nginx
+server {
+    listen 80;
+    server_name example.eu www.example.eu;
+    return 302 https://demo.example.eu$request_uri;
+}
+```
+
+Optional later: HTTPS redirect on apex `:443` (same `return 302`) requires opening public `:443` on the origin (weakens CDN-only lockdown) or registrar URL forwarding / Bunny DNS for the apex.
+
 ### Cache bypass rule
 
 | Setting      | Value                                         |

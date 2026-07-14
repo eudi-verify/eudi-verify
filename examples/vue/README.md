@@ -65,9 +65,12 @@ pnpm dev
 pnpm build
 pnpm typecheck
 pnpm preview
+pnpm test:e2e
 ```
 
-The API server must be running separately on port 3000.
+The API server must be running separately on port 3000 for manual dev (`pnpm start`).
+
+`pnpm test:e2e` starts its own mock API and Vite dev server (port 3011 by default) — use this to verify the dev bundle mounts, not just `pnpm build`.
 
 ## License
 
