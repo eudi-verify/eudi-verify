@@ -9,6 +9,7 @@ dist/
 *.local.txt
 scripts/deploy.sh
 scripts/ops-watch.sh
+scripts/ops-watch.local.conf
 scripts/provision-server.sh
 scripts/provision-base.conf
 .cursor/rules/ponytail.mdc
