@@ -13,6 +13,7 @@
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run && pnpm --filter @eudi-verify/embed test",
     "test:unit": "vitest run",
+    "test:e2e": "pnpm --filter @eudi-verify/embed test:e2e && pnpm --filter example-vue test:e2e",
     "lint:api": "spectral lint openapi/eudi-verifier.yaml",
     "build": "pnpm -r build",
     "verify": "bash scripts/ci.sh",

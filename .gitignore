@@ -16,3 +16,7 @@ scripts/provision-base.conf
 .tmp-ops-state/
 
 .DS_Store
+
+# Playwright e2e output (regenerated every run)
+**/playwright-report/
+**/test-results/

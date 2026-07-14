@@ -1,4 +1,9 @@
 import { test, expect } from "@playwright/test";
+import {
+  ACTIVE_VERIFICATION_SELECTOR,
+  activateCancel,
+  waitForQrSrc,
+} from "./helpers";
 
 test.describe("<eudi-verify> verification flow", () => {
   test.beforeEach(async ({ page }) => {
@@ -20,8 +25,8 @@ test.describe("<eudi-verify> verification flow", () => {
 
     await startButton.click();
 
-    const loadingState = widget.locator("#eudi-state-loading");
-    await expect(loadingState).toHaveAttribute("data-active");
+    const activeState = widget.locator(ACTIVE_VERIFICATION_SELECTOR);
+    await expect(activeState).toBeVisible({ timeout: 5000 });
   });
 
   test("shows QR code after session created", async ({ page }) => {
@@ -29,13 +34,7 @@ test.describe("<eudi-verify> verification flow", () => {
     const startButton = widget.locator('[data-action="start"]');
 
     await startButton.click();
-
-    const qrState = widget.locator("#eudi-state-showQR");
-    await expect(qrState).toHaveAttribute("data-active", { timeout: 5000 });
-
-    const qrImage = widget.locator(".eudi-qr-img");
-    await expect(qrImage).toBeVisible();
-    await expect(qrImage).toHaveAttribute("src", /^data:image/);
+    await waitForQrSrc(widget);
   });
 
   test("cancel button returns to idle", async ({ page }) => {
@@ -43,14 +42,7 @@ test.describe("<eudi-verify> verification flow", () => {
     const startButton = widget.locator('[data-action="start"]');
 
     await startButton.click();
-
-    const qrState = widget.locator("#eudi-state-showQR");
-    await expect(qrState).toHaveAttribute("data-active", { timeout: 5000 });
-
-    const cancelButton = widget.locator(
-      '#eudi-state-showQR [data-action="cancel"]',
-    );
-    await cancelButton.click();
+    await activateCancel(widget, page);
 
     const idleState = widget.locator("#eudi-state-idle");
     await expect(idleState).toHaveAttribute("data-active");
@@ -152,9 +144,7 @@ test.describe("<eudi-verify> attributes", () => {
     await page.goto("/?auto-start=true");
 
     const widget = page.locator("eudi-verify");
-    const loadingOrQR = widget.locator(
-      "#eudi-state-loading[data-active], #eudi-state-showQR[data-active]",
-    );
+    const loadingOrQR = widget.locator(ACTIVE_VERIFICATION_SELECTOR);
 
     await expect(loadingOrQR).toBeVisible({ timeout: 5000 });
   });

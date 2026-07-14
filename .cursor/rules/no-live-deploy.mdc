@@ -3,13 +3,14 @@ description: Never commit or deploy to production without explicit user request
 alwaysApply: true
 ---
 
-# No live deploys or commits
+# No live deploys, commits, or pushes
 
 ## Hard stops
 
 - **Never commit** git changes unless the user explicitly asks in that message.
+- **Never push** (`git push`, `git push -u`, force-push, or any remote write) unless the user explicitly asks in that message — not when a fix is "ready", not when cleaning up a branch, not when updating a PR. Give the user the exact push command to run themselves.
 - **Never deploy** to production, a live demo server, or any remote host unless the user explicitly asks in that message.
-- **Never** `scp`, `rsync`, `git push`, `systemctl restart`, nginx reload, or run install/provision scripts on a remote host unless explicitly requested for that action.
+- **Never** `scp`, `rsync`, `systemctl restart`, nginx reload, or run install/provision scripts on a remote host unless explicitly requested for that action.
 
 ## Allowed without explicit deploy/commit request
 
@@ -21,4 +22,4 @@ alwaysApply: true
 
 1. Make changes locally in the repo.
 2. Summarize the diff and give the user copy-paste deploy steps.
-3. Wait for explicit approval before any commit or live-server action.
+3. Wait for explicit approval before any commit, push, or live-server action.

@@ -61,7 +61,7 @@ function advanceSession(id) {
     session.status = "waiting_for_wallet";
   } else if (
     session.status === "waiting_for_wallet" &&
-    session.pollCount >= 2
+    session.pollCount >= 5
   ) {
     session.status = "verified";
   }
