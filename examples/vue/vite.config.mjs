@@ -31,10 +31,10 @@ function sharedDemoScripts() {
 }
 
 export default defineConfig({
-  cacheDir: ".vite-cache",
   optimizeDeps: {
-    noDiscovery: true,
-    include: [],
+    esbuildOptions: {
+      target: "es2022",
+    },
   },
   plugins: [
     vue({
