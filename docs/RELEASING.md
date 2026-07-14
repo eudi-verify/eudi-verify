@@ -8,6 +8,7 @@ For day-to-day contribution (setup, PRs, tests), see [CONTRIBUTING.md](../CONTRI
 
 - Maintainer access to the `@eudi-verify` npm org (publish permission on scoped packages)
 - Node.js 22+ and `pnpm` (same as [CONTRIBUTING.md](../CONTRIBUTING.md))
+- Playwright browsers for pre-release e2e: `pnpm exec playwright install` (once per machine; from repo root)
 - At least one merged changeset on `main` (or your release branch) since the last publish
 - `GITHUB_TOKEN` in your environment when running `pnpm changeset version` (see below)
 
@@ -214,6 +215,7 @@ gh release create v0.X.Y --title "v0.X.Y" --generate-notes
 
 - [ ] Changesets merged since last release
 - [ ] `pnpm verify` passes on the release commit
+- [ ] `pnpm test:e2e` passes (embed widget + Vue example; not part of CI/`verify`)
 - [ ] `pnpm changeset version` committed as `chore: release`
 - [ ] `docs/SUPPORTED.md`, `THREAT_MODEL.md`, `DEPENDENCY.md` version strings updated
 - [ ] **Temporary:** `VERSION` constants updated in `packages/*/src/index.ts` (until [#10](https://github.com/eudi-verify/eudi-verify/issues/10))

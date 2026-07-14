@@ -33,6 +33,10 @@ pnpm format:check
 # Run all CI checks locally (mirrors GitHub Actions)
 pnpm verify
 
+# Pre-release: Playwright e2e (embed + Vue example; see docs/RELEASING.md)
+pnpm exec playwright install   # once per machine
+pnpm test:e2e
+
 # Optional: install git hooks (format at commit, full CI at push)
 pnpm hooks:install
 ```
