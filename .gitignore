@@ -10,6 +10,7 @@ dist/
 scripts/deploy.sh
 scripts/ops-watch.sh
 scripts/ops-watch.local.conf
+divine-watch
 scripts/provision-server.sh
 scripts/provision-base.conf
 .cursor/rules/ponytail.mdc
