@@ -86,6 +86,15 @@
 
     <div id="events"></div>
 
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        if (params.get("auto-start") === "true") {
+          document.getElementById("widget").setAttribute("auto-start", "");
+        }
+      })();
+    </script>
+
     <script type="module">
       import "../src/index.ts";
 
@@ -118,11 +127,6 @@
       widget.addEventListener("error", (e) => {
         logEvent("error", e.detail);
       });
-
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get("auto-start") === "true") {
-        widget.setAttribute("auto-start", "");
-      }
     </script>
   </body>
 </html>

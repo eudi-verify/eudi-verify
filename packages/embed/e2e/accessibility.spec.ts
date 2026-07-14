@@ -1,5 +1,11 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import {
+  ACTIVE_VERIFICATION_SELECTOR,
+  ANNOUNCEMENT_LIVE_REGION,
+  activateCancel,
+  waitForPostStart,
+} from "./helpers";
 
 test.describe("<eudi-verify> accessibility", () => {
   test.beforeEach(async ({ page }) => {
@@ -23,9 +29,9 @@ test.describe("<eudi-verify> accessibility", () => {
 
     await startButton.click();
 
-    const loadingState = widget.locator("#eudi-state-loading[data-active]");
-    await expect(loadingState)
-      .toBeVisible({ timeout: 1000 })
+    const activeState = widget.locator(ACTIVE_VERIFICATION_SELECTOR);
+    await expect(activeState)
+      .toBeVisible({ timeout: 5000 })
       .catch(() => {});
 
     const accessibilityScanResults = await new AxeBuilder({ page })
@@ -40,9 +46,7 @@ test.describe("<eudi-verify> accessibility", () => {
     const startButton = widget.locator('[data-action="start"]');
 
     await startButton.click();
-
-    const qrState = widget.locator("#eudi-state-showQR");
-    await expect(qrState).toHaveAttribute("data-active", { timeout: 5000 });
+    await waitForPostStart(widget);
 
     const accessibilityScanResults = await new AxeBuilder({ page })
       .include("eudi-verify")
@@ -62,7 +66,7 @@ test.describe("<eudi-verify> accessibility", () => {
   test("has aria-live region for announcements", async ({ page }) => {
     const widget = page.locator("eudi-verify");
 
-    const liveRegion = widget.locator("[aria-live]");
+    const liveRegion = widget.locator(ANNOUNCEMENT_LIVE_REGION);
     await expect(liveRegion).toBeAttached();
     await expect(liveRegion).toHaveAttribute("aria-atomic", "true");
   });
@@ -76,9 +80,7 @@ test.describe("<eudi-verify> accessibility", () => {
 
     await page.keyboard.press("Enter");
 
-    const loadingOrQR = widget.locator(
-      "#eudi-state-loading[data-active], #eudi-state-showQR[data-active]",
-    );
+    const loadingOrQR = widget.locator(ACTIVE_VERIFICATION_SELECTOR);
     await expect(loadingOrQR).toBeVisible({ timeout: 5000 });
   });
 
@@ -87,17 +89,8 @@ test.describe("<eudi-verify> accessibility", () => {
     const startButton = widget.locator('[data-action="start"]');
 
     await startButton.click();
-
-    const qrState = widget.locator("#eudi-state-showQR");
-    await expect(qrState).toHaveAttribute("data-active", { timeout: 5000 });
-
-    const cancelButton = widget.locator(
-      '#eudi-state-showQR [data-action="cancel"]',
-    );
-    await cancelButton.focus();
-    await expect(cancelButton).toBeFocused();
-
-    await page.keyboard.press("Enter");
+    await waitForPostStart(widget);
+    await activateCancel(widget, page);
 
     const idleState = widget.locator("#eudi-state-idle");
     await expect(idleState).toHaveAttribute("data-active");
@@ -123,15 +116,22 @@ test.describe("<eudi-verify> accessibility", () => {
   });
 
   test("widget sets aria-busy during loading", async ({ page }) => {
+    await page.route("**/api/eudi/sessions", async (route) => {
+      if (route.request().method() === "POST") {
+        await new Promise((resolve) => setTimeout(resolve, 300));
+      }
+      await route.continue();
+    });
+
     const widget = page.locator("eudi-verify");
     const startButton = widget.locator('[data-action="start"]');
-
-    await startButton.click();
-
     const region = widget.locator('[role="region"]');
-    await expect(region).toHaveAttribute("aria-busy", "true", {
-      timeout: 1000,
+
+    const busyDuringLoad = expect(region).toHaveAttribute("aria-busy", "true", {
+      timeout: 2000,
     });
+    await startButton.click();
+    await busyDuringLoad;
   });
 
   test("buttons have visible focus indicators", async ({ page }) => {
@@ -156,9 +156,7 @@ test.describe("<eudi-verify> accessibility", () => {
     const startButton = widget.locator('[data-action="start"]');
 
     await startButton.click();
-
-    const qrState = widget.locator("#eudi-state-showQR");
-    await expect(qrState).toHaveAttribute("data-active", { timeout: 5000 });
+    await waitForPostStart(widget);
 
     const qrImage = widget.locator(".eudi-qr-img");
     await expect(qrImage).toHaveAttribute("alt", "Scan with EUDI Wallet");
