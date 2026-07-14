@@ -134,17 +134,15 @@ For custom styling, see `src/styles.css` or refer to the `@eudi-verify/embed` do
 ## Development
 
 ```bash
-# Development mode (hot reload)
 pnpm dev
-
-# Build for production
 pnpm build
-
-# Preview production build
 pnpm preview
+pnpm test:e2e
 ```
 
-**Note:** The API server (`examples/server/`) must be running separately on port 3000.
+The API server must be running separately on port 3000 for manual dev (`pnpm start` in `examples/server/`).
+
+`pnpm test:e2e` starts its own mock API and Vite dev server (port 3012 by default) — use this to verify the dev bundle mounts, not just `pnpm build`.
 
 ## License
 

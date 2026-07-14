@@ -9,6 +9,9 @@ const sharedDir = join(
   "../shared",
 );
 
+const devPort = Number(process.env.EUDI_REACT_E2E_PORT ?? 3001);
+const apiPort = Number(process.env.EUDI_MOCK_API_PORT ?? 3000);
+
 function sharedDemoScripts(): Plugin {
   return {
     name: "shared-demo-scripts",
@@ -32,14 +35,20 @@ function sharedDemoScripts(): Plugin {
 
 export default defineConfig({
   plugins: [react(), sharedDemoScripts()],
+  optimizeDeps: {
+    esbuildOptions: {
+      target: "es2022",
+    },
+  },
   build: {
     target: "es2022",
   },
   server: {
-    port: 3001,
+    port: devPort,
+    strictPort: Boolean(process.env.CI || process.env.EUDI_REACT_E2E_PORT),
     proxy: {
       "/api": {
-        target: "http://localhost:3000",
+        target: `http://localhost:${apiPort}`,
         changeOrigin: true,
       },
     },

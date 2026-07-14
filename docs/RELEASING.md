@@ -215,7 +215,7 @@ gh release create v0.X.Y --title "v0.X.Y" --generate-notes
 
 - [ ] Changesets merged since last release
 - [ ] `pnpm verify` passes on the release commit
-- [ ] `pnpm test:e2e` passes (embed widget + Vue example; not part of CI/`verify`)
+- [ ] `pnpm test:e2e` passes (embed widget + Vue + React examples; not part of CI/`verify`)
 - [ ] `pnpm changeset version` committed as `chore: release`
 - [ ] `docs/SUPPORTED.md`, `THREAT_MODEL.md`, `DEPENDENCY.md` version strings updated
 - [ ] **Temporary:** `VERSION` constants updated in `packages/*/src/index.ts` (until [#10](https://github.com/eudi-verify/eudi-verify/issues/10))
