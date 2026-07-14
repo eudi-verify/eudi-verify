@@ -33,7 +33,7 @@ pnpm format:check
 # Run all CI checks locally (mirrors GitHub Actions)
 pnpm verify
 
-# Pre-release: Playwright e2e (embed + Vue example; see docs/RELEASING.md)
+# Pre-release: Playwright e2e (embed + Vue + React examples; see docs/RELEASING.md)
 pnpm exec playwright install   # once per machine
 pnpm test:e2e
 
@@ -183,6 +183,7 @@ You do **not** need to add a changeset — maintainers add one at merge when you
 - E2E (Playwright): one-time browser install from repo root — `npx playwright install chromium`
 - E2E (embed widget / a11y): `cd packages/embed && pnpm test:e2e` — starts its own mock API and dev server
 - E2E (Vue example dev smoke): `cd examples/vue && pnpm test:e2e` — catches Vite dev-only breakage that `pnpm build` misses; run when changing `examples/vue/` or example Vite configs
+- E2E (React example dev smoke): `cd examples/react && pnpm test:e2e` — same for `examples/react/`; run when changing the React wrapper or its Vite config
 - Test coverage is tracked but not enforced
 
 **Maintainers:** after `pnpm verify`, run the e2e suite that matches the PR scope before merge — embed changes → embed e2e; `examples/vue/` → Vue e2e. React example e2e is not wired yet (follow-up).

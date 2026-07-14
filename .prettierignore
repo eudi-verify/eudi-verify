@@ -7,3 +7,5 @@ packages/embed/playwright-report
 packages/embed/test-results
 examples/vue/playwright-report
 examples/vue/test-results
+examples/react/playwright-report
+examples/react/test-results
