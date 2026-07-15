@@ -39,6 +39,9 @@ RUN pnpm install --frozen-lockfile --prod && \
 
 ENV PORT=3001
 ENV API_PORT=3000
+# ponytail: both example servers default HOST to 127.0.0.1 (safe for local dev);
+# override here so the container's port mapping can actually reach them.
+ENV HOST=0.0.0.0
 
 EXPOSE 3001
 

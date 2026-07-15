@@ -10,11 +10,11 @@
     "start": "node --import tsx server.ts"
   },
   "dependencies": {
-    "@eudi-verify/server": "workspace:*"
+    "@eudi-verify/server": "workspace:*",
+    "tsx": "^4.19.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "tsx": "^4.19.0",
     "typescript": "^5.7.0"
   }
 }
