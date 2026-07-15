@@ -79,10 +79,7 @@ export type {
 export { MockEngine } from "./engine.js";
 
 // OpenEUDI Engine
-export type {
-  DemoClaimsConfig,
-  OpenEudiEngineOptions,
-} from "./engines/openeudi.js";
+export type { OpenEudiEngineOptions } from "./engines/openeudi.js";
 export { OpenEudiEngine } from "./engines/openeudi.js";
 
 // Token Service

@@ -108,8 +108,8 @@
 
 **Implemented Mitigations (Demo)**:
 
-- VP signature verification (simulated in demo mode)
-- Delegated to `@openeudi/openid4vp` library
+- VP verification delegated to `@openeudi/core` `DemoMode` (simulated credentials; age + country only)
+- Production cryptographic path via `@openeudi/openid4vp` is roadmap, not wired in demo
 
 **Planned Mitigations (Production)**:
 

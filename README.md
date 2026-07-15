@@ -7,7 +7,7 @@
 
 Framework-agnostic verifier kit for the European Digital Identity Wallet.
 
-`eudi-verify` provides a drop-in web component, typed client SDK, optional React wrapper, Node.js server handlers, and an OpenAPI specification — with reference examples for plain HTML, React, and Vue.
+`eudi-verify` provides a drop-in web component, typed client SDK, optional React wrapper, Node.js server handlers, and an OpenAPI specification — with reference examples for plain HTML, React, and Vue. Demo verification uses [`@openeudi/core`](https://github.com/openeudi/core) behind a swappable `VerifierEngine` interface.
 
 **Live demo:** https://demo.eudi-verify.eu/
 
@@ -40,12 +40,12 @@ This project is for developers, product teams, and integrators who want to prepa
 
 ## Packages
 
-| Package                            | Description                                          | Status                            |
-| ---------------------------------- | ---------------------------------------------------- | --------------------------------- |
-| <nobr>`@eudi-verify/server`</nobr> | REST API handlers, token verification, rate limiting | Preview (MockEngine), Node.js 22+ |
-| <nobr>`@eudi-verify/embed`</nobr>  | Drop-in `<eudi-verify>` web component                | Preview                           |
-| <nobr>`@eudi-verify/client`</nobr> | Typed API client, state machine, QR generation       | Preview                           |
-| <nobr>`@eudi-verify/react`</nobr>  | React wrapper with typed props                       | Preview                           |
+| Package                            | Description                                          | Status                                       |
+| ---------------------------------- | ---------------------------------------------------- | -------------------------------------------- |
+| <nobr>`@eudi-verify/server`</nobr> | REST API handlers, token verification, rate limiting | Preview (`OpenEudiEngine` demo), Node.js 22+ |
+| <nobr>`@eudi-verify/embed`</nobr>  | Drop-in `<eudi-verify>` web component                | Preview                                      |
+| <nobr>`@eudi-verify/client`</nobr> | Typed API client, state machine, QR generation       | Preview                                      |
+| <nobr>`@eudi-verify/react`</nobr>  | React wrapper with typed props                       | Preview                                      |
 
 See the [integration guide](docs/INTEGRATION.md) for end-to-end setup.
 
@@ -95,11 +95,12 @@ Three independent layers — use what you need:
 
 React apps: `@eudi-verify/react` wraps `@eudi-verify/embed` with typed props and callbacks (see [Packages](#packages)).
 
-Vue and similar frameworks: use `@eudi-verify/embed` directly — see [`examples/vue/`](examples/vue/) and [INTEGRATION.md Option D](docs/INTEGRATION.md).
+Vue and similar frameworks: use `@eudi-verify/embed` directly — see [`examples/vue/`](examples/vue/) and [frontend integration](docs/integration-frontend.md#option-d-vue).
 
 The OpenAPI spec is stack-independent — any backend can implement the same endpoints. Only the Node.js handler library ships today.
 
 - [Supported platforms and roadmap](docs/SUPPORTED.md)
+- [Integration architecture and request flows](docs/integration-architecture.md) (mermaid diagrams)
 - [ARF alignment notes](docs/ARF.md)
 
 ```txt
@@ -129,7 +130,7 @@ interface VerifierEngine {
 }
 ```
 
-Current: `MockEngine` for local development and preview mode. Production protocol engine support is planned as compatible wallet implementations stabilize.
+Current: `OpenEudiEngine` wraps `@openeudi/core` `DemoMode` for simulated age and country checks. `MockEngine` remains available for deterministic tests. Production protocol engine support is planned as certified wallets stabilize.
 
 ---
 
@@ -206,7 +207,7 @@ pnpm verify        # Run local CI checks
 
 See [SECURITY.md](SECURITY.md) and [THREAT_MODEL.md](THREAT_MODEL.md).
 
-Key boundaries: the browser widget is not trusted; verification tokens must be validated server-side; the server's MockEngine must not be used for production identity verification.
+Key boundaries: the browser widget is not trusted; verification tokens must be validated server-side; demo mode (`OpenEudiEngine` / `@openeudi/core` `DemoMode`) must not be used for production identity verification.
 
 ---
 

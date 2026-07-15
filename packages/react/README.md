@@ -280,7 +280,7 @@ The wrapper also provides:
    - Escape hatches (`onStateChange`, `ref.current.element`)
 3. **Consistency** — same callback API in CSR, SSR, and tests
 
-You can use `<eudi-verify>` directly in React with `ref` + `addEventListener` (see [INTEGRATION.md](../../docs/INTEGRATION.md)); the wrapper is the recommended path for typed props and callbacks.
+You can use `<eudi-verify>` directly in React with `ref` + `addEventListener` (see [integration-frontend.md](../../docs/integration-frontend.md)); the wrapper is the recommended path for typed props and callbacks.
 
 ## License
 

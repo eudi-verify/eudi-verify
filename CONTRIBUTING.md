@@ -193,7 +193,7 @@ You do **not** need to add a changeset — maintainers add one at merge when you
 If your change affects public APIs or user-facing behavior:
 
 1. Update package READMEs in `packages/*/README.md`
-2. Update `docs/INTEGRATION.md` if integration steps change
+2. Update `docs/INTEGRATION.md` and related `docs/integration-*.md` if integration steps change
 3. Update `docs/SUPPORTED.md` if platform support changes
 4. Keep `openapi/eudi-verifier.yaml` in sync with API changes
 
