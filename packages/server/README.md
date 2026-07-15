@@ -261,7 +261,9 @@ app.post("/checkout", async (req, res) => {
 
 ## Demo Mode Warning
 
-⚠️ Demo mode accepts simulated credentials. **Never use in production.**
+⚠️ Demo mode accepts simulated credentials from `@openeudi/core` `DemoMode`. **Never use in production.**
+
+In demo mode, `OpenEudiEngine` surfaces only claims that `@openeudi/core` 0.8.0 supports today: **age over 18** and **country (nationality)**. Requests for `age_over_21`, `given_name`, `family_name`, or `birth_date` are accepted at the API layer but those claims are not returned until a production engine path exists.
 
 Demo mode is indicated by:
 

@@ -44,7 +44,7 @@ Or include directly via CDN:
 
 ## Using React?
 
-See [`@eudi-verify/react`](../react/README.md) for typed props, callbacks, and the `useEudiVerify` hook. You can also use `<eudi-verify>` directly in React with `ref` + `addEventListener` — see [INTEGRATION.md](../../docs/INTEGRATION.md).
+See [integration-frontend.md](../../docs/integration-frontend.md) for direct React usage with `ref` + `addEventListener`.
 
 ## Attributes
 
@@ -141,7 +141,7 @@ widget.addEventListener("state-change", (e) => {
 
 The widget renders built-in UI for `rejected`, `expired`, and `error` states. Events fire in addition to that UI so host pages can react (alerts, analytics, redirects).
 
-See [INTEGRATION.md](../../docs/INTEGRATION.md#error-boundaries) for the full stack overview.
+See [integration-errors.md](../../docs/integration-errors.md) for the full stack overview.
 
 ## Theming
 

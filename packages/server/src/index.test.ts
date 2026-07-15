@@ -1,3 +1,4 @@
+import { VerificationType } from "@openeudi/core";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import {
   VERSION,
@@ -20,6 +21,10 @@ import {
   type VerifierHandlers,
   type RequestContext,
 } from "./index.js";
+import {
+  coreResultToClaims,
+  requestToCoreType,
+} from "./engines/openeudi-mappers.js";
 
 describe("@eudi-verify/server", () => {
   it("exports a VERSION constant", () => {
@@ -769,6 +774,76 @@ describe("Handlers", () => {
   });
 });
 
+describe("openeudi mappers", () => {
+  describe("requestToCoreType", () => {
+    it("maps age-only requests to AGE", () => {
+      expect(requestToCoreType({ age_over_18: true }).type).toBe(
+        VerificationType.AGE,
+      );
+    });
+
+    it("maps nationality-only requests to COUNTRY", () => {
+      expect(requestToCoreType({ nationality: true }).type).toBe(
+        VerificationType.COUNTRY,
+      );
+    });
+
+    it("maps combined requests to BOTH", () => {
+      expect(
+        requestToCoreType({ age_over_18: true, nationality: true }).type,
+      ).toBe(VerificationType.BOTH);
+    });
+
+    it("defaults unsupported-only requests to AGE", () => {
+      expect(requestToCoreType({ given_name: true }).type).toBe(
+        VerificationType.AGE,
+      );
+    });
+  });
+
+  describe("coreResultToClaims", () => {
+    it("maps verified age and country results", () => {
+      const mapped = coreResultToClaims(
+        {
+          verified: true,
+          ageVerified: true,
+          country: "DE",
+          countryVerified: true,
+        },
+        { age_over_18: true, nationality: true },
+      );
+
+      expect(mapped.success).toBe(true);
+      expect(mapped.status).toBe("verified");
+      expect(mapped.claims).toEqual({
+        age_over_18: true,
+        nationality: "DE",
+      });
+    });
+
+    it("omits unsupported claims from the response", () => {
+      const mapped = coreResultToClaims(
+        { verified: true, ageVerified: true },
+        { age_over_21: true, given_name: true },
+      );
+
+      expect(mapped.claims?.age_over_21).toBeUndefined();
+      expect(mapped.claims?.given_name).toBeUndefined();
+    });
+
+    it("maps rejections to rejected status", () => {
+      const mapped = coreResultToClaims(
+        { verified: false, rejectionReason: "Country not allowed" },
+        { nationality: true },
+      );
+
+      expect(mapped.success).toBe(false);
+      expect(mapped.status).toBe("rejected");
+      expect(mapped.error).toBe("Country not allowed");
+    });
+  });
+});
+
 describe("OpenEudiEngine", () => {
   let engine: InstanceType<typeof OpenEudiEngine>;
 
@@ -801,7 +876,7 @@ describe("OpenEudiEngine", () => {
   });
 
   describe("handleCallback (demo mode)", () => {
-    it("returns verified claims", async () => {
+    it("returns verified claims from @openeudi/core DemoMode", async () => {
       const session: Session = {
         id: "test-123",
         status: "pending",
@@ -811,6 +886,8 @@ describe("OpenEudiEngine", () => {
         _engineData: {
           nonce: "test-nonce",
           requestedClaims: ["age_over_18", "nationality"],
+          coreType: "BOTH",
+          createdAt: Date.now(),
         },
       };
 
@@ -822,7 +899,38 @@ describe("OpenEudiEngine", () => {
       expect(result.success).toBe(true);
       expect(result.status).toBe("verified");
       expect(result.claims?.age_over_18).toBe(true);
-      expect(result.claims?.nationality).toBe("LU");
+      expect(result.claims?.nationality).toMatch(/^[A-Z]{2}$/);
+      expect(result.claims?.given_name).toBeUndefined();
+    });
+
+    it("omits unsupported claims even when requested", async () => {
+      const session: Session = {
+        id: "test-456",
+        status: "pending",
+        request: {
+          age_over_21: true,
+          given_name: true,
+          family_name: true,
+        },
+        createdAt: new Date(),
+        expiresAt: new Date(Date.now() + 300000),
+        _engineData: {
+          nonce: "test-nonce",
+          requestedClaims: ["age_over_21", "given_name", "family_name"],
+          coreType: "AGE",
+          createdAt: Date.now(),
+        },
+      };
+
+      const result = await engine.handleCallback(
+        { sessionId: "test-456", response: "mock-vp" },
+        session,
+      );
+
+      expect(result.success).toBe(true);
+      expect(result.claims?.age_over_21).toBeUndefined();
+      expect(result.claims?.given_name).toBeUndefined();
+      expect(result.claims?.family_name).toBeUndefined();
     });
   });
 

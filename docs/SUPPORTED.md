@@ -15,7 +15,7 @@
 | **Node.js 22+**         | ✅ Supported             | `@eudi-verify/server` — mount handlers on Express, Hono, or raw `node:http`                                          |
 | PHP, Python, Java, etc. | ❌ No server library yet | Use the [OpenAPI spec](../openapi/eudi-verifier.yaml) to implement the REST API, or proxy to a Node verifier service |
 
-**Documented integration:** [INTEGRATION.md](./INTEGRATION.md) (Node/Express), [packages/server/README.md](../packages/server/README.md)
+**Documented integration:** [INTEGRATION.md](./INTEGRATION.md) (Node quick start), [integration-architecture.md](./integration-architecture.md) (PHP sidecar / flows), [packages/server/README.md](../packages/server/README.md)
 
 **Reference demo:** [examples/html-vanilla](../examples/html-vanilla/) (plain HTML + shared API server)
 
@@ -29,7 +29,7 @@
 | **Custom UI**  | ✅ Supported    | `@eudi-verify/client` (vanilla TS, zero framework deps)                    |
 | **WordPress**  | 🟡 Manual embed | Add script + element in theme/block; no plugin yet                         |
 
-**Documented integration:** [INTEGRATION.md](./INTEGRATION.md), [packages/embed/README.md](../packages/embed/README.md), [packages/react/README.md](../packages/react/README.md)
+**Documented integration:** [integration-frontend.md](./integration-frontend.md), [packages/embed/README.md](../packages/embed/README.md), [packages/react/README.md](../packages/react/README.md)
 
 **Reference demos:** [examples/html-vanilla](../examples/html-vanilla/) (plain HTML + shared API server), [examples/react](../examples/react/) (React + TypeScript + Vite), [examples/vue](../examples/vue/) (Vue + TypeScript + Vite)
 
@@ -41,6 +41,8 @@
 | `@eudi-verify/client` | ✅ API client, state machine, QR                      |
 | `@eudi-verify/embed`  | ✅ `<eudi-verify>` web component (WCAG 2.1 AA target) |
 | `@eudi-verify/react`  | ✅ React wrapper with typed props                     |
+
+**Demo verification engine:** `OpenEudiEngine` wraps `@openeudi/core` `DemoMode`. Simulated claims are limited to **age over 18** and **country/nationality** (per core 0.8.0). `age_over_21` and full PID attributes (`given_name`, `family_name`, `birth_date`) are not returned in demo mode.
 
 ### API contract
 

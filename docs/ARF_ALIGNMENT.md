@@ -262,5 +262,7 @@ ARF emphasizes interoperability across Member State wallets. Our testing strateg
 
 - [PLAN.md](PLAN.md) — Technical roadmap
 - [THREAT_MODEL.md](../THREAT_MODEL.md) — Security design
-- [INTEGRATION.md](INTEGRATION.md) — End-to-end integration guide
+- [INTEGRATION.md](INTEGRATION.md) — Quick start (server, tokens)
+- [integration-architecture.md](integration-architecture.md) — Diagrams and request flows
+- [integration-frontend.md](integration-frontend.md) — Widget, React, Vue, custom UI
 - [deploy-eu.md](deploy-eu.md) — EU deployment (Hetzner, self-hosted)
