@@ -7,7 +7,9 @@
 
 Framework-agnostic verifier kit for the European Digital Identity Wallet.
 
-`eudi-verify` provides a drop-in web component, typed client SDK, optional React wrapper, Node.js server handlers, and an OpenAPI specification — with reference examples for plain HTML, React, and Vue. Demo verification uses [`@openeudi/core`](https://github.com/openeudi/core) behind a swappable `VerifierEngine` interface.
+`eudi-verify` provides a drop-in web component, typed client SDK, optional React wrapper, Node.js server handlers, and an OpenAPI specification — with reference examples for plain HTML, React, and Vue.
+
+**Demo verification** builds on [`@openeudi/core`](https://github.com/openeudi/core) — `OpenEudiEngine` runs its `DemoMode` behind the swappable `VerifierEngine` interface.
 
 **Live demo:** https://demo.eudi-verify.eu/
 
