@@ -45,7 +45,7 @@ export class OpenEudiEngine implements VerifierEngine {
   private config: Required<
     Pick<OpenEudiEngineOptions, "baseUrl" | "sessionTtlMs" | "demoDelayMs">
   >;
-  private coreMode: IVerificationMode;
+  private coreMode?: IVerificationMode;
 
   constructor(options: OpenEudiEngineOptions) {
     this.mode = options.mode;
@@ -54,8 +54,11 @@ export class OpenEudiEngine implements VerifierEngine {
       sessionTtlMs: options.sessionTtlMs ?? 5 * 60 * 1000,
       demoDelayMs: options.demoDelayMs ?? 0,
     };
-    // ponytail: production uses stub callback path; DemoMode only wired for demo today
-    this.coreMode = new DemoMode({ delayMs: 0 });
+    // ponytail: production uses the stub callback path; core DemoMode is only
+    // wired for demo. Delay is applied in handleCallback, so delayMs stays 0 here.
+    if (this.mode === "demo") {
+      this.coreMode = new DemoMode({ delayMs: 0 });
+    }
   }
 
   async initialize(): Promise<void> {
@@ -151,6 +154,14 @@ export class OpenEudiEngine implements VerifierEngine {
       return {
         success: false,
         error: "Missing engine session data",
+        status: "error",
+      };
+    }
+
+    if (!this.coreMode) {
+      return {
+        success: false,
+        error: "Demo engine not initialized",
         status: "error",
       };
     }

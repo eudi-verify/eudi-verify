@@ -342,14 +342,11 @@ export class MockEngine implements VerifierEngine {
 }
 
 /**
- * Placeholder for OpenEUDI engine implementation.
+ * Configuration for the OpenEUDI engine.
  *
- * Will wrap @openeudi/core and @openeudi/openid4vp to provide:
- * - Real OpenID4VP authorization requests
- * - Demo mode with simulated wallet responses
- * - Production mode with full crypto verification
- *
- * Implementation deferred to WP2.
+ * Demo mode wraps `@openeudi/core` `DemoMode` (simulated age + country claims).
+ * Production mode (real OpenID4VP crypto via `@openeudi/openid4vp`) is deferred —
+ * `handleCallback` returns not-implemented until that path is wired.
  */
 export interface OpenEudiEngineConfig {
   /** Operating mode */
