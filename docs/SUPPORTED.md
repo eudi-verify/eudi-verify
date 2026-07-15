@@ -2,7 +2,7 @@
 
 **Canonical reference** for what works today vs what is planned. Update this file whenever support changes; keep [README.md](../README.md) in sync.
 
-**Current release:** v1.1.1 — all four packages (`@eudi-verify/server`, `@eudi-verify/client`, `@eudi-verify/embed`, `@eudi-verify/react`) share a single version line. Stable integration API, demo verification engine only. See [Current Limitations](../README.md#current-limitations).
+**Current release:** v1.2.0 — all four packages (`@eudi-verify/server`, `@eudi-verify/client`, `@eudi-verify/embed`, `@eudi-verify/react`) share a single version line. Stable integration API, demo verification engine only. See [Current Limitations](../README.md#current-limitations).
 
 ---
 

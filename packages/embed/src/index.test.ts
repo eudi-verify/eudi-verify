@@ -9,7 +9,7 @@ import {
 
 describe("@eudi-verify/embed", () => {
   it("exports a VERSION constant", () => {
-    expect(VERSION).toBe("1.0.2");
+    expect(VERSION).toBe("1.2.0");
   });
 
   it("exports EudiVerifyElement class", () => {
