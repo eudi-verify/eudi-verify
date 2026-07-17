@@ -6,6 +6,15 @@ Canonical public/private rules: `.cursor/rules/docs-boundary.mdc`.
 
 Maintainers may add `docs/internal/<topic>.local.md` for ops runbooks (deploy paths, GitHub admin, cron, etc.). Those files must not be committed or linked from public docs.
 
+| File                            | Topic                    |
+| ------------------------------- | ------------------------ |
+| `runbook.local.md`              | Maintainer tracker       |
+| `openid4vp-lab-notes.local.md`  | OpenID4VP lab notes      |
+| `cdn-origin.local.md`           | CDN → origin ops         |
+| `cdn-apex.local.md`             | Apex DNS / CDN           |
+| `launch-monitor.local.md`       | Launch probe / ops-watch |
+| `ci-branch-protection.local.md` | Branch protection admin  |
+
 **Related public docs:**
 
 - `docs/deploy-eu.md` — provider-generic EU deployment
