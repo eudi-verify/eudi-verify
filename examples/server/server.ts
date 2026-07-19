@@ -383,7 +383,7 @@ server.listen(PORT, HOST, () => {
     console.log(`    BASE_URL=${BASE_URL}`);
     if (trust === "skip") {
       console.warn(
-        "[!] EUDI_TRUST=skip — issuer trust anchoring DISABLED (lab-only).\n",
+        "[!] EUDI_TRUST=skip: issuer trust anchoring DISABLED (lab-only).\n",
       );
     }
   }

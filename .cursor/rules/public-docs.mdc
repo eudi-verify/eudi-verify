@@ -23,7 +23,7 @@ When adding features, examples, or integration paths:
 |----|-------|
 | "Node.js 22+ (`@eudi-verify/server`)" for backend | "Any backend (PHP, Python, Java)" as if libraries exist |
 | "Embeddable in any HTML page / SPA" for frontend | Imply WordPress plugin or Vue wrapper ships today |
-| "OpenAPI contract — implement in any language" for non-Node backends | Hide that only Node handlers are published |
+| "OpenAPI contract: implement in any language" for non-Node backends | Hide that only Node handlers are published |
 | Link to `docs/SUPPORTED.md` for full matrix | Scatter conflicting status in multiple files |
 | Point React integration to `docs/wp/WP9.md` | Claim `@eudi-verify/react` ships before WP9 is done |
 

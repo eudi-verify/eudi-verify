@@ -31,12 +31,12 @@ The Vite dev server (port 3001) proxies `/api/*` requests to the shared API serv
 This example and the default local API run in **demo mode** (simulated wallet).
 Visitors without a wallet use **Open demo wallet**. Integrators who have a
 lab wallet can run `examples/server` with `EUDI_MODE=production` against a
-real presentation — see [docs/SUPPORTED.md](../../docs/SUPPORTED.md) and
+real presentation: see [docs/SUPPORTED.md](../../docs/SUPPORTED.md) and
 [examples/server/README.md](../server/README.md).
 
 The shared API server (`examples/server/`) defaults to `OpenEudiEngine` demo
 mode. The demo wallet and success pages (`demo-wallet.html`, `success.html`)
-use vanilla JavaScript — shared testing utilities across the frontend examples.
+use vanilla JavaScript: shared testing utilities across the frontend examples.
 
 ## Basic Usage
 
@@ -74,7 +74,7 @@ pnpm test:e2e
 
 The API server must be running separately on port 3000 for manual dev (`pnpm start`).
 
-`pnpm test:e2e` starts its own mock API and Vite dev server (port 3011 by default) — use this to verify the dev bundle mounts, not just `pnpm build`.
+`pnpm test:e2e` starts its own mock API and Vite dev server (port 3011 by default): use this to verify the dev bundle mounts, not just `pnpm build`.
 
 ## License
 

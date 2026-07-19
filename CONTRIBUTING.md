@@ -199,6 +199,8 @@ If your change affects public APIs or user-facing behavior:
 
 See [.cursor/rules/docs-sync.mdc](.cursor/rules/docs-sync.mdc) for detailed documentation sync guidelines.
 
+**Prose / UI copy:** Do not use em-dashes (`—`). Prefer a colon for asides; use an en-dash (`–`) only for titles, empty placeholders, contrastive breaks, or when a colon is already in the clause. Do not rewrite existing wording just to sound less "AI" unless asked. Details: [.cursor/rules/copy-voice.mdc](.cursor/rules/copy-voice.mdc).
+
 ## Architecture Decisions
 
 Before proposing major changes, please review:

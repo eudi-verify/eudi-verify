@@ -24,6 +24,6 @@ Do **not** add unevaluated third-party agent plugins, rulesets, or skills to pub
 
 When adding `.cursor/rules` content:
 
-- Keep project conventions (docs accuracy, architecture, commit style) — mirror critical policy in neutral docs (`CONTRIBUTING.md`, `docs/`) where it applies to everyone.
+- Keep project conventions (docs accuracy, architecture, commit style) – mirror critical policy in neutral docs (`CONTRIBUTING.md`, `docs/`) where it applies to everyone.
 - Do not imply mandatory AI/editor tooling; project conventions themselves are required.
 - Do not name or endorse specific third-party tools until evaluated and intentionally documented.

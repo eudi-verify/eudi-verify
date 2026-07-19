@@ -223,7 +223,7 @@ function App() {
         Skip to main content
       </a>
       <div className="demo-banner" role="status">
-        Demo mode — credentials are simulated. Use the demo wallet below (or a
+        Demo mode: credentials are simulated. Use the demo wallet below (or a
         real wallet only when the API is run with EUDI_MODE=production locally).
       </div>
 
@@ -324,7 +324,7 @@ function App() {
                 <summary>Developer: simulate wallet with curl</summary>
                 <div className="curl-hint__body">
                   <p className="curl-hint-note">
-                    Same effect as the demo wallet Approve button — useful for
+                    Same effect as the demo wallet Approve button: useful for
                     CI, scripting, and debugging.
                   </p>
                   <pre className="replay-result">{curlCommand}</pre>

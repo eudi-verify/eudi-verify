@@ -247,7 +247,7 @@ onMounted(() => {
 <template>
   <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="demo-banner" role="status">
-    Demo mode — credentials are simulated. Use the demo wallet below (or a real
+    Demo mode: credentials are simulated. Use the demo wallet below (or a real
     wallet only when the API is run with EUDI_MODE=production locally).
   </div>
 

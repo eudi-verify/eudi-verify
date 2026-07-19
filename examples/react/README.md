@@ -19,13 +19,13 @@ React application demonstrating `@eudi-verify/react` wrapper for EUDI Wallet ver
 pnpm install && pnpm build
 ```
 
-**Terminal 1 — Start shared API server:**
+**Terminal 1: Start shared API server:**
 
 ```bash
 cd examples/server && pnpm start
 ```
 
-**Terminal 2 — Start React dev server** (new terminal, repo root):
+**Terminal 2: Start React dev server** (new terminal, repo root):
 
 ```bash
 cd examples/react && pnpm start
@@ -56,12 +56,12 @@ The backend lives in `examples/server/` (shared across all examples).
 This example and the default local API run in **demo mode** (simulated wallet).
 Visitors without a wallet use **Open demo wallet**. Integrators who have a
 lab wallet can run `examples/server` with `EUDI_MODE=production` against a
-real presentation — see [docs/SUPPORTED.md](../../docs/SUPPORTED.md) and
+real presentation: see [docs/SUPPORTED.md](../../docs/SUPPORTED.md) and
 [examples/server/README.md](../server/README.md).
 
 The shared API server (`examples/server/`) defaults to `OpenEudiEngine` demo
 mode. The demo wallet and success pages (`demo-wallet.html`, `success.html`)
-use vanilla JavaScript, not React — shared testing utilities across examples.
+use vanilla JavaScript, not React: shared testing utilities across examples.
 
 ## Code Examples
 
@@ -144,7 +144,7 @@ pnpm test:e2e
 
 The API server must be running separately on port 3000 for manual dev (`pnpm start` in `examples/server/`).
 
-`pnpm test:e2e` starts its own mock API and Vite dev server (port 3012 by default) — use this to verify the dev bundle mounts, not just `pnpm build`.
+`pnpm test:e2e` starts its own mock API and Vite dev server (port 3012 by default): use this to verify the dev bundle mounts, not just `pnpm build`.
 
 ## License
 
