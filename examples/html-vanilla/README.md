@@ -101,4 +101,11 @@ curl -X POST http://localhost:3000/api/eudi/callback \
 
 ## Demo Mode Warning
 
-This demo runs in demo mode with simulated credentials. For production deployment, see [docs/deploy-eu.md](../../docs/deploy-eu.md).
+This site and the default local API run in **demo mode** (simulated wallet).
+Visitors without a wallet use **Open demo wallet**. Integrators who have a
+lab wallet can run `examples/server` with `EUDI_MODE=production` against a
+real presentation — see [docs/SUPPORTED.md](../../docs/SUPPORTED.md) and
+[examples/server/README.md](../server/README.md).
+
+For production deployment of the demo site, see
+[docs/deploy-eu.md](../../docs/deploy-eu.md).

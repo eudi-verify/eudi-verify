@@ -53,13 +53,15 @@ The backend lives in `examples/server/` (shared across all examples).
 
 ## Demo Mode
 
-⚠️ This demo runs in **demo mode** with simulated credentials. Do not use in production.
+This example and the default local API run in **demo mode** (simulated wallet).
+Visitors without a wallet use **Open demo wallet**. Integrators who have a
+lab wallet can run `examples/server` with `EUDI_MODE=production` against a
+real presentation — see [docs/SUPPORTED.md](../../docs/SUPPORTED.md) and
+[examples/server/README.md](../server/README.md).
 
-The shared API server (`examples/server/`) uses `@eudi-verify/server` handlers with the `OpenEudiEngine` in demo mode, which simulates wallet responses and returns fake claims for testing.
-
-**Note:** The demo wallet and success pages (`demo-wallet.html`, `success.html`) use vanilla JavaScript, not React. These are testing utilities shared across all examples.
-
-**Note:** Inspect toggles in the verification log fetch API responses inline. The standalone `/inspect` page remains for direct URLs but is no longer linked from logs.
+The shared API server (`examples/server/`) defaults to `OpenEudiEngine` demo
+mode. The demo wallet and success pages (`demo-wallet.html`, `success.html`)
+use vanilla JavaScript, not React — shared testing utilities across examples.
 
 ## Code Examples
 

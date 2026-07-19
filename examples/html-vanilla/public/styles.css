@@ -289,6 +289,12 @@ a:hover {
   color: var(--color-text-muted);
 }
 
+.hero-note a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
 /* ── Flow steps ──────────────────────────────────────────────── */
 
 .flow-steps {
