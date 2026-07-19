@@ -1,5 +1,13 @@
 # @eudi-verify/react
 
+## 1.3.0
+
+### Patch Changes
+
+- Updated dependencies [[`3ec23f5`](https://github.com/eudi-verify/eudi-verify/commit/3ec23f547fbbafac6e4acd202bbc426f0ba0f57b)]:
+  - @eudi-verify/client@1.3.0
+  - @eudi-verify/embed@1.3.0
+
 ## 1.2.0
 
 ### Patch Changes
