@@ -25,6 +25,7 @@ export interface VerificationRequest {
 export type SessionStatus =
   | "pending"
   | "waiting_for_wallet"
+  | "processing"
   | "verified"
   | "rejected"
   | "expired"
@@ -65,12 +66,20 @@ export interface VerifiedClaims {
 /**
  * Session as returned by the API.
  */
+/**
+ * Trust level of `claims` — see the server's THREAT_MODEL.md.
+ * `'anchored'`: issuer chain validated against a trust store.
+ * `'none'`: issuer trust anchoring was explicitly skipped (lab-only).
+ */
+export type TrustLevel = "anchored" | "none";
+
 export interface Session {
   id: string;
   status: SessionStatus;
   qrUrl?: string;
   token?: string;
   claims?: VerifiedClaims;
+  trustLevel?: TrustLevel;
   error?: string;
   createdAt: string;
   expiresAt: string;

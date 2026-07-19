@@ -10,6 +10,9 @@ overrides:
   "js-yaml@3": "^3.15.0"
 
 allowBuilds:
+  # Optional native accel for cbor-x (via @openeudi/openid4vp). Pure-JS
+  # fallback is fine for our verify path — do not approve the build.
+  cbor-extract: false
   esbuild: true
 
 onlyBuiltDependencies:

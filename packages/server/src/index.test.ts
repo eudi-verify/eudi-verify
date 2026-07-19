@@ -395,20 +395,32 @@ describe("TokenService", () => {
 
   describe("mint", () => {
     it("creates a token with correct format", async () => {
-      const token = await tokenService.mint("session-123", {
-        age_over_18: true,
-      });
+      const token = await tokenService.mint(
+        "session-123",
+        {
+          age_over_18: true,
+        },
+        "anchored",
+      );
 
       expect(token).toMatch(/^eudi_v1\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/);
     });
 
     it("creates unique tokens for same session", async () => {
-      const token1 = await tokenService.mint("session-123", {
-        age_over_18: true,
-      });
-      const token2 = await tokenService.mint("session-123", {
-        age_over_18: true,
-      });
+      const token1 = await tokenService.mint(
+        "session-123",
+        {
+          age_over_18: true,
+        },
+        "anchored",
+      );
+      const token2 = await tokenService.mint(
+        "session-123",
+        {
+          age_over_18: true,
+        },
+        "anchored",
+      );
 
       expect(token1).not.toBe(token2);
     });
@@ -417,7 +429,7 @@ describe("TokenService", () => {
   describe("verify", () => {
     it("verifies valid token and returns claims", async () => {
       const claims = { age_over_18: true, nationality: "LU" };
-      const token = await tokenService.mint("session-123", claims);
+      const token = await tokenService.mint("session-123", claims, "anchored");
 
       const result = await tokenService.verify(token);
 
@@ -441,9 +453,13 @@ describe("TokenService", () => {
     });
 
     it("rejects tokens with invalid signature (forgery)", async () => {
-      const token = await tokenService.mint("session-123", {
-        age_over_18: true,
-      });
+      const token = await tokenService.mint(
+        "session-123",
+        {
+          age_over_18: true,
+        },
+        "anchored",
+      );
       const parts = token.split(".");
       const forgedToken = `${parts[0]}.${parts[1]}.forged-signature`;
 
@@ -454,9 +470,13 @@ describe("TokenService", () => {
     });
 
     it("rejects modified payload (integrity check)", async () => {
-      const token = await tokenService.mint("session-123", {
-        age_over_18: true,
-      });
+      const token = await tokenService.mint(
+        "session-123",
+        {
+          age_over_18: true,
+        },
+        "anchored",
+      );
       const parts = token.split(".");
       const payload = JSON.parse(Buffer.from(parts[1], "base64url").toString());
       payload.sid = "different-session";
@@ -472,9 +492,13 @@ describe("TokenService", () => {
     });
 
     it("rejects replay (single-use token)", async () => {
-      const token = await tokenService.mint("session-123", {
-        age_over_18: true,
-      });
+      const token = await tokenService.mint(
+        "session-123",
+        {
+          age_over_18: true,
+        },
+        "anchored",
+      );
 
       const result1 = await tokenService.verify(token);
       expect(result1.valid).toBe(true);
@@ -491,9 +515,13 @@ describe("TokenService", () => {
         ttlMs: 1000,
       });
 
-      const token = await shortLivedService.mint("session-123", {
-        age_over_18: true,
-      });
+      const token = await shortLivedService.mint(
+        "session-123",
+        {
+          age_over_18: true,
+        },
+        "anchored",
+      );
       await new Promise((r) => setTimeout(r, 1500));
 
       const result = await shortLivedService.verify(token);

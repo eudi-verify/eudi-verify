@@ -40,7 +40,9 @@
     "directory": "packages/server"
   },
   "dependencies": {
-    "@openeudi/core": "^0.8.0"
+    "@openeudi/core": "^0.8.0",
+    "@openeudi/openid4vp": "^0.9.1",
+    "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
     "@types/node": "^25.9.2",

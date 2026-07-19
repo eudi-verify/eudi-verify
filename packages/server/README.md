@@ -14,13 +14,21 @@ pnpm add @eudi-verify/server
 import {
   createVerifierHandlers,
   OpenEudiEngine,
+  Openid4vpEngine,
   MemoryKVStore,
   clientIpFromHeaders,
 } from "@eudi-verify/server";
 
 // 1. Create engine and store
 const BASE_URL = process.env.BASE_URL || "http://localhost:3000/api/eudi";
+// Demo (simulated claims):
 const engine = new OpenEudiEngine({ mode: "demo", baseUrl: BASE_URL });
+// Production OpenID4VP (real crypto) — see Configuration below:
+// const engine = new Openid4vpEngine({
+//   mode: "production",
+//   baseUrl: BASE_URL,
+//   trustedCerts: [/* DER roots */],
+// });
 const store = new MemoryKVStore();
 
 // 2. Create handlers
@@ -28,7 +36,7 @@ const handlers = createVerifierHandlers({
   engine,
   store,
   baseUrl: BASE_URL,
-  mode: "demo",
+  mode: "demo", // or "production" when using Openid4vpEngine
   tokenSecret: process.env.TOKEN_SECRET!, // 32+ chars
 });
 
@@ -146,7 +154,7 @@ app.post("/sessions", async (c) => {
 
 ```ts
 interface VerifierConfig {
-  engine: VerifierEngine; // OpenEudiEngine or MockEngine
+  engine: VerifierEngine; // OpenEudiEngine | Openid4vpEngine | MockEngine
   store: IKVStore; // MemoryKVStore (or Redis for production)
   baseUrl: string; // Public callback URL (e.g., https://example.com/api/eudi)
   mode: "demo" | "production";
@@ -160,6 +168,18 @@ interface VerifierConfig {
   allowedOrigins?: string[]; // CORS/Origin check (empty = allow all)
 }
 ```
+
+### Openid4vpEngine (production)
+
+Real OpenID4VP verification via `@openeudi/openid4vp` — plain `direct_post`, `client_id=redirect_uri:<callback>`, AV DCQL (`eu.europa.ec.av.1`).
+
+| Option                                        | Purpose                                                          |
+| --------------------------------------------- | ---------------------------------------------------------------- |
+| `trustStore` / `trustedCerts`                 | Anchored issuer trust (`trustLevel: 'anchored'`)                 |
+| `skipTrustCheck` + `acknowledgeInsecureTrust` | Lab-only; both required; refused when `NODE_ENV=production`      |
+| `allowInsecureTransport`                      | Allow `http://` `baseUrl` (LAN lab). Default requires `https://` |
+
+Verified claims include tamper-evident `trustLevel` on the minted verification token. See [THREAT_MODEL.md](../../THREAT_MODEL.md).
 
 Behind a reverse proxy or CDN, pass the restored client IP into handler context (see `clientIpFromHeaders` and [deploy-eu.md](../../docs/deploy-eu.md)).
 
@@ -263,9 +283,9 @@ app.post("/checkout", async (req, res) => {
 
 ⚠️ Demo mode accepts simulated credentials from `@openeudi/core` `DemoMode`. **Never use in production.**
 
-In demo mode, `OpenEudiEngine` surfaces only claims that `@openeudi/core` 0.8.0 supports today: **age over 18** and **country (nationality)**. Requests for `age_over_21`, `given_name`, `family_name`, or `birth_date` are accepted at the API layer but those claims are not returned until a production engine path exists.
+In demo mode, `OpenEudiEngine` surfaces only claims that `@openeudi/core` 0.8.0 supports today: **age over 18** and **country (nationality)**. Requests for `age_over_21`, `given_name`, `family_name`, or `birth_date` are accepted at the API layer but those claims are not returned until requested via a production engine path that supports them.
 
-Demo mode is indicated by:
+For real wallet presentations, use `Openid4vpEngine` (`mode: "production"`). Demo mode is indicated by:
 
 - Console warning on startup
 - `X-Eudi-Mode: demo` header on all responses

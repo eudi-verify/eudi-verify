@@ -7,13 +7,16 @@
     "node": ">=22"
   },
   "scripts": {
-    "start": "node --import tsx server.ts"
+    "start": "node --import tsx server.ts",
+    "spike:wallet": "node --import tsx wallet-spike-server.ts"
   },
   "dependencies": {
-    "@eudi-verify/server": "workspace:*"
+    "@eudi-verify/server": "workspace:*",
+    "qrcode": "1.5.4"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "@types/qrcode": "^1.5.5",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0"
   }

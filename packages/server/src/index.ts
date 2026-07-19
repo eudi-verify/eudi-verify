@@ -27,6 +27,12 @@
  * @packageDocumentation
  */
 
+// `Openid4vpEngine` depends on `@openeudi/openid4vp` -> `@peculiar/x509`,
+// which requires a reflect polyfill (tsyringe DI) registered before that
+// module loads. Side-effect import here guarantees it's in place for any
+// consumer importing from the package root, regardless of import order.
+import "reflect-metadata";
+
 export const VERSION = "1.2.0";
 
 // Types
@@ -34,6 +40,7 @@ export type {
   VerificationRequest,
   SessionStatus,
   VerifiedClaims,
+  TrustLevel,
   Session,
   SessionDTO,
   VerificationTokenPayload,
@@ -81,6 +88,10 @@ export { MockEngine } from "./engine.js";
 // OpenEUDI Engine
 export type { OpenEudiEngineOptions } from "./engines/openeudi.js";
 export { OpenEudiEngine } from "./engines/openeudi.js";
+
+// OpenID4VP Engine (production — real cryptographic verification)
+export type { Openid4vpEngineConfig } from "./engines/openid4vp.js";
+export { Openid4vpEngine } from "./engines/openid4vp.js";
 
 // Token Service
 export type { TokenService, TokenServiceConfig } from "./token.js";
