@@ -91,8 +91,8 @@
 
 **Implemented Mitigations**:
 
-- Sessions bound to cryptographic nonce (via OpenEUDI)
-- State parameter validated on callback
+- Sessions bound to cryptographic nonce (OpenID4VP request nonce; demo via OpenEUDI)
+- State parameter validated on callback (canonical; disagreeing `state`/`session_id` rejected)
 - Session expires after 5 minutes (configurable)
 - Random session IDs (UUID v4)
 
@@ -100,24 +100,51 @@
 
 ---
 
+### T4b: Wallet Callback Replay
+
+**Status:** `[IMPLEMENTED]`
+
+**Threat**: Attacker replays a captured `POST /callback` (or a concurrent duplicate) to re-run verification crypto or race session finalization.
+
+**Implemented Mitigations**:
+
+- Atomic claim `pending|waiting_for_wallet → processing` via `IKVStore.compareAndSet` **before** `engine.handleCallback`
+- Second callback for a claimed or terminal session returns `{ status: 'ok' }` without invoking the engine
+- SessionTranscript nonce binding (T5) additionally prevents cross-session presentation reuse
+
+**Residual Risk**: Low — depends on store atomicity (in-process for `MemoryKVStore`; Redis/Postgres must use `WATCH`/`MULTI` or a transaction)
+
+---
+
+### T4c: Trust-Level Forgery
+
+**Status:** `[IMPLEMENTED]`
+
+**Threat**: Attacker upgrades a lab/`skipTrustCheck` result (`trustLevel: 'none'`) into an `anchored` claim at token consumption.
+
+**Implemented Mitigations**:
+
+- `trustLevel: 'anchored' | 'none'` produced by the engine and threaded through session → minted verification token → `verifyToken` result
+- Folded into `hashClaims` so tampering the payload field fails HMAC verification
+- `skipTrustCheck` requires `acknowledgeInsecureTrust: true` and throws when `NODE_ENV === 'production'` without anchored trust (`trustStore` / `trustedCerts`)
+
+**Residual Risk**: Operational — consumers must check `trustLevel` (not only `age_over_18`) when authorization depends on issuer anchoring
+
+---
+
 ### T5: VP Tampering
 
-**Status:** `[IMPLEMENTED]` (demo mode) / `[PLANNED]` (production)
+**Status:** `[IMPLEMENTED]`
 
-**Threat**: Attacker modifies Verifiable Presentation in transit.
+**Threat**: Attacker modifies Verifiable Presentation in transit or substitutes a presentation bound to a different verifier session.
 
-**Implemented Mitigations (Demo)**:
+**Implemented Mitigations**:
 
-- VP signature verification (simulated in demo mode)
-- Delegated to `@openeudi/openid4vp` library
+- Demo path: VP verification delegated to `@openeudi/core` `DemoMode` (simulated credentials; age + country only)
+- Production path (`Openid4vpEngine` / `@openeudi/openid4vp`): cryptographic DeviceSignature + issuer signature verification, DCQL match, and mdoc SessionTranscript binding (`clientId`, `responseUri`, `nonce` via OpenID4VP 1.0 unencrypted handover for plain `direct_post`)
+- Negative binding tests assert independently mutating `clientId` / `responseUri` / `nonce` rejects a captured wallet presentation
 
-**Planned Mitigations (Production)**:
-
-- Full cryptographic VP signature verification
-- Selective disclosure hash validation
-- EU trust list verification
-
-**Residual Risk**: Negligible in production - cryptographic guarantees
+**Residual Risk**: Negligible when production engine + anchored trust are used — cryptographic guarantees
 
 ---
 
@@ -130,15 +157,17 @@
 **Implemented Mitigations**:
 
 - Callback URL pinned to configured `baseUrl`
+- Production engine construction requires `https://` `baseUrl` unless `allowInsecureTransport: true` (LAN lab only)
+- Plain `direct_post` (no JARM / response encryption) — **TLS is the only confidentiality layer in transit** for the wallet callback body (`vp_token`)
 
 **Planned Mitigations**:
 
-- HTTPS enforcement in production deployments
-- JWE encryption for wallet callback (production mode)
+- JWE / `direct_post.jwt` when wallet builds support response encryption
+- Broader deployment HTTPS enforcement documentation
 
-**Residual Risk**: Standard TLS threat model; HTTPS enforcement is deployment responsibility
+**Residual Risk**: Standard TLS threat model; never set `allowInsecureTransport` outside local/LAN lab
 
-**Notes**: Demo mode allows HTTP for local testing. Production deployments must use HTTPS.
+**Notes**: Demo mode and LAN lab may use HTTP. Production deployments must use HTTPS — plain `direct_post` does not encrypt the presentation.
 
 ---
 
@@ -215,7 +244,7 @@
 - `pnpm audit` in CI (fails on high/critical)
 - Dependabot security alerts enabled
 - License allowlist enforcement in CI
-- Minimal dependency surface (only `@openeudi/core` in runtime)
+- Minimal dependency surface (runtime: `@openeudi/core`, `@openeudi/openid4vp` + Apache-2.0/MIT transitive tree; see DEPENDENCY.md)
 - Socket Firewall Free wraps `pnpm install` in CI (known-malware blocking)
 
 **Residual Risk**: Medium - standard supply chain risk
@@ -243,24 +272,28 @@
 
 ## Security by Mode
 
-| Control         | Demo Mode          | Production Mode                 |
-| --------------- | ------------------ | ------------------------------- |
-| VP Verification | Simulated          | Full cryptographic verification |
-| Trust Lists     | None               | EU trust list (when available)  |
-| HTTPS Required  | No (local testing) | Yes (deployment responsibility) |
-| Rate Limiting   | Yes                | Yes                             |
-| Token Security  | Full               | Full                            |
-| Audit Logging   | Console warnings   | Structured logging (planned)    |
+| Control              | Demo Mode (`OpenEudiEngine`) | Production Mode (`Openid4vpEngine`)                          |
+| -------------------- | ---------------------------- | ------------------------------------------------------------ |
+| VP Verification      | Simulated                    | Cryptographic (mdoc DeviceSignature + issuer sig + DCQL)     |
+| Trust Lists          | None                         | `StaticTrustStore` / injectable `TrustStore` (LOTL deferred) |
+| Trust level in token | `none`                       | `anchored` or `none` (tamper-evident)                        |
+| Callback replay      | CAS claim                    | CAS claim                                                    |
+| HTTPS Required       | No (local testing)           | Yes (engine asserts unless `allowInsecureTransport`)         |
+| Response encryption  | n/a                          | Plain `direct_post` today (TLS-only confidentiality)         |
+| Rate Limiting        | Yes                          | Yes                                                          |
+| Token Security       | Full                         | Full                                                         |
+| Audit Logging        | Console warnings             | Structured logging (planned)                                 |
 
 ## Future Hardening
 
-The following controls are on the roadmap for production release:
+The following controls are on the roadmap:
 
-1. **T6**: JWE encryption for wallet callbacks
+1. **T6**: JWE / `direct_post.jwt` for wallet callbacks when wallets support response encryption
 2. **T7**: Referer fallback and optional CSRF tokens
 3. **T9**: Multi-key rotation support (verify with key lookup by `kid`)
 4. **General**: Structured audit logging with session lifecycle events
 5. **General**: Redis-backed session and rate limit stores for multi-instance deployments
+6. **Trust**: `LotlTrustStore` (EU LOTL + national TLs) as a drop-in `TrustStore`
 
 ## Keeping This Document Updated
 
@@ -274,5 +307,5 @@ See [.cursor/rules/threat-model-sync.mdc](.cursor/rules/threat-model-sync.mdc) f
 
 ---
 
-**Last Updated**: 2026-07-08  
-**Version**: 1.1.1 (demo mode)
+**Last Updated**: 2026-07-19  
+**Version**: 1.2.0 (demo + OpenID4VP production engine)

@@ -9,10 +9,10 @@ alwaysApply: false
 
 ## Behavioral Mandates
 
-* **Do Not Assume / Verify First:** Never guess at intent or technical facts. If unsure, look it up — read the code, check docs, run read-only checks — rather than assuming. Only present something as fact once verified.
-* **Ask & Push Back:** Don't hesitate to ask clarifying questions, and challenge or push back on my premises when evidence suggests I may be wrong. I am not always correct — surface disagreements with reasoning instead of complying silently.
-* **Resolve, Then Ask:** Try to answer open questions yourself via research first; escalate to me only what research can't settle or what is a genuine decision for me to make.
-* **Ponytail Sync:** Do not modify code files natively while planning to prevent external compilation conflict loops.
+- **Do Not Assume / Verify First:** Never guess at intent or technical facts. If unsure, look it up — read the code, check docs, run read-only checks — rather than assuming. Only present something as fact once verified.
+- **Ask & Push Back:** Don't hesitate to ask clarifying questions, and challenge or push back on my premises when evidence suggests I may be wrong. I am not always correct — surface disagreements with reasoning instead of complying silently.
+- **Resolve, Then Ask:** Try to answer open questions yourself via research first; escalate to me only what research can't settle or what is a genuine decision for me to make.
+- **Ponytail Sync:** Do not modify code files natively while planning to prevent external compilation conflict loops.
 
 ## Execution Rules
 
@@ -21,4 +21,5 @@ alwaysApply: false
 3. **No Boilerplate:** Do not write complete functions, full file bodies, or generic boilerplate (e.g. standard config blocks, routine setup commands) that will simply be regenerated at execution time.
 4. **Load-Bearing Detail Exception:** You MAY include a minimal concrete snippet ONLY when the specific value IS the decision and is non-obvious or error-prone (e.g. a counterintuitive path, a subtle flag combination, a command whose exact form has a correctness or downtime consequence). Keep it to the fewest lines that carry the signal.
 5. **Disclose Deviations:** If the plan genuinely needs more concreteness than these rules allow (e.g. a different agent will execute it without context), say so explicitly and let me decide rather than silently expanding scope.
-6. **Hard Stop:** Halt and wait for user review immediately after generating the task checklist.
+6. **Checkpoint Large Plans:** For large or multi-step plans, group the steps into ordered checkpoints at natural stopping points — each one ending in a coherent, testable, committable state. Tag each task with its checkpoint and give each checkpoint a one-line "done when / safe to stop" gate. Call out any forced human-in-the-loop stop (e.g. a step needing hardware, credentials, or a manual capture an agent cannot perform) and any dependency gate (a step that must not proceed until an earlier check passes). Skip this for short plans where checkpoints add no value.
+7. **Hard Stop:** Halt and wait for user review immediately after generating the task checklist

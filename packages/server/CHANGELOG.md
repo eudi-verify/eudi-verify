@@ -1,5 +1,11 @@
 # @eudi-verify/server
 
+## 1.2.0
+
+### Minor Changes
+
+- [#35](https://github.com/eudi-verify/eudi-verify/pull/35) [`b3db686`](https://github.com/eudi-verify/eudi-verify/commit/b3db68672afcc4000c8390f2bb6a63fd5045bbd2) Thanks [@mkascel](https://github.com/mkascel)! - wire OpenEudiEngine to @openeudi/core DemoMode
+
 ## 1.1.1
 
 ### Patch Changes

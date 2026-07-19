@@ -2,7 +2,7 @@
 
 **Canonical reference** for what works today vs what is planned. Update this file whenever support changes; keep [README.md](../README.md) in sync.
 
-**Current release:** v1.1.1 — all four packages (`@eudi-verify/server`, `@eudi-verify/client`, `@eudi-verify/embed`, `@eudi-verify/react`) share a single version line. Stable integration API, demo verification engine only. See [Current Limitations](../README.md#current-limitations).
+**Current release:** v1.2.0 — all four packages (`@eudi-verify/server`, `@eudi-verify/client`, `@eudi-verify/embed`, `@eudi-verify/react`) share a single version line. Stable integration API; demo engine by default, optional OpenID4VP production engine for AV age attestation. See [Current Limitations](../README.md#current-limitations).
 
 ---
 
@@ -15,7 +15,7 @@
 | **Node.js 22+**         | ✅ Supported             | `@eudi-verify/server` — mount handlers on Express, Hono, or raw `node:http`                                          |
 | PHP, Python, Java, etc. | ❌ No server library yet | Use the [OpenAPI spec](../openapi/eudi-verifier.yaml) to implement the REST API, or proxy to a Node verifier service |
 
-**Documented integration:** [INTEGRATION.md](./INTEGRATION.md) (Node/Express), [packages/server/README.md](../packages/server/README.md)
+**Documented integration:** [INTEGRATION.md](./INTEGRATION.md) (Node quick start), [integration-architecture.md](./integration-architecture.md) (PHP sidecar / flows), [packages/server/README.md](../packages/server/README.md)
 
 **Reference demo:** [examples/html-vanilla](../examples/html-vanilla/) (plain HTML + shared API server)
 
@@ -29,18 +29,22 @@
 | **Custom UI**  | ✅ Supported    | `@eudi-verify/client` (vanilla TS, zero framework deps)                    |
 | **WordPress**  | 🟡 Manual embed | Add script + element in theme/block; no plugin yet                         |
 
-**Documented integration:** [INTEGRATION.md](./INTEGRATION.md), [packages/embed/README.md](../packages/embed/README.md), [packages/react/README.md](../packages/react/README.md)
+**Documented integration:** [integration-frontend.md](./integration-frontend.md), [packages/embed/README.md](../packages/embed/README.md), [packages/react/README.md](../packages/react/README.md)
 
 **Reference demos:** [examples/html-vanilla](../examples/html-vanilla/) (plain HTML + shared API server), [examples/react](../examples/react/) (React + TypeScript + Vite), [examples/vue](../examples/vue/) (Vue + TypeScript + Vite)
 
-### Packages (demo mode)
+### Packages
 
-| Package               | Status                                                |
-| --------------------- | ----------------------------------------------------- |
-| `@eudi-verify/server` | ✅ Handlers, tokens, rate limiting                    |
-| `@eudi-verify/client` | ✅ API client, state machine, QR                      |
-| `@eudi-verify/embed`  | ✅ `<eudi-verify>` web component (WCAG 2.1 AA target) |
-| `@eudi-verify/react`  | ✅ React wrapper with typed props                     |
+| Package               | Status                                                                 |
+| --------------------- | ---------------------------------------------------------------------- |
+| `@eudi-verify/server` | ✅ Handlers, tokens, rate limiting; demo + OpenID4VP production engine |
+| `@eudi-verify/client` | ✅ API client, state machine, QR                                       |
+| `@eudi-verify/embed`  | ✅ `<eudi-verify>` web component (WCAG 2.1 AA target)                  |
+| `@eudi-verify/react`  | ✅ React wrapper with typed props                                      |
+
+**Demo verification engine:** `OpenEudiEngine` wraps `@openeudi/core` `DemoMode`. Simulated claims are limited to **age over 18** and **country/nationality** (per core 0.8.0). `age_over_21` and full PID attributes (`given_name`, `family_name`, `birth_date`) are not returned in demo mode.
+
+**Production OpenID4VP engine:** `Openid4vpEngine` wraps `@openeudi/openid4vp` — real mdoc verification for `eu.europa.ec.av.1` / `age_over_18` via plain `direct_post` and OpenID4VP 1.0 unencrypted SessionTranscript. Trust: injectable `TrustStore` / `StaticTrustStore`, or double-gated `skipTrustCheck` (lab-only). Interop validated against the EU Age Verification reference wallet (lab). HAIP / full PID / `direct_post.jwt` and LOTL trust remain roadmap.
 
 ### API contract
 
@@ -73,8 +77,10 @@ Svelte, Angular, etc. can embed `<eudi-verify>` without a dedicated package (sam
 
 ### Production verification
 
-- Production HAIP mode (depends on certified EU wallets — expected from **Dec 2026**)
+- Broader HAIP / PID profiles and `direct_post.jwt` (wallet-dependent)
+- `LotlTrustStore` (EU LOTL + national TLs) as drop-in trust anchor
 - Redis-backed session store (interface exists; production guide TBD)
+- Certified national EUDI wallets — expected from **Dec 2026**
 
 ---
 

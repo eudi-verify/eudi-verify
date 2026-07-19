@@ -20,6 +20,7 @@ import type {
   VerifiedClaims,
   SessionStatus,
   VerifierMode,
+  TrustLevel,
 } from "./types.js";
 
 /**
@@ -52,8 +53,21 @@ export interface CreateSessionResult {
 export interface CallbackData {
   /** Session ID extracted from the callback */
   sessionId: string;
-  /** Raw response from wallet (VP token or encrypted JWE) */
-  response: string;
+  /** Raw response from wallet (VP token or encrypted JWE). Used by MockEngine/OpenEudiEngine. */
+  response?: string;
+  /**
+   * Parsed `vp_token` (OpenID4VP §8.1 authorization response). Used by
+   * `Openid4vpEngine`. Structured (JSON.parse'd), not the raw form field.
+   */
+  vpToken?: unknown;
+  /**
+   * Canonical `state` from the callback body. `sessionId` above is always
+   * populated (from `state`, or `session_id` if `state` is absent) for
+   * backward compatibility with engines that key off `sessionId`; `state`
+   * is exposed separately so engines that need the exact wire value (e.g.
+   * to pass into `verifyAuthorizationResponse`) don't have to re-derive it.
+   */
+  state?: string;
 }
 
 /**
@@ -64,6 +78,13 @@ export interface CallbackResult {
   success: boolean;
   /** Verified claims (if success) */
   claims?: VerifiedClaims;
+  /**
+   * Trust level of `claims` — see `TrustLevel`. Engines that don't report
+   * this (e.g. `MockEngine`, demo-mode `OpenEudiEngine`) default to `'none'`
+   * at the handler layer — trust is only ever `'anchored'` when an engine
+   * explicitly says so.
+   */
+  trustLevel?: TrustLevel;
   /** Error message (if !success) */
   error?: string;
   /** New status for the session */
@@ -342,14 +363,11 @@ export class MockEngine implements VerifierEngine {
 }
 
 /**
- * Placeholder for OpenEUDI engine implementation.
+ * Configuration for the OpenEUDI engine.
  *
- * Will wrap @openeudi/core and @openeudi/openid4vp to provide:
- * - Real OpenID4VP authorization requests
- * - Demo mode with simulated wallet responses
- * - Production mode with full crypto verification
- *
- * Implementation deferred to WP2.
+ * Demo mode wraps `@openeudi/core` `DemoMode` (simulated age + country claims).
+ * Production mode (real OpenID4VP crypto via `@openeudi/openid4vp`) is deferred —
+ * `handleCallback` returns not-implemented until that path is wired.
  */
 export interface OpenEudiEngineConfig {
   /** Operating mode */
