@@ -9,7 +9,7 @@ Framework-agnostic verifier kit for the European Digital Identity Wallet.
 
 `eudi-verify` provides a drop-in web component, typed client SDK, optional React wrapper, Node.js server handlers, and an OpenAPI specification — with reference examples for plain HTML, React, and Vue.
 
-**Demo verification** builds on [`@openeudi/core`](https://github.com/openeudi/core) — `OpenEudiEngine` runs its `DemoMode` behind the swappable `VerifierEngine` interface.
+**Demo verification** builds on [`@openeudi/core`](https://github.com/openeudi/core) — `OpenEudiEngine` runs its `DemoMode` behind the swappable `VerifierEngine` interface. **Production OpenID4VP** uses `Openid4vpEngine` (`@openeudi/openid4vp`) for real wallet presentations (see [docs/SUPPORTED.md](docs/SUPPORTED.md)).
 
 **Live demo:** https://demo.eudi-verify.eu/
 
@@ -42,12 +42,12 @@ This project is for developers, product teams, and integrators who want to prepa
 
 ## Packages
 
-| Package                            | Description                                          | Status                                       |
-| ---------------------------------- | ---------------------------------------------------- | -------------------------------------------- |
-| <nobr>`@eudi-verify/server`</nobr> | REST API handlers, token verification, rate limiting | Preview (`OpenEudiEngine` demo), Node.js 22+ |
-| <nobr>`@eudi-verify/embed`</nobr>  | Drop-in `<eudi-verify>` web component                | Preview                                      |
-| <nobr>`@eudi-verify/client`</nobr> | Typed API client, state machine, QR generation       | Preview                                      |
-| <nobr>`@eudi-verify/react`</nobr>  | React wrapper with typed props                       | Preview                                      |
+| Package                            | Description                                          | Status                                         |
+| ---------------------------------- | ---------------------------------------------------- | ---------------------------------------------- |
+| <nobr>`@eudi-verify/server`</nobr> | REST API handlers, token verification, rate limiting | Preview (demo + OpenID4VP engine), Node.js 22+ |
+| <nobr>`@eudi-verify/embed`</nobr>  | Drop-in `<eudi-verify>` web component                | Preview                                        |
+| <nobr>`@eudi-verify/client`</nobr> | Typed API client, state machine, QR generation       | Preview                                        |
+| <nobr>`@eudi-verify/react`</nobr>  | React wrapper with typed props                       | Preview                                        |
 
 See the [integration guide](docs/INTEGRATION.md) for end-to-end setup.
 
@@ -132,7 +132,7 @@ interface VerifierEngine {
 }
 ```
 
-Current: `OpenEudiEngine` wraps `@openeudi/core` `DemoMode` for simulated age and country checks. `MockEngine` remains available for deterministic tests. Production protocol engine support is planned as certified wallets stabilize.
+Current: `OpenEudiEngine` wraps `@openeudi/core` `DemoMode` for simulated age and country checks. `Openid4vpEngine` wraps `@openeudi/openid4vp` for real OpenID4VP verification (AV age attestation / plain `direct_post`; see [docs/SUPPORTED.md](docs/SUPPORTED.md)). `MockEngine` remains available for deterministic tests.
 
 ---
 

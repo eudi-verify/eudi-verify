@@ -1,19 +1,54 @@
 import { createServer, IncomingMessage, ServerResponse } from "node:http";
 import { randomUUID } from "node:crypto";
+import { readFileSync } from "node:fs";
 import {
   createVerifierHandlers,
   OpenEudiEngine,
+  Openid4vpEngine,
   MemoryKVStore,
   clientIpFromHeaders,
   type RequestContext,
   type HandlerResponse,
   type VerifiedClaims,
+  type VerifierEngine,
+  type VerifierMode,
 } from "@eudi-verify/server";
 
 const PORT = parseInt(process.env.PORT || "3000", 10);
 const HOST = process.env.HOST || "127.0.0.1";
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}/api/eudi`;
 const DEMO_RECEIPT_TTL_MS = 5 * 60 * 1000;
+
+/** `EUDI_MODE=production` → Openid4vpEngine; default remains demo OpenEudiEngine. */
+const MODE: VerifierMode =
+  process.env.EUDI_MODE === "production" ? "production" : "demo";
+
+function buildEngine(): VerifierEngine {
+  if (MODE !== "production") {
+    return new OpenEudiEngine({
+      mode: "demo",
+      baseUrl: BASE_URL,
+      demoDelayMs: 1500,
+    });
+  }
+
+  const trustMode = process.env.EUDI_TRUST || "skip"; // skip|static
+  const trustedCertsPath = process.env.EUDI_TRUSTED_CERTS;
+  const trustConfig =
+    trustMode === "static" && trustedCertsPath
+      ? { trustedCerts: [new Uint8Array(readFileSync(trustedCertsPath))] }
+      : ({
+          skipTrustCheck: true,
+          acknowledgeInsecureTrust: true,
+        } as const);
+
+  return new Openid4vpEngine({
+    mode: "production",
+    baseUrl: BASE_URL,
+    allowInsecureTransport: !BASE_URL.startsWith("https://"),
+    ...trustConfig,
+  });
+}
 
 interface DemoReceipt {
   sessionId: string;
@@ -30,20 +65,20 @@ interface DemoReceiptDTO {
   tokenFormat: string;
 }
 
-const engine = new OpenEudiEngine({
-  mode: "demo",
-  baseUrl: BASE_URL,
-  demoDelayMs: 1500,
-});
+const engine = buildEngine();
 const store = new MemoryKVStore();
 const handlers = createVerifierHandlers({
   engine,
   store,
   baseUrl: BASE_URL,
-  mode: "demo",
+  mode: MODE,
   tokenSecret: process.env.TOKEN_SECRET || "demo-secret-change-in-production",
   rateLimit: { maxRequests: 10, windowMs: 60_000 },
 });
+
+function modeHeader(): Record<string, string> {
+  return { "X-Eudi-Mode": MODE };
+}
 
 function demoReceiptKey(rid: string): string {
   return `demo-receipt:${rid}`;
@@ -148,7 +183,7 @@ const server = createServer(async (req, res) => {
       }
       res.writeHead(200, {
         "Content-Type": "application/json",
-        "X-Eudi-Mode": "demo",
+        ...modeHeader(),
       });
       return res.end(JSON.stringify(receiptToDTO(receipt)));
     }
@@ -197,7 +232,7 @@ const server = createServer(async (req, res) => {
       );
       res.writeHead(200, {
         "Content-Type": "application/json",
-        "X-Eudi-Mode": "demo",
+        ...modeHeader(),
       });
       return res.end(JSON.stringify(result.body));
     }
@@ -219,7 +254,7 @@ const server = createServer(async (req, res) => {
       if (req.method === "HEAD") {
         res.writeHead(200, {
           "Content-Type": "application/json",
-          "X-Eudi-Mode": "demo",
+          ...modeHeader(),
         });
         return res.end();
       }
@@ -338,7 +373,18 @@ server.listen(PORT, HOST, () => {
     `\n🔵 EUDI Verify API Server running at http://${HOST}:${PORT}\n`,
   );
   console.log("Frontend examples should proxy /api/* to this server.\n");
-  console.warn(
-    "[!] DEMO MODE - Credentials are simulated. Do not use in production.\n",
-  );
+  if (MODE === "demo") {
+    console.warn(
+      "[!] DEMO MODE - Credentials are simulated. Do not use in production.\n",
+    );
+  } else {
+    const trust = process.env.EUDI_TRUST || "skip";
+    console.log(`[+] PRODUCTION MODE (Openid4vpEngine), EUDI_TRUST=${trust}`);
+    console.log(`    BASE_URL=${BASE_URL}`);
+    if (trust === "skip") {
+      console.warn(
+        "[!] EUDI_TRUST=skip — issuer trust anchoring DISABLED (lab-only).\n",
+      );
+    }
+  }
 });

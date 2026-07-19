@@ -183,7 +183,12 @@ paths:
       summary: Wallet callback endpoint (production)
       description: |
         Receives the Verifiable Presentation from the EUDI Wallet.
-        In production, this is an encrypted JWE (`direct_post.jwt`).
+
+        The `Openid4vpEngine` production path uses plain `direct_post`
+        (`vp_token` + `state`, unencrypted — the AV wallet's free-team
+        build has no response-encryption capability, so TLS is the only
+        confidentiality layer in transit; see THREAT_MODEL.md). Demo mode
+        (`OpenEudiEngine`/`MockEngine`) uses the legacy `response` field.
 
         **Not called by integrators** — this is the `response_uri` in the
         OpenID4VP authorization request.
@@ -196,8 +201,19 @@ paths:
               properties:
                 response:
                   type: string
-                  description: Encrypted VP (JWE) or plain VP token in demo mode
-              required: [response]
+                  description: |
+                    Demo mode only: encrypted VP (JWE) or plain VP token.
+                vp_token:
+                  type: string
+                  description: |
+                    Production (`Openid4vpEngine`) OpenID4VP §8.1 response:
+                    JSON-encoded object mapping DCQL credential query IDs
+                    to an array of presentations.
+                state:
+                  type: string
+                  description: |
+                    Canonical session identifier for the production path —
+                    authoritative over any `session_id` field also present.
       responses:
         "200":
           description: VP processed
@@ -282,6 +298,7 @@ components:
       enum:
         - pending
         - waiting_for_wallet
+        - processing
         - verified
         - rejected
         - expired
@@ -291,11 +308,28 @@ components:
         Session lifecycle states:
         - `pending`: Session created, waiting for wallet scan
         - `waiting_for_wallet`: QR scanned, waiting for user approval in wallet
+        - `processing`: Callback claimed; cryptographic verification in
+          flight. A session in this state cannot be re-claimed by another
+          callback — see the replay guard in THREAT_MODEL.md.
         - `verified`: User approved, claims verified successfully
         - `rejected`: User rejected the request in wallet
         - `expired`: Session TTL exceeded (default 5 minutes)
         - `cancelled`: Cancelled via API
         - `error`: Verification failed (invalid VP, crypto error, etc.)
+
+    TrustLevel:
+      type: string
+      enum:
+        - anchored
+        - none
+      description: |
+        Trust level of the associated claims — see THREAT_MODEL.md.
+        - `anchored`: the credential's issuer chain was validated against
+          a configured trust store (real trust anchoring).
+        - `none`: issuer trust anchoring was explicitly skipped
+          (`skipTrustCheck`, lab-only). The credential's own signature,
+          device binding, DCQL match, and nonce were still verified — only
+          "who issued this" was not checked.
 
     Session:
       type: object
@@ -321,6 +355,8 @@ components:
             Format: `eudi_v1.<base64url-payload>.<hmac>`
         claims:
           $ref: "#/components/schemas/VerifiedClaims"
+        trustLevel:
+          $ref: "#/components/schemas/TrustLevel"
         error:
           type: string
           description: Error message when status is `error`
@@ -404,6 +440,8 @@ components:
           description: Whether the token is valid
         claims:
           $ref: "#/components/schemas/VerifiedClaims"
+        trustLevel:
+          $ref: "#/components/schemas/TrustLevel"
         sessionId:
           type: string
           format: uuid

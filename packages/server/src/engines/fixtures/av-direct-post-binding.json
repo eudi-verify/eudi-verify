@@ -1,0 +1,13 @@
+{
+  "description": "AV iOS wallet plain direct_post DeviceResponse (eu.europa.ec.av.1 / age_over_18). Captured 2026-07-19 against Openid4vpEngine; acceptance-test issuer only (no personal name/DOB). Binding fields recovered from session qrUrl.",
+  "state": "0df7b090-cdc1-4dff-a9fc-083c44df3106",
+  "request": {
+    "age_over_18": true
+  },
+  "binding": {
+    "clientId": "redirect_uri:http://192.168.178.116:3001/api/eudi/callback",
+    "responseUri": "http://192.168.178.116:3001/api/eudi/callback",
+    "nonce": "ae010986c7724e227a6f3c5a09eff2d6"
+  },
+  "deviceResponseFile": "av-direct-post-device-response.b64url"
+}

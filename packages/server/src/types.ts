@@ -38,17 +38,30 @@ export interface VerificationRequest {
 /**
  * Session lifecycle states.
  *
- * Flow: pending → waiting_for_wallet → verified|rejected|expired|error
+ * Flow: pending → waiting_for_wallet → processing → verified|rejected|expired|error
  *       ↳ cancelled (from any non-terminal state)
  */
 export type SessionStatus =
   | "pending" // Session created, waiting for wallet scan
   | "waiting_for_wallet" // QR scanned, waiting for user approval
+  | "processing" // Callback claimed; crypto verification in flight (non-terminal, but not re-claimable)
   | "verified" // User approved, claims verified successfully
   | "rejected" // User rejected the request in wallet
   | "expired" // Session TTL exceeded
   | "cancelled" // Cancelled via API
   | "error"; // Verification failed
+
+/**
+ * Trust level of a verified claim — see THREAT_MODEL.md.
+ *
+ * - `'anchored'`: the credential's issuer chain was validated against a
+ *   configured `TrustStore` (real trust anchoring).
+ * - `'none'`: issuer trust anchoring was explicitly skipped
+ *   (`skipTrustCheck`). The credential's own signature, device binding,
+ *   DCQL match, and nonce were still verified — only "who issued this" was
+ *   not checked. Lab-only; never expected in a production token.
+ */
+export type TrustLevel = "anchored" | "none";
 
 /**
  * Terminal states that cannot transition further.
@@ -100,6 +113,8 @@ export interface Session {
   token?: string;
   /** Verified claims (present when status is 'verified') */
   claims?: VerifiedClaims;
+  /** Trust level of `claims` — see `TrustLevel`. Present when status is 'verified'. */
+  trustLevel?: TrustLevel;
   /** Error message (present when status is 'error') */
   error?: string;
   /** Session creation timestamp */
@@ -119,6 +134,8 @@ export interface SessionDTO {
   qrUrl?: string;
   token?: string;
   claims?: VerifiedClaims;
+  /** Trust level of `claims` — see `TrustLevel`. Present when status is 'verified'. */
+  trustLevel?: TrustLevel;
   error?: string;
   createdAt: string;
   expiresAt: string;
@@ -138,6 +155,7 @@ export function sessionToDTO(session: Session): SessionDTO {
   if (session.qrUrl) dto.qrUrl = session.qrUrl;
   if (session.token) dto.token = session.token;
   if (session.claims) dto.claims = session.claims;
+  if (session.trustLevel) dto.trustLevel = session.trustLevel;
   if (session.error) dto.error = session.error;
 
   return dto;
@@ -159,8 +177,10 @@ export interface VerificationTokenPayload {
   kid: string;
   /** Expiration timestamp (Unix seconds) */
   exp: number;
-  /** Hash of the verified claims */
+  /** Hash of the verified claims (includes trustLevel — see hashClaims) */
   hash: string;
+  /** Trust level of the claims this token vouches for — see `TrustLevel`. */
+  trustLevel: TrustLevel;
 }
 
 /**
@@ -199,6 +219,8 @@ export interface VerifyTokenInput {
 export interface VerifyTokenResult {
   valid: boolean;
   claims?: VerifiedClaims;
+  /** Trust level of `claims` — see `TrustLevel`. Present when valid is true. */
+  trustLevel?: TrustLevel;
   /** Session the token was minted for (present when valid is true) */
   sessionId?: string;
   error?:

@@ -55,6 +55,29 @@ export interface IKVStore {
   getAndDelete<T>(key: string): Promise<T | undefined>;
 
   /**
+   * Atomically read-check-write: read the current value, and if `predicate`
+   * accepts it, write `next` in the same atomic step. No other writer's
+   * mutation can be observed between the check and the write.
+   *
+   * Essential for claiming a session exactly once (e.g. `pending` →
+   * `processing`) to close TOCTOU replay windows around callback
+   * verification — see THREAT_MODEL.md. Distributed implementations
+   * (Redis, Postgres) MUST implement this via a real transaction primitive
+   * (e.g. Redis `WATCH`/`MULTI` or a SQL `UPDATE ... WHERE` + row lock) —
+   * a naive get-then-set reintroduces the race this method exists to close.
+   *
+   * @param predicate - Receives the current value (`undefined` if absent);
+   *   return `true` to proceed with the write, `false` to abort.
+   * @returns `true` if the write happened, `false` if the predicate rejected
+   */
+  compareAndSet<T>(
+    key: string,
+    predicate: (current: T | undefined) => boolean,
+    next: T,
+    ttlMs?: number,
+  ): Promise<boolean>;
+
+  /**
    * Clear all keys (useful for testing).
    */
   clear(): Promise<void>;
@@ -151,6 +174,30 @@ export class MemoryKVStore implements IKVStore {
       this.store.delete(key);
     }
     return value;
+  }
+
+  async compareAndSet<T>(
+    key: string,
+    predicate: (current: T | undefined) => boolean,
+    next: T,
+    ttlMs?: number,
+  ): Promise<boolean> {
+    // Deliberately synchronous (no `await` before the write) so the
+    // read-check-write is atomic within a single microtask — two
+    // concurrent callers cannot interleave between the check and the set.
+    const entry = this.store.get(key) as MemoryEntry<T> | undefined;
+    const current =
+      entry && (entry.expiresAt === null || Date.now() <= entry.expiresAt)
+        ? entry.value
+        : undefined;
+
+    if (!predicate(current)) {
+      return false;
+    }
+
+    const expiresAt = ttlMs ? Date.now() + ttlMs : null;
+    this.store.set(key, { value: next, expiresAt });
+    return true;
   }
 
   async clear(): Promise<void> {

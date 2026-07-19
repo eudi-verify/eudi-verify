@@ -19,7 +19,25 @@ Example folders have no `build` script — only `packages/*` are built at the ro
 pnpm start
 ```
 
-Runs on http://localhost:3000. All `/api/*` endpoints are available.
+Runs on http://localhost:3000 in **demo** mode (`OpenEudiEngine`). All `/api/*` endpoints are available.
+
+### Production OpenID4VP (lab)
+
+```bash
+EUDI_MODE=production \
+HOST=0.0.0.0 \
+BASE_URL=http://192.168.x.x:3000/api/eudi \
+EUDI_TRUST=skip \
+TOKEN_SECRET=change-me-to-at-least-32-characters \
+pnpm start
+```
+
+- `EUDI_MODE=production` selects `Openid4vpEngine` (`@openeudi/openid4vp`)
+- `HOST=0.0.0.0` required when `BASE_URL` is a LAN IP — default `127.0.0.1` makes the phone unable to POST `/callback`
+- `BASE_URL` must be reachable from the wallet (LAN IP for phone QR flows)
+- `EUDI_TRUST=skip` is lab-only (no issuer anchoring); use `EUDI_TRUST=static` + `EUDI_TRUSTED_CERTS=/path/to/ca.der` for anchored trust
+- Dedicated QR/capture helper: `pnpm spike:wallet` (see `wallet-spike-server.ts`)
+- Frontend examples (`html-vanilla`, etc.) stay demo-branded by default; point them at this API for a real-wallet lab run
 
 ## Usage with Frontend Examples
 

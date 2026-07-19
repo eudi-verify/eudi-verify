@@ -17,6 +17,7 @@ import type {
   VerifiedClaims,
   VerifyTokenResult,
   VerificationTokenPayload,
+  TrustLevel,
 } from "./types.js";
 import { TOKEN_VERSION, DEFAULT_TOKEN_TTL_MS } from "./types.js";
 
@@ -40,6 +41,7 @@ export interface TokenServiceConfig {
 interface StoredTokenData {
   sessionId: string;
   claims: VerifiedClaims;
+  trustLevel: TrustLevel;
   createdAt: number;
 }
 
@@ -51,9 +53,15 @@ export interface TokenService {
    * Mint a new verification token.
    * @param sessionId - Session this token is bound to
    * @param claims - Verified claims to include in the token
+   * @param trustLevel - Trust level the claims were verified under (folded
+   *   into the tamper-evident claims hash — see `hashClaims`)
    * @returns Opaque token string
    */
-  mint(sessionId: string, claims: VerifiedClaims): Promise<string>;
+  mint(
+    sessionId: string,
+    claims: VerifiedClaims,
+    trustLevel: TrustLevel,
+  ): Promise<string>;
 
   /**
    * Verify a token and consume it (single-use).
@@ -74,16 +82,21 @@ export function createTokenService(config: TokenServiceConfig): TokenService {
   }
 
   return {
-    async mint(sessionId: string, claims: VerifiedClaims): Promise<string> {
+    async mint(
+      sessionId: string,
+      claims: VerifiedClaims,
+      trustLevel: TrustLevel,
+    ): Promise<string> {
       const tokenId = randomUUID();
       const exp = Math.floor((Date.now() + ttlMs) / 1000);
-      const claimsHash = hashClaims(claims, secret);
+      const claimsHash = hashClaims(claims, trustLevel, secret);
 
       const payload: VerificationTokenPayload = {
         sid: sessionId,
         kid: keyId,
         exp,
         hash: claimsHash,
+        trustLevel,
       };
 
       const payloadB64 = base64UrlEncode(JSON.stringify(payload));
@@ -93,6 +106,7 @@ export function createTokenService(config: TokenServiceConfig): TokenService {
       const tokenData: StoredTokenData = {
         sessionId,
         claims,
+        trustLevel,
         createdAt: Date.now(),
       };
       await store.set(tokenKey(tokenId), tokenData, ttlMs);
@@ -116,7 +130,13 @@ export function createTokenService(config: TokenServiceConfig): TokenService {
         return { valid: false, error: "invalid_token" };
       }
 
-      if (!payload.tid || !payload.sid || !payload.exp || !payload.hash) {
+      if (
+        !payload.tid ||
+        !payload.sid ||
+        !payload.exp ||
+        !payload.hash ||
+        !payload.trustLevel
+      ) {
         return { valid: false, error: "invalid_token" };
       }
 
@@ -147,14 +167,27 @@ export function createTokenService(config: TokenServiceConfig): TokenService {
         return { valid: false, error: "invalid_token" };
       }
 
-      const expectedHash = hashClaims(storedData.claims, secret);
+      // trustLevel is folded into the hash input so a tampered payload
+      // trustLevel (e.g. 'none' rewritten to 'anchored') fails here even if
+      // the attacker also edits payload.trustLevel to match — the stored
+      // (server-side, un-tamperable) trustLevel is what's actually hashed.
+      const expectedHash = hashClaims(
+        storedData.claims,
+        storedData.trustLevel,
+        secret,
+      );
       if (payload.hash !== expectedHash) {
+        return { valid: false, error: "invalid_token" };
+      }
+
+      if (storedData.trustLevel !== payload.trustLevel) {
         return { valid: false, error: "invalid_token" };
       }
 
       return {
         valid: true,
         claims: storedData.claims,
+        trustLevel: storedData.trustLevel,
         sessionId: storedData.sessionId,
       };
     },
@@ -209,12 +242,19 @@ function constantTimeCompare(a: string, b: string): boolean {
 }
 
 /**
- * Hash claims for integrity verification using the server secret.
+ * Hash claims + trust level for integrity verification using the server
+ * secret. Folding `trustLevel` in here (rather than leaving it as a bare
+ * sibling field) makes it tamper-evident: a `'none'` claim cannot be
+ * rewritten to `'anchored'` without also forging this HMAC.
  */
-function hashClaims(claims: VerifiedClaims, secret: string): string {
+function hashClaims(
+  claims: VerifiedClaims,
+  trustLevel: TrustLevel,
+  secret: string,
+): string {
   const sorted = JSON.stringify(claims, Object.keys(claims).sort());
   return createHmac("sha256", secret)
-    .update(sorted)
+    .update(`${trustLevel}:${sorted}`)
     .digest("base64url")
     .slice(0, 16);
 }

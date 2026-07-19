@@ -417,7 +417,32 @@ export function createVerifierHandlers(
         };
       }
 
-      if (isTerminalStatus(session.status)) {
+      if (isTerminalStatus(session.status) || session.status === "processing") {
+        // Already finalized, or a concurrent callback already claimed this
+        // session — respond idempotently WITHOUT re-running crypto. This is
+        // the replay guard: closes the TOCTOU window a naive get-then-set
+        // would leave open around the `engine.handleCallback` await below.
+        // See THREAT_MODEL.md.
+        return {
+          status: 200,
+          headers: modeHeader(),
+          body: { status: "ok" },
+        };
+      }
+
+      const claimed = await store.compareAndSet<Session>(
+        sessionKey(session.id),
+        (current) =>
+          current !== undefined &&
+          !isTerminalStatus(current.status) &&
+          current.status !== "processing",
+        { ...session, status: "processing" },
+        sessionTtlMs,
+      );
+
+      if (!claimed) {
+        // Lost the race to another callback for the same session (retry,
+        // replay, or genuine race) — do not invoke the engine.
         return {
           status: 200,
           headers: modeHeader(),
@@ -427,16 +452,25 @@ export function createVerifierHandlers(
 
       try {
         const result = await engine.handleCallback(callbackData, session);
+        // Trust is only ever 'anchored' when the engine explicitly reports
+        // it; engines that don't report a trust decision (MockEngine,
+        // demo-mode OpenEudiEngine) default to 'none'.
+        const trustLevel = result.trustLevel ?? "none";
 
         const updated: Session = {
           ...session,
           status: result.status,
           claims: result.claims,
+          trustLevel: result.success ? trustLevel : undefined,
           error: result.error,
         };
 
         if (result.success && result.claims) {
-          const token = await tokenService.mint(session.id, result.claims);
+          const token = await tokenService.mint(
+            session.id,
+            result.claims,
+            trustLevel,
+          );
           updated.token = token;
         }
 
