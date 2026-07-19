@@ -5,7 +5,7 @@ function esc(s) {
     .replace(/</g, "&lt;");
 }
 
-/** Inline caret toggle — lazy-fetches /api/* on first open. */
+/** Inline caret toggle: lazy-fetches /api/* on first open. */
 export function inspectLink(
   url,
   label = "inspect",

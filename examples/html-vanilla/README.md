@@ -12,13 +12,13 @@ Uses the `<eudi-verify>` web component with no framework.
 pnpm install && pnpm build
 ```
 
-**Terminal 1 — Start API server:**
+**Terminal 1: Start API server:**
 
 ```bash
 cd examples/server && pnpm start
 ```
 
-**Terminal 2 — Start static server** (new terminal, repo root):
+**Terminal 2: Start static server** (new terminal, repo root):
 
 ```bash
 cd examples/html-vanilla && pnpm start
@@ -28,18 +28,18 @@ Open http://localhost:3001
 
 ## What This Demonstrates
 
-1. **Widget Integration** — Drop-in `<eudi-verify>` custom element
-2. **Server-Side Verification** — Token validation via `/tokens/verify`
-3. **Captcha Pattern** — Checkout gated on verified identity
-4. **Shared Backend** — Same API server as the React example
+1. **Widget Integration**: Drop-in `<eudi-verify>` custom element
+2. **Server-Side Verification**: Token validation via `/tokens/verify`
+3. **Captcha Pattern**: Checkout gated on verified identity
+4. **Shared Backend**: Same API server as the React example
 
 ## Architecture
 
-Local development uses **two processes** — the same pattern as production (API and frontend separate):
+Local development uses **two processes**: the same pattern as production (API and frontend separate):
 
 ```
-Terminal 1 — examples/server/     http://localhost:3000/api/*
-Terminal 2 — examples/html-vanilla/  http://localhost:3001 (static + /api proxy)
+Terminal 1: examples/server/     http://localhost:3000/api/*
+Terminal 2: examples/html-vanilla/  http://localhost:3001 (static + /api proxy)
 ```
 
 ```
@@ -51,7 +51,7 @@ Terminal 2 — examples/html-vanilla/  http://localhost:3001 (static + /api prox
 └─────────────────────────┘     └──────────────────────────────┘
 ```
 
-**What's real:** The API server uses actual `@eudi-verify/server` handlers — session lifecycle, HMAC token minting, single-use token verification, and rate limiting all work exactly as they would in production.
+**What's real:** The API server uses actual `@eudi-verify/server` handlers – session lifecycle, HMAC token minting, single-use token verification, and rate limiting all work exactly as they would in production.
 
 **What's simulated:** The wallet. When you click "Open demo wallet", it opens a browser tab that mimics what a real EUDI Wallet app would do.
 
@@ -89,7 +89,7 @@ docker run -p 3000:3001 -e TOKEN_SECRET=your-secret-here eudi-verify-demo
 1. Start both servers (see Quick Start).
 2. Open http://localhost:3001/verify and click **Start Verification**.
 3. When the QR appears, click **Open demo wallet →**.
-4. In the demo wallet tab, click **Approve**. Return to the verification tab — it should redirect to `/success?rid=…`.
+4. In the demo wallet tab, click **Approve**. Return to the verification tab: it should redirect to `/success?rid=…`.
 
 ### Curl (wallet callback)
 
@@ -101,4 +101,11 @@ curl -X POST http://localhost:3000/api/eudi/callback \
 
 ## Demo Mode Warning
 
-This demo runs in demo mode with simulated credentials. For production deployment, see [docs/deploy-eu.md](../../docs/deploy-eu.md).
+This site and the default local API run in **demo mode** (simulated wallet).
+Visitors without a wallet use **Open demo wallet**. Integrators who have a
+lab wallet can run `examples/server` with `EUDI_MODE=production` against a
+real presentation: see [docs/SUPPORTED.md](../../docs/SUPPORTED.md) and
+[examples/server/README.md](../server/README.md).
+
+For production deployment of the demo site, see
+[docs/deploy-eu.md](../../docs/deploy-eu.md).

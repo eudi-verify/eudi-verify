@@ -247,7 +247,8 @@ onMounted(() => {
 <template>
   <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="demo-banner" role="status">
-    Simulated verification - credentials are fake. For local testing only.
+    Demo mode: credentials are simulated. Use the demo wallet below (or a real
+    wallet only when the API is run with EUDI_MODE=production locally).
   </div>
 
   <div class="page-shell">
@@ -273,8 +274,9 @@ onMounted(() => {
         <span class="page-eyebrow">Captcha-style gate</span>
         <h1>Age Verification Required</h1>
         <p class="lead">
-          This content requires age verification. Confirm you are over 18 using
-          your EU Digital Identity Wallet.
+          This content requires age verification. Confirm you are over 18 with
+          the demo wallet (or a real EUDI Wallet in a local production lab
+          setup).
         </p>
 
         <div

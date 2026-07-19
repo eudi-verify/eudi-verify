@@ -63,13 +63,13 @@ async function loadReceipt() {
   log(`→ ${res.status}`);
 
   document.getElementById("receipt-session-id").textContent =
-    receipt.sessionId || "—";
+    receipt.sessionId || "–";
   document.getElementById("receipt-verified-at").textContent =
-    receipt.verifiedAt ? new Date(receipt.verifiedAt).toLocaleString() : "—";
+    receipt.verifiedAt ? new Date(receipt.verifiedAt).toLocaleString() : "–";
   document.getElementById("receipt-token-format").textContent =
     receipt.tokenFormat || "eudi_v1.<payload>.<hmac>";
   document.getElementById("receipt-token-preview").textContent =
-    receipt.tokenPreview || "—";
+    receipt.tokenPreview || "–";
   document.getElementById("receipt-claims").textContent = JSON.stringify(
     receipt.claims ?? {},
     null,

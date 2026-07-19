@@ -1,0 +1,38 @@
+---
+description: Human-sounding prose — no em-dashes; prefer colon; do not rewrite wording unasked
+alwaysApply: true
+---
+
+# Copy voice (demo, docs, UI, READMEs)
+
+When writing or editing user-facing text, keep existing wording unless the user asks for a rewrite. Prefer punctuation and small fixes over "de-AI" paraphrasing.
+
+## Punctuation
+
+- **Never use an em-dash** (`—`, U+2014).
+- **Prefer a colon** for asides and explanations:
+  - `Demo mode: credentials are simulated`
+  - `Your server validates tokens: the browser never holds trusted identity data`
+- **Use an en-dash** (`–`, U+2013) only when:
+  - a colon already appears in that clause/line (`What's real: … handlers – session lifecycle`)
+  - title / label separators (`EUDI Verify – Age verification`)
+  - empty placeholders (`–`)
+  - contrastive breaks (`demo wallet – or, in a local lab`)
+  - log-line separators (`GET /sessions/… – inspect`)
+
+ASCII hyphen-minus (`-`) is fine in code, flags, and compound words (`single-use`).
+
+## Voice
+
+Do not inflate or "polish" copy into generic AI marketing. Avoid stock tells unless they are already in the file and you were not asked to change tone:
+
+- stacked intensifiers (`seamless`, `robust`, `cutting-edge`, `effortlessly`)
+- empty urgency (`in minutes`, `unlock`, `supercharge`, `empower`)
+- throat-clearing (`In today's landscape…`, `It's important to note…`)
+- fake enthusiasm or title-case CTAs that the surrounding UI does not use
+
+Match the register of nearby strings. Short and concrete beats clever.
+
+## Scope
+
+Applies to demo pages, widget strings, package/README prose, `docs/`, error/help text, and commit/PR summaries you draft. Code identifiers and protocol field names are unchanged.

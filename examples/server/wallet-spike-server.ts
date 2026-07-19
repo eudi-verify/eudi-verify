@@ -29,7 +29,7 @@ import {
 const PORT = parseInt(process.env.PORT || "3001", 10);
 const HOST = process.env.HOST || "0.0.0.0";
 
-// Must be reachable from the phone — your machine's LAN IP, not localhost.
+// Must be reachable from the phone: your machine's LAN IP, not localhost.
 const BASE_URL = process.env.BASE_URL;
 if (!BASE_URL) {
   console.error(

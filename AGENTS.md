@@ -38,12 +38,13 @@ Framework-agnostic EUDI Wallet verifier kit. See [README.md](README.md) for over
 | `docs-boundary.mdc`     | Always — public vs private docs (canonical)                                   |
 | `public-docs.mdc`       | Always — supported vs roadmap wording (within public docs)                    |
 | `docs-sync.mdc`         | When editing packages/docs (globs)                                            |
-| `plan-mode.mdc`         | Manual `@plan-mode` — structured planning                                     |
+| `plan-mode.mdc`         | Manual `@plan-mode` – structured planning                                     |
 | `plan-sync.mdc`         | WP / roadmap status changes                                                   |
 | `threat-model-sync.mdc` | Security control changes                                                      |
 | `commit-style.mdc`      | Commits                                                                       |
-| `ponytail.mdc`          | Gitignored — minimal-diff discipline (maintainer machine; also in User Rules) |
-| `maintainer-local.mdc`  | Gitignored — project-lead deploy hosts, backup, private docs workflow         |
+| `copy-voice.mdc`        | Demo/docs/UI prose: no em-dash; prefer colon; don't rewrite wording unasked   |
+| `ponytail.mdc`          | Gitignored – minimal-diff discipline (maintainer machine; also in User Rules) |
+| `maintainer-local.mdc`  | Gitignored – project-lead deploy hosts, backup, private docs workflow         |
 
 ## Documentation maintenance
 

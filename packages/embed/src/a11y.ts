@@ -27,7 +27,7 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
  * Create a focus trap within a container.
  * Returns a cleanup function to remove the trap.
  *
- * ponytail: not used for the default inline widget — trapping focus would block
+ * ponytail: not used for the default inline widget – trapping focus would block
  * tabbing to surrounding page content (demo links, logs). Reserved for future
  * modal/dialog embedding.
  */

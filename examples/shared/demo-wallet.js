@@ -163,15 +163,15 @@ async function loadSession() {
   document.getElementById("session-status").textContent = session.status;
   document.getElementById("session-created").textContent = session.createdAt
     ? new Date(session.createdAt).toLocaleString()
-    : "—";
+    : "–";
   document.getElementById("session-expires").textContent = session.expiresAt
     ? new Date(session.expiresAt).toLocaleString()
-    : "—";
+    : "–";
 
   const requestEl = document.getElementById("session-request");
   requestEl.textContent = "Loading…";
   const fromAuth = await loadRequestedClaims(session.id);
-  requestEl.textContent = fromAuth ?? formatClaims(session.request) ?? "—";
+  requestEl.textContent = fromAuth ?? formatClaims(session.request) ?? "–";
 
   if (TERMINAL.has(session.status)) {
     actionsEl.hidden = true;
@@ -225,7 +225,7 @@ async function approve() {
   doneEl.hidden = false;
   document.getElementById("wallet-done-title").textContent = "Credential sent";
   document.getElementById("wallet-done-text").textContent =
-    "Return to your verification tab — it should update automatically within a few seconds.";
+    "Return to your verification tab: it should update automatically within a few seconds.";
   document.getElementById("session-status").textContent =
     "verified (pending poll)";
 }
@@ -262,7 +262,7 @@ async function decline() {
   doneEl.hidden = false;
   document.getElementById("wallet-done-title").textContent = "Request declined";
   document.getElementById("wallet-done-text").textContent =
-    "Return to your verification tab — the session was cancelled.";
+    "Return to your verification tab: the session was cancelled.";
   document.getElementById("session-status").textContent = "cancelled";
 }
 

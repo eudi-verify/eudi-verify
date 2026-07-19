@@ -223,7 +223,8 @@ function App() {
         Skip to main content
       </a>
       <div className="demo-banner" role="status">
-        Simulated verification — credentials are fake. For local testing only.
+        Demo mode: credentials are simulated. Use the demo wallet below (or a
+        real wallet only when the API is run with EUDI_MODE=production locally).
       </div>
 
       <div className="page-shell">
@@ -252,7 +253,8 @@ function App() {
             <h1>Age Verification Required</h1>
             <p className="lead">
               This content requires age verification. Confirm you are over 18
-              using your EU Digital Identity Wallet.
+              with the demo wallet (or a real EUDI Wallet in a local production
+              lab setup).
             </p>
 
             {errorMessage && (
@@ -322,7 +324,7 @@ function App() {
                 <summary>Developer: simulate wallet with curl</summary>
                 <div className="curl-hint__body">
                   <p className="curl-hint-note">
-                    Same effect as the demo wallet Approve button — useful for
+                    Same effect as the demo wallet Approve button: useful for
                     CI, scripting, and debugging.
                   </p>
                   <pre className="replay-result">{curlCommand}</pre>

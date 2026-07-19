@@ -10,12 +10,12 @@
     />
     <link rel="canonical" href="https://demo.eudi-verify.eu/" />
     <link rel="icon" href="/eu-emblem.svg" type="image/svg+xml" />
-    <title>EUDI Verify — EU Digital Identity Verification Demo</title>
+    <title>EUDI Verify – EU Digital Identity Verification Demo</title>
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://demo.eudi-verify.eu/" />
     <meta
       property="og:title"
-      content="EUDI Verify — EU Digital Identity Verification"
+      content="EUDI Verify – EU Digital Identity Verification"
     />
     <meta property="og:site_name" content="EUDI Verify" />
     <meta
@@ -36,7 +36,7 @@
     />
     <meta
       name="twitter:title"
-      content="EUDI Verify — EU Digital Identity Verification"
+      content="EUDI Verify – EU Digital Identity Verification"
     />
     <meta
       name="twitter:description"
@@ -69,22 +69,32 @@
       <main id="main-content" class="page-main" tabindex="-1">
         <div class="page-panel">
           <section class="hero">
-            <span class="page-eyebrow">Open source · Apache-2.0</span>
-            <h1>EUDI Verify</h1>
-            <p class="lead">
-              Open-source EU Digital Identity verification. Drop the
-              <code>&lt;eudi-verify&gt;</code> widget into any website. Your
-              server validates tokens — the browser never holds trusted identity
-              data.
-            </p>
-
-            <div class="hero-actions">
+            <div class="hero-copy">
+              <span class="page-eyebrow">Open source · Apache-2.0</span>
+              <h1>EUDI Verify</h1>
+              <p class="lead">
+                Open-source EU Digital Identity verification. Drop the
+                <code>&lt;eudi-verify&gt;</code> widget into any website. Your
+                server validates tokens: the browser never holds trusted
+                identity data.
+              </p>
               <a href="/verify" class="btn btn--lg"
                 >Try Age Verification Demo</a
               >
               <p class="hero-note">
-                EU Digital Identity Wallets launch December 2026. This demo
-                simulates the verification flow — no real credentials involved.
+                EU Digital Identity Wallets launch December 2026. This site runs
+                in demo mode (simulated wallet): no real credentials involved.
+                Integrators can point the same stack at a real wallet locally;
+                see
+                <a
+                  href="https://github.com/eudi-verify/eudi-verify/blob/main/docs/SUPPORTED.md"
+                  >docs/SUPPORTED.md</a
+                >
+                and
+                <a
+                  href="https://github.com/eudi-verify/eudi-verify/tree/main/examples/server"
+                  >examples/server</a
+                >.
               </p>
             </div>
           </section>
@@ -97,8 +107,8 @@
                 <div>
                   <span class="flow-step__title">Scan QR code</span>
                   <p class="flow-step__text">
-                    User scans with their EUDI Wallet app — or opens the
-                    built-in demo wallet.
+                    Open the built-in demo wallet – or, in a local lab setup,
+                    scan with a real EUDI Wallet app.
                   </p>
                 </div>
               </li>
@@ -116,7 +126,7 @@
                 <div>
                   <span class="flow-step__title">Server verification</span>
                   <p class="flow-step__text">
-                    Your backend validates the HMAC token — no client-side trust
+                    Your backend validates the HMAC token: no client-side trust
                     required.
                   </p>
                 </div>

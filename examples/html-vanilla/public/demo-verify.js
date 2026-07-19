@@ -115,7 +115,7 @@ widget.addEventListener("state-change", (e) => {
         updateDemoWalletLink(state.sessionId);
         updateCurlHint(state.sessionId);
         hasActiveSession = true;
-        // Server stays on pending (showQR) until callback — not waiting_for_wallet
+        // Server stays on pending (showQR) until callback: not waiting_for_wallet
         showSessionTools();
       }
       lastLoggedStatus = status;

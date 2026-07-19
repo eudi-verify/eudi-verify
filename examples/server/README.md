@@ -11,7 +11,7 @@ cd eudi-verify   # path to your clone
 pnpm install && pnpm build
 ```
 
-Example folders have no `build` script — only `packages/*` are built at the root.
+Example folders have no `build` script: only `packages/*` are built at the root.
 
 ## Quick Start
 
@@ -33,7 +33,7 @@ pnpm start
 ```
 
 - `EUDI_MODE=production` selects `Openid4vpEngine` (`@openeudi/openid4vp`)
-- `HOST=0.0.0.0` required when `BASE_URL` is a LAN IP — default `127.0.0.1` makes the phone unable to POST `/callback`
+- `HOST=0.0.0.0` required when `BASE_URL` is a LAN IP: default `127.0.0.1` makes the phone unable to POST `/callback`
 - `BASE_URL` must be reachable from the wallet (LAN IP for phone QR flows)
 - `EUDI_TRUST=skip` is lab-only (no issuer anchoring); use `EUDI_TRUST=static` + `EUDI_TRUSTED_CERTS=/path/to/ca.der` for anchored trust
 - Dedicated QR/capture helper: `pnpm spike:wallet` (see `wallet-spike-server.ts`)
@@ -41,7 +41,7 @@ pnpm start
 
 ## Usage with Frontend Examples
 
-1. Start this server: `pnpm start` (in this directory) — runs on http://localhost:3000
+1. Start this server: `pnpm start` (in this directory): runs on http://localhost:3000
 2. In another terminal, start any frontend example:
    - `examples/html-vanilla/`: `pnpm start` → http://localhost:3001
    - `examples/react/`: `pnpm dev` → http://localhost:3001

@@ -7,7 +7,7 @@
 import type { VerificationState } from "@eudi-verify/client";
 
 /**
- * SVG icon: EU emblem — 12 upright five-pointed stars in a ring, per the
+ * SVG icon: EU emblem – 12 upright five-pointed stars in a ring, per the
  * official European flag (12 stars, clock-face arrangement).
  */
 const EU_STARS_ICON = /* html */ `
@@ -218,7 +218,7 @@ function renderDemoBanner(): string {
   return /* html */ `
     <div class="eudi-demo-banner" role="status" aria-live="polite" hidden>
       ${WARNING_ICON}
-      <span>Demo mode — credentials are simulated</span>
+      <span>Demo mode: credentials are simulated</span>
     </div>
   `;
 }
