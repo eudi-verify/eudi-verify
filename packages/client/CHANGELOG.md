@@ -1,5 +1,11 @@
 # @eudi-verify/client
 
+## 1.3.0
+
+### Minor Changes
+
+- [#37](https://github.com/eudi-verify/eudi-verify/pull/37) [`3ec23f5`](https://github.com/eudi-verify/eudi-verify/commit/3ec23f547fbbafac6e4acd202bbc426f0ba0f57b) Thanks [@mkascel](https://github.com/mkascel)! - Add Openid4vpEngine for real OpenID4VP wallet verification
+
 ## 1.2.0
 
 ## 1.1.1
