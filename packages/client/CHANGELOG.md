@@ -1,5 +1,11 @@
 # @eudi-verify/client
 
+## 1.3.1
+
+### Patch Changes
+
+- [#14](https://github.com/eudi-verify/eudi-verify/pull/14) [`c9e598f`](https://github.com/eudi-verify/eudi-verify/commit/c9e598f62009f1b6b4b710f37c92351dbdd1e81a) Thanks [@vku2018](https://github.com/vku2018)! - Derive package VERSION constants from package.json instead of hardcoding
+
 ## 1.3.0
 
 ### Minor Changes

@@ -308,4 +308,4 @@ See [.cursor/rules/threat-model-sync.mdc](.cursor/rules/threat-model-sync.mdc) f
 ---
 
 **Last Updated**: 2026-07-19  
-**Version**: 1.3.0 (demo + OpenID4VP production engine)
+**Version**: 1.3.1 (demo + OpenID4VP production engine)
