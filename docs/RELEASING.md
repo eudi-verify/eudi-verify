@@ -95,16 +95,17 @@ pnpm -r publish --access public --dry-run
 
 ### 6. Tag and push
 
-Replace `X.Y.Z` with the new version from `packages/server/package.json`. The tag must point at the **`chore: release`** commit on `main`.
-
-Use **only** the CLI for release tags. Do not create the tag in the GitHub UI first: UI-created tags are usually lightweight and will conflict with signed annotated tags.
+The tag must point at the **`chore: release`** commit on `main`. Read the version from `package.json` so you do not type it:
 
 ```bash
-git tag -s vX.Y.Z -m "vX.Y.Z"
-git tag -v vX.Y.Z    # verify signature locally
+V="v$(node -p "require('./packages/server/package.json').version")"
+git tag -s "$V" -m "$V"
+git tag -v "$V"    # verify signature locally
 git push origin main
-git push origin vX.Y.Z
+git push origin "$V"
 ```
+
+Use **only** the CLI for release tags. Do not create the tag in the GitHub UI first: UI-created tags are usually lightweight and will conflict with signed annotated tags.
 
 Unsigned tags (`git tag` without `-s`) are not acceptable for npm releases once signing is configured.
 
