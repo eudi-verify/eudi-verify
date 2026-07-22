@@ -8,7 +8,7 @@ test.describe("Vue example (Vite dev)", () => {
       page.getByRole("heading", { name: "Age Verification Required" }),
     ).toBeVisible();
     await expect(page.getByRole("status")).toContainText(
-      "Simulated verification",
+      "Demo mode: credentials are simulated",
     );
   });
 
