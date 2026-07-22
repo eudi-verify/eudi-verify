@@ -8,10 +8,13 @@ overrides:
   # ^3.15.0 — not >=3.15.0. Bare >= pulls js-yaml 4.x, which drops safeLoad and breaks
   # @changesets/cli → @manypkg/get-packages → read-yaml-file@1.1.0.
   "js-yaml@3": "^3.15.0"
+  # vue-tsc → @vue/language-core → minimatch still pins brace-expansion 2.1.1.
+  "brace-expansion@2": "2.1.2"
 
 allowBuilds:
   # Optional native accel for cbor-x (via @openeudi/openid4vp). Pure-JS
   # fallback is fine for our verify path — do not approve the build.
+  "@scarf/scarf": false
   cbor-extract: false
   esbuild: true
 
