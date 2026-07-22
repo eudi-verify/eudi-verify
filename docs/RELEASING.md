@@ -6,57 +6,40 @@ For day-to-day contribution (setup, PRs, tests), see [CONTRIBUTING.md](../CONTRI
 
 ## Prerequisites
 
-- Maintainer access to the `@eudi-verify` npm org (publish permission on scoped packages)
+- Maintainer access to the `@eudi-verify` npm org
 - Node.js 22+ and `pnpm` (same as [CONTRIBUTING.md](../CONTRIBUTING.md))
-- Playwright browsers for pre-release e2e: `pnpm exec playwright install` (once per machine; from repo root)
-- At least one merged changeset on `main` (or your release branch) since the last publish
-- `GITHUB_TOKEN` in your environment when running `pnpm changeset version` (see below)
-
-### GitHub token for changelog generation
-
-`.changeset/config.json` uses `@changesets/changelog-github`, which calls the GitHub API to link PRs and authors in **package** `CHANGELOG.md` files. This is separate from GitHub **release** notes (§5). `pnpm changeset version` fails without `GITHUB_TOKEN`.
-
-**Recommended (classic PAT):** one-time setup, no `gh` required:
-
-1. Create a token with `read:user` and `repo:status` only ([GitHub token settings](https://github.com/settings/tokens/new?scopes=read:user,repo:status&description=changesets)).
-2. Add to `~/.zshrc` or `~/.bashrc`:
-
-```bash
-export GITHUB_TOKEN=ghp_…   # your PAT — read:user + repo:status only
-```
-
-3. Open a new shell (or `source` your profile), then run `pnpm changeset version`.
-
-No `repo` or `write` scope is needed. After the `export` is in your profile, you should not see this error again unless the token is revoked or expires.
-
-**Optional (`gh` shortcut):** if you use GitHub CLI elsewhere, `export GITHUB_TOKEN=$(gh auth token)` works for the current shell; refresh with `gh auth refresh` when it expires.
+- `GITHUB_TOKEN` set in the environment ([one-time setup](#github-token-for-changelog-generation))
+- Signed tags configured if you want Verified tags on GitHub ([one-time setup](#signed-tags))
+- Playwright browsers installed once per machine: `pnpm exec playwright install` (needed for `pnpm test:e2e`)
+- At least one merged changeset on `main` since the last publish
 
 ## Before merging package PRs
 
-When a PR changes `@eudi-verify/server`, `client`, or `embed`:
+When a PR changes `@eudi-verify/server`, `client`, `embed`, or `react`:
 
 ```bash
 git fetch origin pull/<PR>/head:pr-<PR> && git switch pr-<PR>   # or checkout the fork branch
-pnpm changeset          # interactive — pick package(s), semver, changelog line
+pnpm changeset          # interactive: pick package(s), semver, changelog line
 git add .changeset/
 git commit -m "chore: add changeset for #<PR>"
 git push                # to the PR branch, then merge
 ```
 
-Published packages are **lockstep-versioned** (`.changeset/config.json` `fixed` group) — bumping one bumps all three at release. Select only packages the PR changed; default to **patch** for bugfixes, **minor** for features, **major** only for breaking changes.
+Published packages are **lockstep-versioned** (`.changeset/config.json` `fixed` group): bumping one bumps all at release. Select only packages the PR changed; default to **patch** for bugfixes, **minor** for features, **major** only for breaking changes.
 
 Contributors are not required to add changesets. Skip this for docs-only, CI, or example-only PRs.
 
-## 1. Bump versions
+## Release steps
 
-Preview what will be released first — this lists every package and its computed
-next version without changing anything:
+Do these in order on an up-to-date `main`.
+
+### 1. Preview and bump versions
 
 ```bash
 pnpm changeset status --verbose
 ```
 
-If the versions look right, apply the bumps (`GITHUB_TOKEN` must be set — see [GitHub token](#github-token-for-changelog-generation)):
+If the versions look right (`GITHUB_TOKEN` must be set):
 
 ```bash
 pnpm changeset version
@@ -64,66 +47,133 @@ pnpm changeset version
 
 Review generated version bumps, changelogs, and `package.json` / lockfile changes.
 
-Update public version strings to match (same version as `packages/server/package.json`):
+### 2. Sync docs and VERSION constants
 
-- `docs/SUPPORTED.md` — `**Current release:** vX.Y.Z`
-- `THREAT_MODEL.md` and `DEPENDENCY.md` — footer `**Version**: X.Y.Z`
+Update public version strings to match `packages/server/package.json`:
+
+- `docs/SUPPORTED.md`: `**Current release:** vX.Y.Z`
+- `THREAT_MODEL.md` and `DEPENDENCY.md`: footer `**Version**: X.Y.Z`
 
 `pnpm verify` runs `scripts/check-docs-version.sh` and fails if those lag.
 
-**Temporary manual step** (until [#10](https://github.com/eudi-verify/eudi-verify/issues/10) merges): Update hardcoded `VERSION` constants in:
+Regenerate committed package `VERSION` constants:
 
-- `packages/server/src/index.ts`
-- `packages/client/src/index.ts`
-- `packages/embed/src/index.ts`
-- `packages/react/src/index.ts`
+```bash
+pnpm sync:versions
+```
 
-Change each `export const VERSION = "X.Y.Z"` to match the new package version. This will be automated once package versions are derived from `package.json` at build time.
+This writes `packages/*/src/version.ts`. Build / `prepublishOnly` also regenerate at publish time; run `sync:versions` here so the release commit keeps source in sync. Do this on every release after `pnpm changeset version`.
 
-Commit:
+### 3. Verify (including e2e)
+
+```bash
+pnpm verify
+pnpm test:e2e
+```
+
+`pnpm verify` mirrors CI. **`pnpm test:e2e` is not part of CI or `verify`**. Run it every release (embed widget + Vue + React examples). Easy to skip; do not.
+
+### 4. Commit the release
 
 ```bash
 git add -A
 git commit -m "chore: release"
 ```
 
-## 2. Authenticate with npm
-
-Interactive (local):
+### 5. Publish packages
 
 ```bash
-npm login
-npm whoami   # confirm you are logged in
-```
-
-For CI or automation, use a granular npm access token with publish rights on `@eudi-verify/*`. Store it in `~/.npmrc` or `NPM_TOKEN` — never commit tokens to the repo.
-
-If your account has 2FA enabled, use an automation token with bypass 2FA for non-interactive publishes.
-
-## 3. Publish packages
-
-From the repo root:
-
-```bash
+npm whoami   # must be logged in; see npm login under Troubleshooting if needed
 pnpm -r publish --access public
 ```
 
-Scoped packages require `--access public` on first publish. Dry run first if unsure:
+Dry run first if unsure:
 
 ```bash
 pnpm -r publish --access public --dry-run
 ```
 
-## 4. Tag and push
+### 6. Tag and push
 
-Replace `0.X.Y` with the new version (from `packages/server/package.json` after `pnpm changeset version`). The tag must point at the **`chore: release`** commit on `main`.
+Replace `X.Y.Z` with the new version from `packages/server/package.json`. The tag must point at the **`chore: release`** commit on `main`.
 
-### One-time: enable signed tags (recommended)
+Use **only** the CLI for release tags. Do not create the tag in the GitHub UI first: UI-created tags are usually lightweight and will conflict with signed annotated tags.
+
+```bash
+git tag -s vX.Y.Z -m "vX.Y.Z"
+git tag -v vX.Y.Z    # verify signature locally
+git push origin main
+git push origin vX.Y.Z
+```
+
+Unsigned tags (`git tag` without `-s`) are not acceptable for npm releases once signing is configured.
+
+**Demo / pre-npm milestone** (no npm publish): same flow: tag the commit you want reviewers to cite, e.g. `v0.1.0-demo`, and create a GitHub release. Skip [§5 Publish packages](#5-publish-packages) if packages are not on npm yet.
+
+### 7. GitHub release
+
+Create the release **after** pushing the signed tag. Prefer the GitHub UI so you can preview notes:
+
+1. Repo → **Releases** → **Draft a new release**
+2. **Choose a tag:** select the existing `vX.Y.Z` tag (do **not** type a new tag name: that creates a conflicting lightweight tag)
+3. Click **Generate release notes**. GitHub builds the body from merged PRs since the last tag, grouped by [`.github/release.yml`](../.github/release.yml)
+4. Review and edit the draft; add a short intro at the top if you want a highlight
+5. **Publish release**
+
+<details>
+<summary>CLI alternative (<code>gh</code>)</summary>
+
+```bash
+gh release create vX.Y.Z --title "vX.Y.Z" --generate-notes
+```
+
+`--generate-notes` uses the same config as the UI. To prepend a hand-written intro, add `--notes "<intro>"` alongside `--generate-notes`. The CLI publishes immediately (no preview step), so prefer the UI when you want to review first.
+
+</details>
+
+## Checklist
+
+- [ ] Changesets merged since last release
+- [ ] `pnpm changeset version` applied
+- [ ] `docs/SUPPORTED.md`, `THREAT_MODEL.md`, `DEPENDENCY.md` version strings updated
+- [ ] `pnpm sync:versions` run (committed `version.ts` matches package versions)
+- [ ] `pnpm verify` passes on the release commit
+- [ ] `pnpm test:e2e` passes (not part of CI/`verify`; do not skip)
+- [ ] `chore: release` committed
+- [ ] Packages published to npm (`@eudi-verify/server`, `@eudi-verify/client`, `@eudi-verify/embed`, `@eudi-verify/react`)
+- [ ] Git tag `vX.Y.Z` pushed (**signed** with `git tag -s`)
+- [ ] `git tag -v vX.Y.Z` passes locally
+- [ ] GitHub release created with changelog notes; tag shows **Verified** on GitHub
+
+---
+
+## One-time setup
+
+### GitHub token for changelog generation
+
+`.changeset/config.json` uses `@changesets/changelog-github`, which calls the GitHub API to link PRs and authors in **package** `CHANGELOG.md` files. This is separate from GitHub **release** notes (§7). `pnpm changeset version` fails without `GITHUB_TOKEN`.
+
+**Recommended (classic PAT):**
+
+1. Create a token with `read:user` and `repo:status` only ([GitHub token settings](https://github.com/settings/tokens/new?scopes=read:user,repo:status&description=changesets)).
+2. Add to `~/.zshrc` or `~/.bashrc`:
+
+```bash
+export GITHUB_TOKEN=ghp_…   # your PAT: read:user + repo:status only
+```
+
+3. Open a new shell (or `source` your profile), then run `pnpm changeset version`.
+
+No `repo` or `write` scope is needed. After the `export` is in your profile, you should not see this error again unless the token is revoked or expires.
+
+**Optional (`gh` shortcut):** `export GITHUB_TOKEN=$(gh auth token)` works for the current shell; refresh with `gh auth refresh` when it expires.
+
+### Signed tags
 
 GitHub shows a **Verified** badge when tags are signed. Prefer **SSH signing** (simpler on GitHub than GPG):
 
 ```bash
-# List keys — use a dedicated signing key if you have one
+# List keys: use a dedicated signing key if you have one
 ls ~/.ssh/*.pub
 
 git config --global gpg.format ssh
@@ -147,79 +197,43 @@ Upload the public key to GitHub → **Settings** → **SSH and GPG keys** → **
 
 </details>
 
-### Create a signed tag
+---
 
-Use **only** the CLI for release tags. Do not create the tag in the GitHub UI first — UI-created tags are usually lightweight and will conflict with signed annotated tags on other machines.
+## Troubleshooting
 
-Annotated + signed (required for releases):
-
-```bash
-git tag -s v0.X.Y -m "v0.X.Y"
-git tag -v v0.X.Y    # verify signature locally
-git push origin main
-git push origin v0.X.Y
-```
-
-If `v0.X.Y` already exists on the remote as a lightweight tag, delete it before pushing the signed tag (maintainers only, only before others depend on the release):
+### npm login / 2FA
 
 ```bash
-git push origin :refs/tags/v0.X.Y
-git push origin v0.X.Y
+npm login
+npm whoami
 ```
 
-Unsigned tags (`git tag v0.X.Y` without `-s`) are not acceptable for npm releases once signing is configured.
+For CI or automation, use a granular npm access token with publish rights on `@eudi-verify/*`. Store it in `~/.npmrc` or `NPM_TOKEN`; never commit tokens to the repo.
 
-**Demo / pre-npm milestone** (no npm publish): same flow — tag the commit you want reviewers to cite, e.g. `v0.1.0-demo`, and create a GitHub release. Skip [§3 Publish packages](#3-publish-packages) if packages are not on npm yet.
+If your account has 2FA enabled, use an automation token with bypass 2FA for non-interactive publishes.
 
-### Troubleshooting: conflicting tags on `git pull`
+### Conflicting tags on `git pull`
 
-Symptom: `would clobber existing tag v0.X.Y` or a GUI reports conflicting tags.
+Symptom: `would clobber existing tag vX.Y.Z` or a GUI reports conflicting tags.
 
 Cause: local and remote tags share a name but differ in type (annotated vs lightweight) or commit.
 
-Fix for contributors (take the remote tag, then pull):
+Fix (take the remote tag, then pull):
 
 ```bash
-git fetch origin tag v0.X.Y --force
+git fetch origin tag vX.Y.Z --force
 git pull origin main
 ```
 
 Verify:
 
 ```bash
-git rev-parse 'v0.X.Y^{commit}'   # should match the chore: release commit on main
+git rev-parse 'vX.Y.Z^{commit}'   # should match the chore: release commit on main
 ```
 
-## 5. GitHub release
-
-Create the release **after** pushing the signed tag (§4). Use the GitHub UI so you can preview auto-generated notes before publishing:
-
-1. Repo → **Releases** → **Draft a new release**
-2. **Choose a tag:** select the existing `v0.X.Y` tag (do **not** type a new tag name — that creates a conflicting lightweight tag)
-3. Click **Generate release notes** — GitHub builds the body from merged PRs since the last tag, grouped by [`.github/release.yml`](../.github/release.yml) (Breaking Changes, Features, Bug Fixes, etc.)
-4. Review and edit the draft; add a short intro at the top if you want a highlight
-5. **Publish release**
-
-<details>
-<summary>CLI alternative (`gh`)</summary>
+If `vX.Y.Z` already exists on the remote as a lightweight tag, delete it before pushing the signed tag (maintainers only, only before others depend on the release):
 
 ```bash
-gh release create v0.X.Y --title "v0.X.Y" --generate-notes
+git push origin :refs/tags/vX.Y.Z
+git push origin vX.Y.Z
 ```
-
-`--generate-notes` uses the same config as the UI. To prepend a hand-written intro, add `--notes "<intro>"` alongside `--generate-notes`. The CLI publishes immediately — no preview step — so prefer the UI when you want to review first.
-
-</details>
-
-## Checklist
-
-- [ ] Changesets merged since last release
-- [ ] `pnpm verify` passes on the release commit
-- [ ] `pnpm test:e2e` passes (embed widget + Vue + React examples; not part of CI/`verify`)
-- [ ] `pnpm changeset version` committed as `chore: release`
-- [ ] `docs/SUPPORTED.md`, `THREAT_MODEL.md`, `DEPENDENCY.md` version strings updated
-- [ ] **Temporary:** `VERSION` constants updated in `packages/*/src/index.ts` (until [#10](https://github.com/eudi-verify/eudi-verify/issues/10))
-- [ ] Packages published to npm (`@eudi-verify/server`, `@eudi-verify/client`, `@eudi-verify/embed`, `@eudi-verify/react`)
-- [ ] Git tag `v0.X.Y` pushed (**signed** with `git tag -s` when signing is configured)
-- [ ] `git tag -v v0.X.Y` passes locally
-- [ ] GitHub release created with changelog notes; tag shows **Verified** on GitHub

@@ -24,7 +24,7 @@
  * ```
  */
 
-export const VERSION = "1.3.0";
+export { VERSION } from "./version.js";
 
 export {
   createVerification,

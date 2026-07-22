@@ -1,3 +1,4 @@
+import { createRequire } from "node:module";
 import { describe, it, expect } from "vitest";
 import {
   VERSION,
@@ -17,10 +18,13 @@ import {
   SessionExpiredError,
 } from "./index.js";
 
+const require = createRequire(import.meta.url);
+const packageJson = require("../package.json") as { version: string };
+
 describe("@eudi-verify/client", () => {
   describe("exports", () => {
     it("exports VERSION", () => {
-      expect(VERSION).toBe("1.3.0");
+      expect(VERSION).toBe(packageJson.version);
     });
 
     it("exports createVerification", () => {

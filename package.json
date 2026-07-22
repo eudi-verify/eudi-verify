@@ -10,9 +10,10 @@
   "scripts": {
     "format": "prettier . --write",
     "format:check": "prettier . --check",
+    "sync:versions": "node scripts/generate-package-versions.mjs",
     "typecheck": "pnpm -r typecheck",
-    "test": "vitest run && pnpm --filter @eudi-verify/embed test",
-    "test:unit": "vitest run",
+    "test": "node scripts/generate-package-versions.mjs && vitest run && pnpm --filter @eudi-verify/embed test",
+    "test:unit": "node scripts/generate-package-versions.mjs && vitest run",
     "test:e2e": "pnpm --filter @eudi-verify/embed test:e2e && pnpm --filter example-vue test:e2e && pnpm --filter example-react test:e2e",
     "lint:api": "spectral lint openapi/eudi-verifier.yaml",
     "build": "pnpm -r build",

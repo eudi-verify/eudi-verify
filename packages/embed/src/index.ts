@@ -16,7 +16,7 @@
  * ```
  */
 
-export const VERSION = "1.3.0";
+export { VERSION } from "./version.js";
 
 export { EudiVerifyElement, type EudiVerifyEventMap } from "./element.js";
 export { createStyles, CSS_VARIABLES } from "./styles.js";
