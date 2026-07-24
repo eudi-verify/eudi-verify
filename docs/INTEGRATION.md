@@ -15,6 +15,7 @@ Add EU digital identity verification to your website.
 | [Frontend options](./integration-frontend.md)         | Widget, custom UI, React, Vue                                |
 | [Error handling](./integration-errors.md)             | HTTP vs session vs token failures; wallet callback semantics |
 | [Deploy (EU)](./deploy-eu.md)                         | Production hosting, CDN, `BASE_URL`                          |
+| [Interop notes (lab)](./INTEROP.md)                   | Real-wallet OpenID4VP: works / partial / missing             |
 | [OpenAPI spec](../openapi/eudi-verifier.yaml)         | Stack-independent API contract                               |
 
 Package references: [server](../packages/server/README.md) · [client](../packages/client/README.md) · [embed](../packages/embed/README.md) · [react](../packages/react/README.md)

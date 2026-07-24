@@ -59,7 +59,7 @@ chore: update dependencies
 
 ### AI-assisted footer
 
-For substantive AI-assisted work, add metadata after the commit body. Model/version is required; prompt summary is optional:
+For substantive AI-assisted work, add metadata after the commit body. Model/version is required. Do not include prompt text or prompt summaries:
 
 ```
 feat(embed): add keyboard trap for modal focus
@@ -68,14 +68,12 @@ feat(embed): add keyboard trap for modal focus
 - Restore focus on close
 
 AI-assisted: Cursor <model-or-version>
-Prompt: <brief summary> (optional)
 ```
 
 If you edited AI-generated code manually, add `(edited)`:
 
 ```
 AI-assisted: Cursor <model-or-version> (edited)
-Prompt: Generate unit tests for TTL validation; manually verified (optional)
 ```
 
 **Do include** the `AI-assisted:` footer when drafting commit text for the user (required by [CONTRIBUTING.md](../../../CONTRIBUTING.md)).

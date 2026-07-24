@@ -135,7 +135,7 @@ This project uses AI-assisted tooling under human review. Contributors remain re
 
 ### Commit Metadata Format
 
-For AI-assisted work, add metadata after the commit body, separated by a blank line. The model name and version are required; the prompt summary is optional but recommended:
+For AI-assisted work, add metadata after the commit body, separated by a blank line. The model name and version are required. Do not include prompt text or prompt summaries in commit messages:
 
 ```
 feat(embed): add keyboard trap for modal focus
@@ -144,7 +144,6 @@ feat(embed): add keyboard trap for modal focus
 - Restore focus on close
 
 AI-assisted: Cursor <model-or-version>
-Prompt: <brief summary of what you asked> (optional)
 ```
 
 If you edited AI-generated code manually, add `(edited)`:
@@ -156,7 +155,6 @@ fix(client): handle session timeout edge case
 - Update state machine transitions
 
 AI-assisted: Cursor <model-or-version> (edited)
-Prompt: Generate session timeout handling; manually verified state transitions (optional)
 ```
 
 ### Do not use GitHub co-author or product branding
