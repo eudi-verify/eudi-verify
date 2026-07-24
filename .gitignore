@@ -13,10 +13,9 @@ scripts/ops-watch.local.conf
 divine-watch
 scripts/provision-server.sh
 scripts/provision-base.conf
-.cursor/rules/ponytail.mdc
 .cursor/rules/maintainer-local.mdc
 .tmp-ops-state/
-
+.vscode/*
 .DS_Store
 
 # Playwright e2e output (regenerated every run)

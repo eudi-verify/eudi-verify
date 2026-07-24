@@ -5,11 +5,7 @@ alwaysApply: true
 
 # eudi-verify Project Context
 
-## Verify first
-
-- Never guess at intent or technical facts — look it up before presenting something as fact.
-- Research open questions first; ask only what you cannot resolve or what requires my decision.
-- Challenge my premises when evidence suggests I may be wrong. I am not always correct.
+See [AGENTS.md](../../AGENTS.md) for verify-first behavior and hard constraints (also loaded natively by Cursor — not restated here to avoid double-loading).
 
 ## What This Is
 
