@@ -1,5 +1,5 @@
 ---
-description: Conventional commit format and AI attribution for this repo
+description: Conventional commit format and AI-assisted footer for this repo
 alwaysApply: false
 ---
 
@@ -57,7 +57,7 @@ requirement: add WP6 security documentation
 chore: update dependencies
 ```
 
-### AI Attribution
+### AI-assisted footer
 
 For substantive AI-assisted work, add metadata after the commit body. Model/version is required; prompt summary is optional:
 
@@ -67,16 +67,23 @@ feat(embed): add keyboard trap for modal focus
 - Trap focus inside verification dialog
 - Restore focus on close
 
-AI-assisted: <model-name> <version>
+AI-assisted: Cursor <model-or-version>
 Prompt: <brief summary> (optional)
 ```
 
 If you edited AI-generated code manually, add `(edited)`:
 
 ```
-AI-assisted: <model-name> <version> (edited)
+AI-assisted: Cursor <model-or-version> (edited)
 Prompt: Generate unit tests for TTL validation; manually verified (optional)
 ```
+
+**Do include** the `AI-assisted:` footer when drafting commit text for the user (required by [CONTRIBUTING.md](../../../CONTRIBUTING.md)).
+
+**Do not** add:
+
+- `Co-authored-by:` for Cursor, bots, or AI tools (pollutes the GitHub contributors list)
+- "Made with Cursor" or similar product badges in PR bodies
 
 See [CONTRIBUTING.md](../../../CONTRIBUTING.md) for full AI-assisted development policy.
 
@@ -87,4 +94,5 @@ See [CONTRIBUTING.md](../../../CONTRIBUTING.md) for full AI-assisted development
 3. Capitalize first word of description
 4. No period at end of first line
 5. Blank line before bullet points
-6. Add AI attribution metadata for substantive AI contributions (see above)
+6. Add `AI-assisted:` metadata for substantive AI contributions (see above)
+7. Never add `Co-authored-by:` bot/Cursor lines or "Made with Cursor" PR branding

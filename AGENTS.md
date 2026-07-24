@@ -20,7 +20,9 @@ Framework-agnostic EUDI Wallet verifier kit. See [README.md](README.md) for over
 ## Hard constraints
 
 - **No live deploys, commits, or pushes** unless the user explicitly requests them in that message — no `git push`, `scp`/`rsync`, or remote restarts/provision scripts; give copy-paste steps for the user to run (see `.cursor/rules/no-live-deploy.mdc`)
+- **No GitHub co-author / product branding** — never add `Co-authored-by:` for Cursor/bots (pollutes contributors) or "Made with Cursor" (or similar) on PR bodies. Do keep the repo's `AI-assisted:` commit footer when drafting commit text (see `.cursor/rules/commit-style.mdc` / `CONTRIBUTING.md`)
 - **Node.js 22+**, pnpm workspaces, TypeScript strict mode
+
 - **Public accuracy**: `docs/SUPPORTED.md` is canonical — do not claim unsupported platforms or packages exist
 - **Public vs private docs**: classify before writing — maintainer ops and post-merge admin go in gitignored `*.local.md`, not `CONTRIBUTING.md` / PR templates / workflow comments; see `.cursor/rules/docs-boundary.mdc`
 - **Sovereignty**: no US identity SaaS in core; see `.cursor/rules/project-context.mdc`

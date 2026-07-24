@@ -143,7 +143,7 @@ feat(embed): add keyboard trap for modal focus
 - Trap focus inside verification dialog
 - Restore focus on close
 
-AI-assisted: <model-name> <version>
+AI-assisted: Cursor <model-or-version>
 Prompt: <brief summary of what you asked> (optional)
 ```
 
@@ -155,9 +155,16 @@ fix(client): handle session timeout edge case
 - Add retry logic for expired sessions
 - Update state machine transitions
 
-AI-assisted: <model-name> <version> (edited)
+AI-assisted: Cursor <model-or-version> (edited)
 Prompt: Generate session timeout handling; manually verified state transitions (optional)
 ```
+
+### Do not use GitHub co-author or product branding
+
+Keep AI attribution in the **`AI-assisted:` commit footer** only. Do **not**:
+
+- Add `Co-authored-by:` lines for Cursor, bots, or AI tools (that adds them to the GitHub contributors list)
+- Add "Made with Cursor" (or similar product badges) to PR bodies or descriptions
 
 ### Human Review Expectations
 
