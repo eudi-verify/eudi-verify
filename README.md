@@ -5,11 +5,11 @@
 [![OpenAPI 3.1](https://img.shields.io/badge/OpenAPI-3.1-green.svg)](openapi/eudi-verifier.yaml)
 [![Status](https://img.shields.io/badge/status-preview-orange.svg)](#current-limitations)
 
-Framework-agnostic verifier kit for the European Digital Identity Wallet.
+Open-source toolkit for privacy-preserving verification with the European Digital Identity Wallet. Selective disclosure of specific claims (for example age over 18); no central broker logging who verified what.
 
-`eudi-verify` provides a drop-in web component, typed client SDK, optional React wrapper, Node.js server handlers, and an OpenAPI specification — with reference examples for plain HTML, React, and Vue.
+`eudi-verify` provides a drop-in web component, typed client SDK, optional React wrapper, Node.js server handlers, and an OpenAPI specification, with reference examples for plain HTML, React, and Vue. Self-hostable; no OID4VP protocol work required for the common integration path.
 
-**Demo verification** builds on [`@openeudi/core`](https://github.com/openeudi/core) — `OpenEudiEngine` runs its `DemoMode` behind the swappable `VerifierEngine` interface. **Production OpenID4VP** uses `Openid4vpEngine` (`@openeudi/openid4vp`) for real wallet presentations (see [docs/SUPPORTED.md](docs/SUPPORTED.md)).
+**Demo verification** builds on [`@openeudi/core`](https://github.com/openeudi/core) — `OpenEudiEngine` runs its `DemoMode` behind the swappable `VerifierEngine` interface. **Production OpenID4VP** uses `Openid4vpEngine` (`@openeudi/openid4vp`) for real wallet presentations (see [docs/SUPPORTED.md](docs/SUPPORTED.md) and lab notes in [docs/INTEROP.md](docs/INTEROP.md)).
 
 **Live demo:** https://demo.eudi-verify.eu/
 
@@ -19,10 +19,10 @@ Framework-agnostic verifier kit for the European Digital Identity Wallet.
 
 ## What is this?
 
-Think of `eudi-verify` as a reCAPTCHA-style integration pattern for credential verification: a small embeddable widget starts a wallet verification flow and returns a server-verifiable token.
+Same integration shape as reCAPTCHA: a small embeddable widget starts the flow and returns a **server-verifiable token** your backend checks. Different trust model: no tracking payload, no third-party broker in the loop; the browser never holds trusted identity data. Age over 18 is one example claim: the same pattern applies to other scoped attributes the wallet can disclose.
 
 ```html
-<!-- Add age verification to any website -->
+<!-- Example: age verification on any page -->
 <eudi-verify api-url="/api/eudi" request='{"age_over_18": true}'></eudi-verify>
 
 <script type="module">
@@ -34,9 +34,9 @@ Think of `eudi-verify` as a reCAPTCHA-style integration pattern for credential v
 </script>
 ```
 
-Use cases include proving a user is over 18, verifying possession of a specific credential or entitlement, and checking a scoped identity attribute — without building the full verifier flow from scratch.
+Alternative to document uploads and face scans: the relying party learns only the claims it requested. Self-host the widget and Node verifier API; no third-party broker in the middle.
 
-This project is for developers, product teams, and integrators who want to prepare for EUDI Wallet verification flows before production wallets are broadly available.
+For developers and integrators preparing for EUDI Wallet flows before production wallets are broadly available. Real-wallet lab status: [docs/INTEROP.md](docs/INTEROP.md).
 
 ---
 
@@ -102,6 +102,7 @@ Vue and similar frameworks: use `@eudi-verify/embed` directly — see [`examples
 The OpenAPI spec is stack-independent — any backend can implement the same endpoints. Only the Node.js handler library ships today.
 
 - [Supported platforms and roadmap](docs/SUPPORTED.md)
+- [Interop notes (lab)](docs/INTEROP.md)
 - [Integration architecture and request flows](docs/integration-architecture.md) (mermaid diagrams)
 - [ARF alignment notes](docs/ARF.md)
 

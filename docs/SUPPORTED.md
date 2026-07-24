@@ -44,7 +44,7 @@
 
 **Demo verification engine:** `OpenEudiEngine` wraps `@openeudi/core` `DemoMode`. Simulated claims are limited to **age over 18** and **country/nationality** (per core 0.8.0). `age_over_21` and full PID attributes (`given_name`, `family_name`, `birth_date`) are not returned in demo mode.
 
-**Production OpenID4VP engine:** `Openid4vpEngine` wraps `@openeudi/openid4vp` — real mdoc verification for `eu.europa.ec.av.1` / `age_over_18` via plain `direct_post` and OpenID4VP 1.0 unencrypted SessionTranscript. Trust: injectable `TrustStore` / `StaticTrustStore`, or double-gated `skipTrustCheck` (lab-only). Interop validated against the EU Age Verification reference wallet (lab). HAIP / full PID / `direct_post.jwt` and LOTL trust remain roadmap.
+**Production OpenID4VP engine:** `Openid4vpEngine` wraps `@openeudi/openid4vp` — real mdoc verification for `eu.europa.ec.av.1` / `age_over_18` via plain `direct_post` and OpenID4VP 1.0 unencrypted SessionTranscript. Trust: injectable `TrustStore` / `StaticTrustStore`, or double-gated `skipTrustCheck` (lab-only). Interop validated against the EU Age Verification reference wallet (lab). Honest works / partial / missing notes: [INTEROP.md](./INTEROP.md). HAIP / full PID / `direct_post.jwt` and LOTL trust remain roadmap.
 
 ### API contract
 
