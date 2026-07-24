@@ -27,5 +27,3 @@
 - [ ] Vue example E2E checked (`cd examples/vue && pnpm test:e2e`) — `examples/vue/` or its Vite config (requires `npx playwright install chromium` once)
 - [ ] React example E2E checked (`cd examples/react && pnpm test:e2e`) — `examples/react/` or its Vite config
 - [ ] [THREAT_MODEL.md](../THREAT_MODEL.md) updated — security control changes only
-
-**Maintainers:** add a changeset on the PR branch before merge if this changes a published package — see [RELEASING.md § Before merging](../docs/RELEASING.md#before-merging-package-prs).

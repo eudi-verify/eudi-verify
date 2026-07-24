@@ -20,31 +20,32 @@ Framework-agnostic EUDI Wallet verifier kit. See [README.md](README.md) for over
 ## Hard constraints
 
 - **No live deploys, commits, or pushes** unless the user explicitly requests them in that message — no `git push`, `scp`/`rsync`, or remote restarts/provision scripts; give copy-paste steps for the user to run (see `.cursor/rules/no-live-deploy.mdc`)
+- **No GitHub co-author / product branding** — never add `Co-authored-by:` for Cursor/bots (pollutes contributors) or "Made with Cursor" (or similar) on PR bodies. Do keep the repo's `AI-assisted:` commit footer when drafting commit text (see `.cursor/rules/commit-style.mdc` / `CONTRIBUTING.md`)
 - **Node.js 22+**, pnpm workspaces, TypeScript strict mode
+
 - **Public accuracy**: `docs/SUPPORTED.md` is canonical — do not claim unsupported platforms or packages exist
 - **Public vs private docs**: classify before writing — maintainer ops and post-merge admin go in gitignored `*.local.md`, not `CONTRIBUTING.md` / PR templates / workflow comments; see `.cursor/rules/docs-boundary.mdc`
 - **Sovereignty**: no US identity SaaS in core; see `.cursor/rules/project-context.mdc`
 - **Security**: update [THREAT_MODEL.md](THREAT_MODEL.md) when changing security controls
 - **Verify locally**: `pnpm verify` mirrors CI before claiming checks pass
-- **Planning**: Cursor Plan mode + `@plan-mode` (`.cursor/rules/plan-mode.mdc`)
+- **Planning**: read-only planning phase before code changes — rules in [docs/agent-plan-mode.md](docs/agent-plan-mode.md); enter via Cursor Plan mode + `@plan-mode`, or Claude Code `/plan`
 
 ## Cursor rules (optional)
 
-`.cursor/rules/` mirrors project conventions for Cursor users. Policy for all contributors lives in `CONTRIBUTING.md` and `docs/`. Gitignored rules (`ponytail.mdc`, `maintainer-local.mdc`) load only on machines that have them — see `.gitignore`. See `.cursor/rules/ai-tooling.mdc`.
+`.cursor/rules/` mirrors project conventions for Cursor users. Policy for all contributors lives in `CONTRIBUTING.md` and `docs/`. The gitignored rule `maintainer-local.mdc` loads only on machines that have it — see `.gitignore`. Minimal-diff discipline lives in Cursor User Rules (global), not a project copy. See `.cursor/rules/ai-tooling.mdc`.
 
-| Rule                    | When                                                                          |
-| ----------------------- | ----------------------------------------------------------------------------- |
-| `project-context.mdc`   | Always — architecture, standards                                              |
-| `docs-boundary.mdc`     | Always — public vs private docs (canonical)                                   |
-| `public-docs.mdc`       | Always — supported vs roadmap wording (within public docs)                    |
-| `docs-sync.mdc`         | When editing packages/docs (globs)                                            |
-| `plan-mode.mdc`         | Manual `@plan-mode` – structured planning                                     |
-| `plan-sync.mdc`         | WP / roadmap status changes                                                   |
-| `threat-model-sync.mdc` | Security control changes                                                      |
-| `commit-style.mdc`      | Commits                                                                       |
-| `copy-voice.mdc`        | Demo/docs/UI prose: no em-dash; prefer colon; don't rewrite wording unasked   |
-| `ponytail.mdc`          | Gitignored – minimal-diff discipline (maintainer machine; also in User Rules) |
-| `maintainer-local.mdc`  | Gitignored – project-lead deploy hosts, backup, private docs workflow         |
+| Rule                    | When                                                                        |
+| ----------------------- | --------------------------------------------------------------------------- |
+| `project-context.mdc`   | Always — architecture, standards                                            |
+| `docs-boundary.mdc`     | Always — public vs private docs (canonical)                                 |
+| `public-docs.mdc`       | Always — supported vs roadmap wording (within public docs)                  |
+| `docs-sync.mdc`         | When editing packages/docs (globs)                                          |
+| `plan-mode.mdc`         | Manual `@plan-mode` – structured planning                                   |
+| `plan-sync.mdc`         | WP / roadmap status changes                                                 |
+| `threat-model-sync.mdc` | Security control changes                                                    |
+| `commit-style.mdc`      | Commits                                                                     |
+| `copy-voice.mdc`        | Demo/docs/UI prose: no em-dash; prefer colon; don't rewrite wording unasked |
+| `maintainer-local.mdc`  | Gitignored – project-lead deploy hosts, backup, private docs workflow       |
 
 ## Documentation maintenance
 
