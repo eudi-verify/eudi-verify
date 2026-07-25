@@ -37,7 +37,8 @@ pnpm start
 - `BASE_URL` must be reachable from the wallet (LAN IP for phone QR flows)
 - `EUDI_TRUST=skip` is lab-only (no issuer anchoring); use `EUDI_TRUST=static` + `EUDI_TRUSTED_CERTS=/path/to/ca.der` for anchored trust
 - Dedicated QR/capture helper: `pnpm spike:wallet` (see `wallet-spike-server.ts`)
-- Frontend examples (`html-vanilla`, etc.) stay demo-branded by default; point them at this API for a real-wallet lab run
+- Frontend examples omit the widget `demo-mode` attribute so the in-widget banner follows `X-Eudi-Mode` from `POST /sessions` (production API: no demo banner; demo API: banner after session create). Optional: set `demo-mode` on the element for an immediate banner without waiting on the header.
+- Page-level demo chrome (top banner, demo-wallet panel) stays for the public demo story; for a real-wallet lab, ignore the demo wallet and use the QR.
 
 ## Usage with Frontend Examples
 
