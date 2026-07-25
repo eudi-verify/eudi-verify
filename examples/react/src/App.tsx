@@ -272,7 +272,6 @@ function App() {
               <EudiVerify
                 ref={widgetRef}
                 apiUrl="/api/eudi"
-                demoMode
                 request={{ age_over_18: true }}
                 onStateChange={handleStateChange}
                 onVerified={handleVerified}

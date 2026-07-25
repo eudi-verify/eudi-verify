@@ -52,7 +52,6 @@ const request = JSON.stringify({ age_over_18: true });
 <template>
   <eudi-verify
     api-url="/api/eudi"
-    demo-mode
     :request="request"
     @verified="handleVerified"
     @error="handleError"
