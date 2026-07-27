@@ -18,10 +18,9 @@
  * local/LAN lab use).
  */
 
-// `@openeudi/openid4vp` depends on `@peculiar/x509`, which requires a
-// reflect polyfill (tsyringe DI) at module load time. Must run before that
-// import; `@openeudi/openid4vp` only lists `reflect-metadata` as a
-// devDependency, so consumers are responsible for providing it.
+// `@openeudi/openid4vp@0.9.2` declares `reflect-metadata` as a runtime dep, but its
+// ESM bundle still evaluates `@peculiar/x509` before the polyfill side effect.
+// Preload here so tsyringe is satisfied before that chain runs.
 import "reflect-metadata";
 import {
   createAuthorizationRequest,
