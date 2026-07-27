@@ -9,6 +9,7 @@ Maintainers may add `docs/internal/<topic>.local.md` for ops runbooks (deploy pa
 | File                            | Topic                    |
 | ------------------------------- | ------------------------ |
 | `runbook.local.md`              | Maintainer tracker       |
+| `openeudi-reply.local.md`       | Draft upstream reply     |
 | `openid4vp-lab-notes.local.md`  | OpenID4VP lab notes      |
 | `cdn-origin.local.md`           | CDN → origin ops         |
 | `cdn-apex.local.md`             | Apex DNS / CDN           |

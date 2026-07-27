@@ -27,12 +27,6 @@
  * @packageDocumentation
  */
 
-// `Openid4vpEngine` depends on `@openeudi/openid4vp` -> `@peculiar/x509`,
-// which requires a reflect polyfill (tsyringe DI) registered before that
-// module loads. Side-effect import here guarantees it's in place for any
-// consumer importing from the package root, regardless of import order.
-import "reflect-metadata";
-
 export { VERSION } from "./version.js";
 
 // Types

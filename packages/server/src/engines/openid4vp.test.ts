@@ -1,11 +1,9 @@
-// Must precede any `@openeudi/openid4vp` import — see openid4vp.ts for why.
-import "reflect-metadata";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { describe, it, expect } from "vitest";
-import { StaticTrustStore } from "@openeudi/openid4vp";
 import { Openid4vpEngine } from "./openid4vp.js";
+import { StaticTrustStore } from "@openeudi/openid4vp";
 import { buildAvDcqlQuery, AV_DOCTYPE } from "./openid4vp-mappers.js";
 import type { Session } from "../types.js";
 
