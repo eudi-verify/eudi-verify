@@ -6,6 +6,7 @@ const packageDirs = ["server", "client", "embed", "react"];
 const selectedDirs = process.argv.slice(2);
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 
+let version;
 for (const packageDir of selectedDirs.length > 0 ? selectedDirs : packageDirs) {
   if (!packageDirs.includes(packageDir)) {
     throw new Error(`Unknown package directory: ${packageDir}`);
@@ -15,6 +16,7 @@ for (const packageDir of selectedDirs.length > 0 ? selectedDirs : packageDirs) {
   const packageJson = JSON.parse(
     await readFile(join(packageRoot, "package.json"), "utf8"),
   );
+  version ??= packageJson.version;
 
   await writeFile(
     join(packageRoot, "src", "version.ts"),
@@ -25,4 +27,37 @@ for (const packageDir of selectedDirs.length > 0 ? selectedDirs : packageDirs) {
       "",
     ].join("\n"),
   );
+}
+
+// Full workspace sync also bumps the three files check-docs-version.sh greps.
+if (selectedDirs.length === 0 && version) {
+  const patches = [
+    [
+      "docs/SUPPORTED.md",
+      /\*\*Current release:\*\* v\d+\.\d+\.\d+/,
+      `**Current release:** v${version}`,
+    ],
+    [
+      "THREAT_MODEL.md",
+      /\*\*Version\*\*: \d+\.\d+\.\d+/,
+      `**Version**: ${version}`,
+    ],
+    [
+      "DEPENDENCY.md",
+      /\*\*Version\*\*: \d+\.\d+\.\d+/,
+      `**Version**: ${version}`,
+    ],
+  ];
+
+  for (const [rel, re, replacement] of patches) {
+    const path = join(repoRoot, rel);
+    const before = await readFile(path, "utf8");
+    if (!re.test(before)) {
+      throw new Error(`sync:versions: no version line matched in ${rel}`);
+    }
+    const after = before.replace(re, replacement);
+    if (after !== before) {
+      await writeFile(path, after);
+    }
+  }
 }

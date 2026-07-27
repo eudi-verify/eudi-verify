@@ -49,20 +49,11 @@ Review generated version bumps, changelogs, and `package.json` / lockfile change
 
 ### 2. Sync docs and VERSION constants
 
-Update public version strings to match `packages/server/package.json`:
-
-- `docs/SUPPORTED.md`: `**Current release:** vX.Y.Z`
-- `THREAT_MODEL.md` and `DEPENDENCY.md`: footer `**Version**: X.Y.Z`
-
-`pnpm verify` runs `scripts/check-docs-version.sh` and fails if those lag.
-
-Regenerate committed package `VERSION` constants:
-
 ```bash
 pnpm sync:versions
 ```
 
-This writes `packages/*/src/version.ts`. Build / `prepublishOnly` also regenerate at publish time; run `sync:versions` here so the release commit keeps source in sync. Do this on every release after `pnpm changeset version`.
+This writes `packages/*/src/version.ts` and bumps the version strings that `scripts/check-docs-version.sh` greps (`docs/SUPPORTED.md`, `THREAT_MODEL.md`, `DEPENDENCY.md`). Build / `prepublishOnly` also regenerate `version.ts` at publish time; run `sync:versions` here so the release commit keeps source and docs in sync. Do this on every release after `pnpm changeset version`.
 
 ### 3. Verify (including e2e)
 
@@ -136,8 +127,7 @@ gh release create vX.Y.Z --title "vX.Y.Z" --generate-notes
 
 - [ ] Changesets merged since last release
 - [ ] `pnpm changeset version` applied
-- [ ] `docs/SUPPORTED.md`, `THREAT_MODEL.md`, `DEPENDENCY.md` version strings updated
-- [ ] `pnpm sync:versions` run (committed `version.ts` matches package versions)
+- [ ] `pnpm sync:versions` run (`version.ts` + docs version strings match packages)
 - [ ] `pnpm verify` passes on the release commit
 - [ ] `pnpm test:e2e` passes (not part of CI/`verify`; do not skip)
 - [ ] `chore: release` committed

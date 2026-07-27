@@ -1,5 +1,11 @@
 # @eudi-verify/server
 
+## 1.3.2
+
+### Patch Changes
+
+- [#46](https://github.com/eudi-verify/eudi-verify/pull/46) [`de9a0ea`](https://github.com/eudi-verify/eudi-verify/commit/de9a0ea57cbb45b24879ff06a1b7409ebb3cfed1) Thanks [@mkascel](https://github.com/mkascel)! - bump @openeudi/openid4vp to 0.9.2
+
 ## 1.3.1
 
 ### Patch Changes

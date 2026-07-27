@@ -1,5 +1,12 @@
 # example-vue
 
+## 0.1.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @eudi-verify/embed@1.3.2
+
 ## 0.1.6
 
 ### Patch Changes
