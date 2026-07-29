@@ -1,1 +1,0 @@
-../../docs/rules/docs-boundary.md

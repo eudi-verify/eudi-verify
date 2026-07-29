@@ -34,20 +34,20 @@ Framework-agnostic EUDI Wallet verifier kit. See [README.md](README.md) for over
 
 Rule text lives once, in plain markdown under [`docs/rules/`](docs/rules/). Editor-specific files (`.cursor/rules/*.mdc`, `.claude/rules/`, `.claude/skills/`) are adapters that point at it, so there is one place to edit no matter which tool you use. Using any of them is optional: the conventions themselves are required and are also documented in `CONTRIBUTING.md` and `docs/`. Minimal-diff discipline lives in global editor settings, not a project copy. See [docs/rules/ai-tooling.md](docs/rules/ai-tooling.md).
 
-| Rule                | When                                                                   | Canon                                     |
-| ------------------- | ---------------------------------------------------------------------- | ----------------------------------------- |
-| `project-context`   | Always — architecture, standards                                       | `docs/rules/project-context.md`           |
-| `docs-boundary`     | Always — public vs private docs (canonical)                            | `docs/rules/docs-boundary.md`             |
-| `public-docs`       | Always — supported vs roadmap wording (within public docs)             | `docs/rules/public-docs.md`               |
-| `no-live-deploy`    | Always — no commit/push/PR/deploy without an explicit ask              | `docs/rules/no-live-deploy.md`            |
-| `copy-voice`        | Always — demo/docs/UI prose: no em-dash; don't rewrite wording unasked | `docs/rules/copy-voice.md`                |
-| `ai-tooling`        | Always — AI tooling is optional, never endorsed unevaluated            | `docs/rules/ai-tooling.md`                |
-| `docs-sync`         | When editing packages/docs (file-triggered)                            | `docs/rules/docs-sync.md`                 |
-| `plan-mode`         | Manual — structured planning                                           | `docs/rules/plan-mode.md`                 |
-| `plan-sync`         | WP / roadmap status changes                                            | `.cursor/rules/plan-sync.mdc`             |
-| `threat-model-sync` | Security control changes                                               | `.cursor/rules/threat-model-sync.mdc`     |
-| `commit-style`      | Commits                                                                | `.cursor/rules/commit-style.mdc`          |
-| `maintainer-local`  | Gitignored – project-lead deploy hosts, backup, private docs workflow  | `docs/internal/maintainer-local.local.md` |
+| Rule                | When                                                                     | Canon                                     |
+| ------------------- | ------------------------------------------------------------------------ | ----------------------------------------- |
+| `project-context`   | Always — architecture, standards                                         | `docs/rules/project-context.md`           |
+| `docs-boundary`     | On-demand — classifying public vs private, or adding a new committed doc | `docs/rules/docs-boundary.md`             |
+| `public-docs`       | Always — supported vs roadmap wording (within public docs)               | `docs/rules/public-docs.md`               |
+| `no-live-deploy`    | Always — no commit/push/PR/deploy without an explicit ask                | `docs/rules/no-live-deploy.md`            |
+| `copy-voice`        | Always — demo/docs/UI prose: no em-dash; don't rewrite wording unasked   | `docs/rules/copy-voice.md`                |
+| `ai-tooling`        | Always — AI tooling is optional, never endorsed unevaluated              | `docs/rules/ai-tooling.md`                |
+| `docs-sync`         | When editing packages/docs (file-triggered)                              | `docs/rules/docs-sync.md`                 |
+| `plan-mode`         | Manual — structured planning                                             | `docs/rules/plan-mode.md`                 |
+| `plan-sync`         | WP / roadmap status changes                                              | `.cursor/rules/plan-sync.mdc`             |
+| `threat-model-sync` | Security control changes                                                 | `.cursor/rules/threat-model-sync.mdc`     |
+| `commit-style`      | Commits                                                                  | `.cursor/rules/commit-style.mdc`          |
+| `maintainer-local`  | Gitignored – project-lead deploy hosts, backup, private docs workflow    | `docs/internal/maintainer-local.local.md` |
 
 The last four have no `docs/rules/` twin on purpose: a rule only needs one when a tool has to load it without being asked. On-demand rules are reached by a pointer instead, so the `.mdc` stays canonical.
 

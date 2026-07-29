@@ -1,6 +1,6 @@
 ---
 description: Public vs private documentation — single source of truth for what goes where
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Public vs private docs
