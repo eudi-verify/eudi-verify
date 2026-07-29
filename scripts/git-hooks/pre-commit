@@ -11,6 +11,8 @@ cd "$ROOT"
 
 STAGED=()
 while IFS= read -r -d '' file; do
+  # Prettier errors on an explicitly passed symlink; .claude/rules/* are links to canon.
+  [[ -L "$file" ]] && continue
   STAGED+=("$file")
 done < <(git diff --cached --name-only -z --diff-filter=ACMR)
 

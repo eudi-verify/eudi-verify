@@ -114,11 +114,11 @@ feat(server): add rate limiting per session endpoint
 
 Cursor and other AI assistants are optional. You do not need them to contribute.
 
-This repository includes [`.cursor/rules/`](.cursor/rules/) — Cursor-side copies of project conventions for agents using that editor. **The conventions themselves are required** (commit message format, documentation sync, public-docs accuracy, etc.); they are documented in this file and `docs/`. You can ignore the `.cursor/rules` files if you do not use Cursor.
+Project conventions for agents live in [`docs/rules/`](docs/rules/) as plain markdown; the editor-specific files under `.cursor/rules/` and `.claude/` are thin adapters that point at them. **The conventions themselves are required** (commit message format, documentation sync, public-docs accuracy, etc.); they are also documented in this file and `docs/`. You can ignore the adapter files if you do not use those editors.
 
 - **Required (automated):** `pnpm verify` passes — mirrors CI (build, types, format, tests, OpenAPI lint, licenses, audit, source-security scan).
 - **Required (review):** Commit message format and documentation guidelines in this file; human review for security-sensitive changes.
-- **Optional:** Using Cursor, an AI assistant, or reading `.cursor/rules/` directly.
+- **Optional:** Using Cursor, an AI assistant, or reading `docs/rules/` directly.
 - **Public docs:** Do not add unevaluated third-party agent plugins or rulesets to `README.md`, `docs/`, or package READMEs.
 
 ## AI-assisted Development
@@ -202,16 +202,16 @@ If your change affects public APIs or user-facing behavior:
 3. Update `docs/SUPPORTED.md` if platform support changes
 4. Keep `openapi/eudi-verifier.yaml` in sync with API changes
 
-See [.cursor/rules/docs-sync.mdc](.cursor/rules/docs-sync.mdc) for detailed documentation sync guidelines.
+See [docs/rules/docs-sync.md](docs/rules/docs-sync.md) for detailed documentation sync guidelines.
 
-**Prose / UI copy:** Do not use em-dashes (`—`). Prefer a colon for asides; use an en-dash (`–`) only for titles, empty placeholders, contrastive breaks, or when a colon is already in the clause. Do not rewrite existing wording just to sound less "AI" unless asked. Details: [.cursor/rules/copy-voice.mdc](.cursor/rules/copy-voice.mdc).
+**Prose / UI copy:** Do not use em-dashes (`—`). Prefer a colon for asides; use an en-dash (`–`) only for titles, empty placeholders, contrastive breaks, or when a colon is already in the clause. Do not rewrite existing wording just to sound less "AI" unless asked. Details: [docs/rules/copy-voice.md](docs/rules/copy-voice.md).
 
 ## Architecture Decisions
 
 Before proposing major changes, please review:
 
 - [docs/PLAN.md](docs/PLAN.md) — Technical roadmap and design principles
-- [.cursor/rules/project-context.mdc](.cursor/rules/project-context.mdc) — Framework-agnostic philosophy
+- [docs/rules/project-context.md](docs/rules/project-context.md) — Framework-agnostic philosophy
 - [DEPENDENCY.md](DEPENDENCY.md) — Dependency policy and sovereignty constraints
 
 The project maintains strict framework-agnostic design: no React/Vue/Lit in core packages (`server`, `client`, `embed`). Framework bindings go in separate packages (e.g., `@eudi-verify/react` in WP9).

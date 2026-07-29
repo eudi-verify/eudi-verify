@@ -1,6 +1,6 @@
 # Private notes convention
 
-Canonical public/private rules: `.cursor/rules/docs-boundary.mdc`.
+Canonical public/private rules: `docs/rules/docs-boundary.md`.
 
 **This directory is public in git** — only this README is committed. Privacy is by **filename**, not folder: `*.local.md` anywhere in the repo is gitignored (see root `.gitignore`).
 

@@ -59,7 +59,7 @@ chore: update dependencies
 
 ### AI-assisted footer
 
-For substantive AI-assisted work, add metadata after the commit body. Model/version is required. Do not include prompt text or prompt summaries:
+For substantive AI-assisted work, add metadata after the commit body. Tool and model/version are required. Do not include prompt text or prompt summaries:
 
 ```
 feat(embed): add keyboard trap for modal focus
@@ -67,23 +67,30 @@ feat(embed): add keyboard trap for modal focus
 - Trap focus inside verification dialog
 - Restore focus on close
 
-AI-assisted: Cursor <model-or-version>
+AI-assisted: <tool> (<model-or-version>)
+```
+
+Name the tool that actually did the work, for example:
+
+```
+AI-assisted: Cursor (claude-opus-5)
+AI-assisted: Claude Code (claude-opus-5)
 ```
 
 If you edited AI-generated code manually, add `(edited)`:
 
 ```
-AI-assisted: Cursor <model-or-version> (edited)
+AI-assisted: Claude Code (claude-opus-5) (edited)
 ```
 
-**Do include** the `AI-assisted:` footer when drafting commit text for the user (required by [CONTRIBUTING.md](../../../CONTRIBUTING.md)).
+**Do include** the `AI-assisted:` footer when drafting commit text for the user (required by [CONTRIBUTING.md](../../CONTRIBUTING.md)).
 
 **Do not** add:
 
 - `Co-authored-by:` for Cursor, bots, or AI tools (pollutes the GitHub contributors list)
 - "Made with Cursor" or similar product badges in PR bodies
 
-See [CONTRIBUTING.md](../../../CONTRIBUTING.md) for full AI-assisted development policy.
+See [CONTRIBUTING.md](../../CONTRIBUTING.md) for full AI-assisted development policy.
 
 ## Rules
 

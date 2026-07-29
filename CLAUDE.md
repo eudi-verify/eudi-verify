@@ -2,24 +2,26 @@
 
 # Claude Code notes
 
-The imports above are the canonical policy (also read natively by Cursor via `AGENTS.md` and enforced there via `.cursor/rules/*.mdc`). Nothing below restates that policy — it only maps Claude Code's activation model onto it.
+`AGENTS.md` above is the canonical policy, shared with every other agent tool. Nothing here restates it: this file only maps Claude Code's activation model onto it.
 
 Minimal-diff discipline: ponytail plugin (installed globally, not repeated here).
 
-## When planning
+## Where the rules live
 
-@docs/agent-plan-mode.md
+Canon is plain markdown in `docs/rules/*.md`, never in a tool's own format. Cursor reads it through `.cursor/rules/*.mdc`; Claude Code reads it through two adapters, chosen to match how each rule is meant to fire:
 
-Claude Code's `/plan` (or `Shift+Tab` into plan mode) enforces read-only at the tool level; the imported doc above defines what a good plan looks like while in that mode.
+| Rule fires                      | Claude Code adapter                                                              |
+| ------------------------------- | -------------------------------------------------------------------------------- |
+| Always                          | `.claude/rules/<name>.md` — symlink to canon, loaded every session               |
+| When matching files are touched | `.claude/rules/<name>.md` — symlink to canon, which carries `paths:` frontmatter |
+| When the task calls for it      | `.claude/skills/<name>/SKILL.md` — pointer, fires on description match           |
+| Only when you ask               | `.claude/skills/<name>/SKILL.md` with `disable-model-invocation: true`           |
 
-## On-demand rules
+Adapters never restate canon. Edit `docs/rules/*.md` (or, for the three on-demand rules whose canon is still the `.mdc`, edit that) and both tools pick the change up.
 
-These stay as Cursor `.mdc` files (single source; Claude Code cannot `@`-import `.mdc`). Instead of listing them here for you to remember, they're wired as self-triggering skills under `.claude/skills/` — each one is a thin pointer (description for relevance-matching, body says "read the `.mdc`"), so nothing is duplicated and nothing loads until it's relevant:
+## Planning
 
-- `commit-style` — fires when writing a commit message
-- `plan-sync` — fires when completing/starting a work package
-- `threat-model-sync` — fires when changing security controls
-- `docs-sync` — fires on both intent match and file-path match (`packages/*/src/**`, etc.)
+`/plan`, `Shift+Tab`, or `--permission-mode plan` enforce read-only at the tool level. They do not load the repo's planning rules: run `/plan-mode` for those.
 
 ## Scope
 
