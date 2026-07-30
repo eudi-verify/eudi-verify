@@ -21,3 +21,6 @@ scripts/provision-base.conf
 # Playwright e2e output (regenerated every run)
 **/playwright-report/
 **/test-results/
+
+# Maintainer-local Claude rule (symlink to a gitignored canon file)
+.claude/rules/maintainer-local.md

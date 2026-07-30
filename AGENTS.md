@@ -9,7 +9,7 @@ Framework-agnostic EUDI Wallet verifier kit. See [README.md](README.md) for over
 - [docs/INTEGRATION.md](docs/INTEGRATION.md) — end-to-end integration
 - [THREAT_MODEL.md](THREAT_MODEL.md) — security controls and threat status
 - [openapi/eudi-verifier.yaml](openapi/eudi-verifier.yaml) — API contract
-- `.cursor/rules/docs-boundary.mdc` — public vs private docs (canonical); private notes in `*.local.md` / `docs/internal/`
+- `docs/rules/docs-boundary.md` — public vs private docs (canonical); private notes in `*.local.md` / `docs/internal/`
 
 ## Verify first
 
@@ -19,33 +19,38 @@ Framework-agnostic EUDI Wallet verifier kit. See [README.md](README.md) for over
 
 ## Hard constraints
 
-- **No live deploys, commits, or pushes** unless the user explicitly requests them in that message — no `git push`, `scp`/`rsync`, or remote restarts/provision scripts; give copy-paste steps for the user to run (see `.cursor/rules/no-live-deploy.mdc`)
-- **No GitHub co-author / product branding** — never add `Co-authored-by:` for Cursor/bots (pollutes contributors) or "Made with Cursor" (or similar) on PR bodies. Do keep the repo's `AI-assisted:` commit footer when drafting commit text (see `.cursor/rules/commit-style.mdc` / `CONTRIBUTING.md`)
+- **No live deploys, commits, or pushes** unless the user explicitly requests them in that message — no `git push`, never force-push, no `gh pr create`, issue/PR comments, `scp`/`rsync`, or remote restarts/provision scripts. "commit" / "sign off" is local only, not push. Plan Build / "complete all todos" / plan checklists do **not** authorize remote writes; give copy-paste steps for the user to run (see `docs/rules/no-live-deploy.md`)
+- **DCO** — every commit must include `Signed-off-by:` (`git commit -s`); see `docs/rules/commit-style.md` / `CONTRIBUTING.md`
+- **No GitHub co-author / product branding** — never add `Co-authored-by:` for Cursor/bots (pollutes contributors) or "Made with Cursor" (or similar) on PR bodies. Do keep the repo's `AI-assisted:` commit footer when drafting commit text (see `docs/rules/commit-style.md` / `CONTRIBUTING.md`)
 - **Node.js 22+**, pnpm workspaces, TypeScript strict mode
 
 - **Public accuracy**: `docs/SUPPORTED.md` is canonical — do not claim unsupported platforms or packages exist
-- **Public vs private docs**: classify before writing — maintainer ops and post-merge admin go in gitignored `*.local.md`, not `CONTRIBUTING.md` / PR templates / workflow comments; see `.cursor/rules/docs-boundary.mdc`
-- **Sovereignty**: no US identity SaaS in core; see `.cursor/rules/project-context.mdc`
+- **Public vs private docs**: classify before writing — maintainer ops and post-merge admin go in gitignored `*.local.md`, not `CONTRIBUTING.md` / PR templates / workflow comments; see `docs/rules/docs-boundary.md`
+- **Sovereignty**: no US identity SaaS in core; see `docs/rules/project-context.md`
 - **Security**: update [THREAT_MODEL.md](THREAT_MODEL.md) when changing security controls
 - **Verify locally**: `pnpm verify` mirrors CI before claiming checks pass
-- **Planning**: read-only planning phase before code changes — rules in [docs/agent-plan-mode.md](docs/agent-plan-mode.md); enter via Cursor Plan mode + `@plan-mode`, or Claude Code `/plan`
+- **Planning**: read-only planning phase before code changes — rules in [docs/rules/plan-mode.md](docs/rules/plan-mode.md); enter via Cursor Plan mode + `@plan-mode`, or Claude Code `/plan` followed by `/plan-mode`
 
-## Cursor rules (optional)
+## Agent rules
 
-`.cursor/rules/` mirrors project conventions for Cursor users. Policy for all contributors lives in `CONTRIBUTING.md` and `docs/`. The gitignored rule `maintainer-local.mdc` loads only on machines that have it — see `.gitignore`. Minimal-diff discipline lives in Cursor User Rules (global), not a project copy. See `.cursor/rules/ai-tooling.mdc`.
+Rule text lives once, in plain markdown under [`docs/rules/`](docs/rules/). Editor-specific files (`.cursor/rules/*.mdc`, `.claude/rules/`, `.claude/skills/`) are adapters that point at it, so there is one place to edit no matter which tool you use. Using any of them is optional: the conventions themselves are required and are also documented in `CONTRIBUTING.md` and `docs/`. Minimal-diff discipline lives in global editor settings, not a project copy. See [docs/rules/ai-tooling.md](docs/rules/ai-tooling.md).
 
-| Rule                    | When                                                                        |
-| ----------------------- | --------------------------------------------------------------------------- |
-| `project-context.mdc`   | Always — architecture, standards                                            |
-| `docs-boundary.mdc`     | Always — public vs private docs (canonical)                                 |
-| `public-docs.mdc`       | Always — supported vs roadmap wording (within public docs)                  |
-| `docs-sync.mdc`         | When editing packages/docs (globs)                                          |
-| `plan-mode.mdc`         | Manual `@plan-mode` – structured planning                                   |
-| `plan-sync.mdc`         | WP / roadmap status changes                                                 |
-| `threat-model-sync.mdc` | Security control changes                                                    |
-| `commit-style.mdc`      | Commits                                                                     |
-| `copy-voice.mdc`        | Demo/docs/UI prose: no em-dash; prefer colon; don't rewrite wording unasked |
-| `maintainer-local.mdc`  | Gitignored – project-lead deploy hosts, backup, private docs workflow       |
+| Rule                | When                                                                     | Canon                                     |
+| ------------------- | ------------------------------------------------------------------------ | ----------------------------------------- |
+| `project-context`   | Always — architecture, standards                                         | `docs/rules/project-context.md`           |
+| `docs-boundary`     | On-demand — classifying public vs private, or adding a new committed doc | `docs/rules/docs-boundary.md`             |
+| `public-docs`       | Always — supported vs roadmap wording (within public docs)               | `docs/rules/public-docs.md`               |
+| `no-live-deploy`    | Always — no commit/push/PR/deploy without an explicit ask                | `docs/rules/no-live-deploy.md`            |
+| `copy-voice`        | Always — demo/docs/UI prose: no em-dash; don't rewrite wording unasked   | `docs/rules/copy-voice.md`                |
+| `ai-tooling`        | Always — AI tooling is optional, never endorsed unevaluated              | `docs/rules/ai-tooling.md`                |
+| `docs-sync`         | When editing packages/docs (file-triggered)                              | `docs/rules/docs-sync.md`                 |
+| `plan-mode`         | Manual — structured planning                                             | `docs/rules/plan-mode.md`                 |
+| `plan-sync`         | WP / roadmap status changes                                              | `docs/rules/plan-sync.md`                 |
+| `threat-model-sync` | Security control changes                                                 | `docs/rules/threat-model-sync.md`         |
+| `commit-style`      | Commits                                                                  | `docs/rules/commit-style.md`              |
+| `maintainer-local`  | Gitignored – project-lead deploy hosts, backup, private docs workflow    | `docs/internal/maintainer-local.local.md` |
+
+`maintainer-local` is the only rule with no `docs/rules/` twin: its canon is the gitignored `docs/internal` file, not a public rule.
 
 ## Documentation maintenance
 

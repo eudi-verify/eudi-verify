@@ -17,11 +17,12 @@ Tool-agnostic rules for the read-only planning phase, shared by every AI tool us
 4. **Load-bearing detail exception:** include a minimal concrete snippet only when the specific value IS the decision and is non-obvious or error-prone (a counterintuitive path, a subtle flag combination, a command whose exact form has a correctness or downtime consequence). Keep it to the fewest lines that carry the signal.
 5. **Disclose deviations:** if the plan genuinely needs more concreteness than these rules allow (e.g. a different agent will execute it without context), say so explicitly and let the user decide rather than silently expanding scope.
 6. **Checkpoint large plans:** for large or multi-step plans, group steps into ordered checkpoints at natural stopping points, each ending in a coherent, testable, committable state. Tag each task with its checkpoint and give each checkpoint a one-line "done when / safe to stop" gate. Call out any forced human-in-the-loop stop (hardware, credentials, manual capture) and any dependency gate (a step that must not proceed until an earlier check passes). Skip this for short plans where checkpoints add no value.
-7. **Hard stop:** halt and wait for user review immediately after generating the task checklist.
+7. **User-owned remote writes:** never put `git push`, `gh pr create`, PR merge, deploy, or GitHub issue/PR comments in **agent** todos. Cursor Plan **Build** injects "complete all the to-dos" boilerplate — if those steps are on the checklist, the agent will try to finish them. Put remote writes under a short **User runs** note with copy-paste commands instead. Agent todos stop at local edits (and local commit only if the user already asked to commit). See `docs/rules/no-live-deploy.md`.
+8. **Hard stop:** halt and wait for user review immediately after generating the task checklist.
 
 ## Tool activation
 
-| Tool        | How this phase is entered                                       |
-| ----------- | --------------------------------------------------------------- |
-| Cursor      | Native Plan mode + `@plan-mode` (`.cursor/rules/plan-mode.mdc`) |
-| Claude Code | `/plan`, `Shift+Tab` toggle, or `--permission-mode plan`        |
+| Tool        | How this phase is entered                                                                                          |
+| ----------- | ------------------------------------------------------------------------------------------------------------------ |
+| Cursor      | Native Plan mode + `@plan-mode` (`.cursor/rules/plan-mode.mdc`, a pointer)                                         |
+| Claude Code | `/plan`, `Shift+Tab`, or `--permission-mode plan` for read-only enforcement, plus `/plan-mode` to load these rules |

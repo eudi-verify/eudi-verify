@@ -1,0 +1,42 @@
+---
+paths:
+  - "packages/*/src/**"
+  - "packages/*/README.md"
+  - "docs/INTEGRATION.md"
+  - "docs/integration-*.md"
+  - "docs/SUPPORTED.md"
+  - ".github/internal/wp/WP9.md"
+  - "README.md"
+---
+
+# Documentation Sync
+
+See also **[public-docs.md](./public-docs.md)** — supported vs roadmap accuracy (always applies).
+
+## When to Update Docs
+
+After modifying package implementations, check if documentation needs updates:
+
+| Changed                                         | Update                                                                          |
+| ----------------------------------------------- | ------------------------------------------------------------------------------- |
+| `packages/server/src/**`                        | `packages/server/README.md`                                                     |
+| `packages/client/src/**`                        | `packages/client/README.md`                                                     |
+| `packages/embed/src/**`                         | `packages/embed/README.md`                                                      |
+| Any public API change                           | `docs/INTEGRATION.md`, `docs/integration-*.md`                                  |
+| Support matrix (stack, example, package status) | `docs/SUPPORTED.md` + `README.md`                                               |
+| WP9 React package or example                    | `.github/internal/wp/WP9.md`, `packages/react/README.md`, `docs/INTEGRATION.md` |
+| New WP or scope change                          | `docs/PLAN.md`                                                                  |
+
+## What to Check
+
+- **Exports changed?** → Update API reference section
+- **New config option?** → Add to configuration table
+- **Breaking change?** → Update code examples
+- **New error type?** → Add to error handling section
+
+## Don't Over-Document
+
+- Keep READMEs concise (devs read code)
+- One working example > lengthy explanation
+- Link to OpenAPI spec for full API details
+- Skip obvious changes (internal refactors, test fixes)

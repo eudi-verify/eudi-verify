@@ -1,0 +1,59 @@
+# eudi-verify Project Context
+
+See [AGENTS.md](../../AGENTS.md) for verify-first behavior and hard constraints (also loaded natively by Cursor — not restated here to avoid double-loading).
+
+## What This Is
+
+Framework-agnostic EUDI Wallet verifier kit — a "reCAPTCHA for EU digital identity." Three packages:
+
+- `@eudi-verify/server` — REST API handlers (**Node.js 22+** today; other backends via OpenAPI — see `docs/SUPPORTED.md`)
+- `@eudi-verify/client` — Vanilla TS API client (custom UIs, zero framework deps)
+- `@eudi-verify/embed` — `<eudi-verify>` web component (any HTML page / embeddable in SPAs)
+
+**Public docs accuracy:** `docs/SUPPORTED.md` is canonical for supported vs roadmap. Do not claim PHP/Python/Java libraries or WordPress/Vue wrappers exist until shipped. See `docs/rules/public-docs.md`.
+
+## Architecture Decisions (Settled)
+
+- **Vanilla Custom Elements** — No Lit, no React in core
+- **pnpm workspaces** — No Turborepo
+- **VerifierEngine interface** — Swappable protocol implementations
+- **Primary engine:** `@openeudi/core` (Luxembourg, Apache-2.0)
+- **Fallback engine:** Sphereon OID4VC (if openeudi has issues)
+
+## Sovereignty Constraints
+
+No US proprietary middleware. Allowed:
+
+- US-origin OSS (MIT/Apache-2.0): Node, TypeScript, npm packages ✓
+- EU-hosted infrastructure: Hetzner, self-hosted ✓
+
+Avoid:
+
+- US identity SaaS: Auth0, Clerk, Firebase Auth ✗
+- Vercel-only deployment assumptions ✗
+- Google libraries in core (Lit) ✗
+
+## Coding Standards
+
+- TypeScript strict mode
+- Vitest for testing
+- OpenAPI 3.1 for API contracts
+- AGPL-3.0 license; runtime deps must be Apache-2.0/MIT/BSD/ISC
+- **Node.js 22+** — repo requires Node 22 or higher
+
+## File Patterns
+
+| Path                         | Purpose                                          |
+| ---------------------------- | ------------------------------------------------ |
+| `packages/server/src/`       | Server implementation                            |
+| `packages/client/src/`       | Client library                                   |
+| `packages/embed/src/`        | Web component                                    |
+| `packages/react/src/`        | React wrapper (WP9)                              |
+| `openapi/*.yaml`             | API contract (OpenAPI 3.1)                       |
+| `docs/PLAN.md`               | Technical roadmap                                |
+| `docs/SUPPORTED.md`          | Supported platforms vs roadmap (public accuracy) |
+| `.github/internal/wp/WP*.md` | Work package acceptance criteria                 |
+
+## Session Context
+
+Optional gitignored private notes may exist per `.gitignore`; see [docs-boundary.md](./docs-boundary.md).

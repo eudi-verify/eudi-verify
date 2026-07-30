@@ -7,4 +7,4 @@ alwaysApply: false
 
 **Activation:** This rule applies only when explicitly `@plan-mode` in chat. Use with Cursor's native Plan mode. If Plan mode is not active, ignore this rule entirely.
 
-Rules: see [docs/agent-plan-mode.md](../../docs/agent-plan-mode.md) — tool-agnostic, shared with Claude Code's `/plan`. Not restated here to avoid double-loading.
+Rules: see [docs/rules/plan-mode.md](../../docs/rules/plan-mode.md) — tool-agnostic canon, shared with Claude Code. Not restated here to avoid double-loading.

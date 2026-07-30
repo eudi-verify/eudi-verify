@@ -1,0 +1,24 @@
+# AI Tooling Guidance
+
+## Optional editors and AI tools
+
+Third-party AI and agent tooling is **optional**. It is **not** a project dependency.
+
+- Contributors may use any editor or none; no AI tool is required to contribute.
+- `pnpm verify` mirrors CI — the automated gate for build, types, tests, OpenAPI lint, licenses, and dependency audit. Other required conventions (commit format, docs sync, human review) live in `CONTRIBUTING.md` and are enforced at review time.
+
+## `.cursor/rules` vs project conventions
+
+Files under `.cursor/rules/` are **Cursor-side copies** of project conventions (commit style, docs sync, public-docs accuracy, etc.). The conventions apply to **all** contributors; only reading the `.cursor/rules` files is optional if you do not use Cursor. Canonical policy for humans lives in **[AGENTS.md](../../AGENTS.md)**, `CONTRIBUTING.md`, and `docs/`.
+
+## Public documentation
+
+Do **not** add unevaluated third-party agent plugins, rulesets, or skills to public-facing docs — see [docs-boundary.md](./docs-boundary.md). Public "supported" claims for tooling follow the same bar as product features: [docs/SUPPORTED.md](../SUPPORTED.md), [public-docs.md](./public-docs.md).
+
+## Adding or changing rules
+
+When adding `.cursor/rules` content:
+
+- Keep project conventions (docs accuracy, architecture, commit style) – mirror critical policy in neutral docs (`CONTRIBUTING.md`, `docs/`) where it applies to everyone.
+- Do not imply mandatory AI/editor tooling; project conventions themselves are required.
+- Do not name or endorse specific third-party tools until evaluated and intentionally documented.

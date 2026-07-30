@@ -1,28 +1,8 @@
 ---
-description: Never commit or deploy to production without explicit user request
+description: Never commit, push, force-push, or deploy without an explicit user request
 alwaysApply: true
 ---
 
 # No live deploys, commits, or pushes
 
-## Hard stops
-
-- **Never commit** git changes unless the user explicitly asks in that message.
-- **Never push** (`git push`, `git push -u`, force-push, or any remote write) unless the user explicitly asks in that message — not when a fix is "ready", not when cleaning up a branch, not when updating a PR. Give the user the exact push command to run themselves.
-- **Never deploy** to production, a live demo server, or any remote host unless the user explicitly asks in that message.
-- **Never** `scp`, `rsync`, `systemctl restart`, nginx reload, or run install/provision scripts on a remote host unless explicitly requested for that action.
-- **Never** add `Co-authored-by:` for Cursor, bots, or AI tools, or "Made with Cursor" (or similar) on PR bodies. Those are not the same as the repo's required `AI-assisted:` commit footer — see `commit-style.mdc` / `CONTRIBUTING.md`.
-
-
-
-## Allowed without explicit deploy/commit request
-
-- Read-only investigation on remote hosts (config inspection, logs, DNS, `nginx -T`) when the user has granted SSH access for diagnosis.
-- Local workspace edits, local tests, and docs updates.
-- Tell the user what commands **they** should run to deploy; do not run deploy commands yourself.
-
-## When a fix is ready
-
-1. Make changes locally in the repo.
-2. Summarize the diff and give the user copy-paste deploy steps.
-3. Wait for explicit approval before any commit, push, or live-server action.
+Never commit, push, force-push, `gh pr create`, comment on issues/PRs, or touch a remote host unless the user asks in that message. "commit" / "sign off" is local only. Plan Build boilerplate is not authorization. Full rules: [docs/rules/no-live-deploy.md](../../docs/rules/no-live-deploy.md).
