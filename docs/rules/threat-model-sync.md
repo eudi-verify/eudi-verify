@@ -14,6 +14,7 @@ Keep `/THREAT_MODEL.md` in sync with code changes and GitHub issues.
 2. If adding a new threat, assign the next T-number (T11, T12, etc.)
 
 3. Link to GitHub issue if work remains:
+
    ```markdown
    **Planned Mitigations**:
 
