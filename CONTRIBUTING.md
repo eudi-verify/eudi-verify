@@ -169,7 +169,7 @@ Keep AI attribution in the **`AI-assisted:` commit footer** only. Do **not**:
 - Security-sensitive areas (`server` tokens, crypto, auth flows) require explicit human review before merge
 - Contributors must understand and be able to explain design decisions in their PRs
 
-See [.cursor/rules/commit-style.mdc](.cursor/rules/commit-style.mdc) for full conventional commit conventions.
+See [docs/rules/commit-style.md](docs/rules/commit-style.md) for full conventional commit conventions.
 
 ## Pull Request Process
 

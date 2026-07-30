@@ -303,7 +303,7 @@ When implementing security controls:
 2. Link to GitHub issues for planned work
 3. Remove from "Future Hardening" when completed
 
-See [.cursor/rules/threat-model-sync.mdc](.cursor/rules/threat-model-sync.mdc) for sync guidelines.
+See [docs/rules/threat-model-sync.md](docs/rules/threat-model-sync.md) for sync guidelines.
 
 ---
 

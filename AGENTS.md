@@ -20,8 +20,8 @@ Framework-agnostic EUDI Wallet verifier kit. See [README.md](README.md) for over
 ## Hard constraints
 
 - **No live deploys, commits, or pushes** unless the user explicitly requests them in that message — no `git push`, never force-push, no `gh pr create`, issue/PR comments, `scp`/`rsync`, or remote restarts/provision scripts. "commit" / "sign off" is local only, not push. Plan Build / "complete all todos" / plan checklists do **not** authorize remote writes; give copy-paste steps for the user to run (see `docs/rules/no-live-deploy.md`)
-- **DCO** — every commit must include `Signed-off-by:` (`git commit -s`); see `.cursor/rules/commit-style.mdc` / `CONTRIBUTING.md`
-- **No GitHub co-author / product branding** — never add `Co-authored-by:` for Cursor/bots (pollutes contributors) or "Made with Cursor" (or similar) on PR bodies. Do keep the repo's `AI-assisted:` commit footer when drafting commit text (see `.cursor/rules/commit-style.mdc` / `CONTRIBUTING.md`)
+- **DCO** — every commit must include `Signed-off-by:` (`git commit -s`); see `docs/rules/commit-style.md` / `CONTRIBUTING.md`
+- **No GitHub co-author / product branding** — never add `Co-authored-by:` for Cursor/bots (pollutes contributors) or "Made with Cursor" (or similar) on PR bodies. Do keep the repo's `AI-assisted:` commit footer when drafting commit text (see `docs/rules/commit-style.md` / `CONTRIBUTING.md`)
 - **Node.js 22+**, pnpm workspaces, TypeScript strict mode
 
 - **Public accuracy**: `docs/SUPPORTED.md` is canonical — do not claim unsupported platforms or packages exist
@@ -45,12 +45,12 @@ Rule text lives once, in plain markdown under [`docs/rules/`](docs/rules/). Edit
 | `ai-tooling`        | Always — AI tooling is optional, never endorsed unevaluated              | `docs/rules/ai-tooling.md`                |
 | `docs-sync`         | When editing packages/docs (file-triggered)                              | `docs/rules/docs-sync.md`                 |
 | `plan-mode`         | Manual — structured planning                                             | `docs/rules/plan-mode.md`                 |
-| `plan-sync`         | WP / roadmap status changes                                              | `.cursor/rules/plan-sync.mdc`             |
-| `threat-model-sync` | Security control changes                                                 | `.cursor/rules/threat-model-sync.mdc`     |
-| `commit-style`      | Commits                                                                  | `.cursor/rules/commit-style.mdc`          |
+| `plan-sync`         | WP / roadmap status changes                                              | `docs/rules/plan-sync.md`                 |
+| `threat-model-sync` | Security control changes                                                 | `docs/rules/threat-model-sync.md`         |
+| `commit-style`      | Commits                                                                  | `docs/rules/commit-style.md`              |
 | `maintainer-local`  | Gitignored – project-lead deploy hosts, backup, private docs workflow    | `docs/internal/maintainer-local.local.md` |
 
-The last four have no `docs/rules/` twin on purpose: a rule only needs one when a tool has to load it without being asked. On-demand rules are reached by a pointer instead, so the `.mdc` stays canonical.
+`maintainer-local` is the only rule with no `docs/rules/` twin: its canon is the gitignored `docs/internal` file, not a public rule.
 
 ## Documentation maintenance
 

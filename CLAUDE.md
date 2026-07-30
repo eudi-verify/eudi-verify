@@ -17,7 +17,7 @@ Canon is plain markdown in `docs/rules/*.md`, never in a tool's own format. Curs
 | When the task calls for it      | `.claude/skills/<name>/SKILL.md` — pointer, fires on description match           |
 | Only when you ask               | `.claude/skills/<name>/SKILL.md` with `disable-model-invocation: true`           |
 
-Adapters never restate canon. Edit `docs/rules/*.md` (or, for the three on-demand rules whose canon is still the `.mdc`, edit that) and both tools pick the change up.
+Adapters never restate canon. Edit `docs/rules/*.md` and both tools pick the change up.
 
 ## Planning
 

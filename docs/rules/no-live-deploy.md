@@ -8,7 +8,7 @@
 - **Never** `gh pr create`, `gh pr merge`, or post GitHub issue/PR comments unless the user explicitly asks for that remote write in that message. Preparing a local branch + copy-paste `gh` commands is fine.
 - **Never deploy** to production, a live demo server, or any remote host unless the user explicitly asks in that message.
 - **Never** `scp`, `rsync`, `systemctl restart`, nginx reload, or run install/provision scripts on a remote host unless explicitly requested for that action.
-- **Never** add `Co-authored-by:` for Cursor, bots, or AI tools, or "Made with Cursor" (or similar) on PR bodies. Those are not the same as the repo's required `AI-assisted:` commit footer — see `.cursor/rules/commit-style.mdc` / `CONTRIBUTING.md`.
+- **Never** add `Co-authored-by:` for Cursor, bots, or AI tools, or "Made with Cursor" (or similar) on PR bodies. Those are not the same as the repo's required `AI-assisted:` commit footer — see `docs/rules/commit-style.md` / `CONTRIBUTING.md`.
 
 ## What counts as an explicit request
 

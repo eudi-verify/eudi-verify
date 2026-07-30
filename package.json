@@ -18,6 +18,7 @@
     "lint:api": "spectral lint openapi/eudi-verifier.yaml",
     "build": "pnpm -r build",
     "verify": "bash scripts/ci.sh",
+    "check:rules": "bash scripts/check-rule-layering.sh",
     "hooks:install": "bash scripts/install-git-hooks.sh"
   },
   "devDependencies": {
