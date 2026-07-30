@@ -19,7 +19,8 @@ Framework-agnostic EUDI Wallet verifier kit. See [README.md](README.md) for over
 
 ## Hard constraints
 
-- **No live deploys, commits, or pushes** unless the user explicitly requests them in that message — no `git push`, `gh pr create`, issue/PR comments, `scp`/`rsync`, or remote restarts/provision scripts. Plan Build / "complete all todos" / plan checklists do **not** authorize remote writes; give copy-paste steps for the user to run (see `docs/rules/no-live-deploy.md`)
+- **No live deploys, commits, or pushes** unless the user explicitly requests them in that message — no `git push`, never force-push, no `gh pr create`, issue/PR comments, `scp`/`rsync`, or remote restarts/provision scripts. "commit" / "sign off" is local only, not push. Plan Build / "complete all todos" / plan checklists do **not** authorize remote writes; give copy-paste steps for the user to run (see `docs/rules/no-live-deploy.md`)
+- **DCO** — every commit must include `Signed-off-by:` (`git commit -s`); see `.cursor/rules/commit-style.mdc` / `CONTRIBUTING.md`
 - **No GitHub co-author / product branding** — never add `Co-authored-by:` for Cursor/bots (pollutes contributors) or "Made with Cursor" (or similar) on PR bodies. Do keep the repo's `AI-assisted:` commit footer when drafting commit text (see `.cursor/rules/commit-style.mdc` / `CONTRIBUTING.md`)
 - **Node.js 22+**, pnpm workspaces, TypeScript strict mode
 

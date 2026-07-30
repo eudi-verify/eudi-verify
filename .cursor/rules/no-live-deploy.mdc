@@ -1,8 +1,8 @@
 ---
-description: Never commit or deploy to production without explicit user request
+description: Never commit, push, force-push, or deploy without an explicit user request
 alwaysApply: true
 ---
 
 # No live deploys, commits, or pushes
 
-Never commit, push, `gh pr create`, comment on issues/PRs, or touch a remote host unless the user asks in that message. Plan Build boilerplate is not authorization. Full rules: [docs/rules/no-live-deploy.md](../../docs/rules/no-live-deploy.md).
+Never commit, push, force-push, `gh pr create`, comment on issues/PRs, or touch a remote host unless the user asks in that message. "commit" / "sign off" is local only. Plan Build boilerplate is not authorization. Full rules: [docs/rules/no-live-deploy.md](../../docs/rules/no-live-deploy.md).

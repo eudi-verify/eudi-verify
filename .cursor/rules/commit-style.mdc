@@ -1,5 +1,5 @@
 ---
-description: Conventional commit format and AI-assisted footer for this repo
+description: Conventional commit format, DCO Signed-off-by, and AI-assisted footer for this repo
 alwaysApply: false
 ---
 
@@ -85,6 +85,16 @@ AI-assisted: Claude Code (claude-opus-5) (edited)
 
 **Do include** the `AI-assisted:` footer when drafting commit text for the user (required by [CONTRIBUTING.md](../../CONTRIBUTING.md)).
 
+### DCO sign-off (required)
+
+Every commit must include a `Signed-off-by:` trailer (Developer Certificate of Origin). CI rejects unsigned commits. Use `git commit -s` (or `git commit --amend -s` when amending). The trailer must match the committer name/email from git config:
+
+```
+Signed-off-by: Jane Doe <jane@example.com>
+```
+
+Place it after the `AI-assisted:` footer when both are present. Full policy: [CONTRIBUTING.md](../../CONTRIBUTING.md) (License & DCO).
+
 **Do not** add:
 
 - `Co-authored-by:` for Cursor, bots, or AI tools (pollutes the GitHub contributors list)
@@ -100,4 +110,5 @@ See [CONTRIBUTING.md](../../CONTRIBUTING.md) for full AI-assisted development po
 4. No period at end of first line
 5. Blank line before bullet points
 6. Add `AI-assisted:` metadata for substantive AI contributions (see above)
-7. Never add `Co-authored-by:` bot/Cursor lines or "Made with Cursor" PR branding
+7. Always add `Signed-off-by:` via `git commit -s` (DCO; required)
+8. Never add `Co-authored-by:` bot/Cursor lines or "Made with Cursor" PR branding
