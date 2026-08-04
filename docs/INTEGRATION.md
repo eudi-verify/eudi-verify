@@ -2,7 +2,7 @@
 
 Add EU digital identity verification to your website.
 
-> **Platform support:** Node.js backend with plain HTML, React, or Vue frontends today. PHP and other stacks: use a [Node sidecar](./integration-architecture.md#production-flow-php-proxy--node-sidecar) or implement the [OpenAPI spec](../openapi/eudi-verifier.yaml). See [SUPPORTED.md](./SUPPORTED.md) for the full matrix.
+> **Platform support:** Node.js backend with plain HTML, React, or Vue frontends today. PHP: see the [PHP integration guide](./php.md). Other stacks: use a [Node sidecar](./integration-architecture.md#production-flow-php-proxy--node-sidecar) or implement the [OpenAPI spec](../openapi/eudi-verifier.yaml). See [SUPPORTED.md](./SUPPORTED.md) for the full matrix.
 
 ---
 
@@ -11,6 +11,7 @@ Add EU digital identity verification to your website.
 | Guide                                                 | What it covers                                               |
 | ----------------------------------------------------- | ------------------------------------------------------------ |
 | **This page**                                         | Quick start — server mount, token verification, demo mode    |
+| [PHP integration](./php.md)                           | PHP-specific: Node sidecar proxy, or implement from OpenAPI  |
 | [Architecture & flows](./integration-architecture.md) | Layer diagram, sequence flows, PHP proxy, trust boundaries   |
 | [Frontend options](./integration-frontend.md)         | Widget, custom UI, React, Vue                                |
 | [Error handling](./integration-errors.md)             | HTTP vs session vs token failures; wallet callback semantics |

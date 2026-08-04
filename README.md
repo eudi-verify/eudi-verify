@@ -187,7 +187,7 @@ Official references:
 
 ## Roadmap
 
-Planned areas include a WordPress plugin, PHP/Python/Java integration guides, and production wallet interoperability as national EUDI Wallets become available.
+Planned areas include a WordPress plugin, Python/Java integration guides, and production wallet interoperability as national EUDI Wallets become available. PHP is documented today: [docs/php.md](docs/php.md).
 
 See [docs/PLAN.md](docs/PLAN.md) for the technical roadmap and [docs/SUPPORTED.md](docs/SUPPORTED.md) for the platform support matrix.
 
