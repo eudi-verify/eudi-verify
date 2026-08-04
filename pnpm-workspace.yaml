@@ -9,10 +9,13 @@ overrides:
   # @changesets/cli → @manypkg/get-packages → read-yaml-file@1.1.0.
   "js-yaml@3": "^3.15.0"
   # vue-tsc/spectral-cli pull minimatch@9/@3, which pin brace-expansion@1/@2
-  # (DoS via unbounded expansion). Fix only ships in the 5.x rewrite.
-  brace-expansion: ">=5.0.8"
+  # (DoS via unbounded expansion). Fix only ships in the 5.x rewrite; 5.0.9
+  # covers a follow-up bypass of the original 5.0.8 mitigation.
+  brace-expansion: ">=5.0.9"
   # vite/tsup → postcss-load-config pins postcss <8.5.18 (path traversal via sourceMappingURL).
   postcss: ">=8.5.18"
+  # spectral-cli → ajv pins fast-uri <3.1.5 (host confusion via backslash authority introducer).
+  fast-uri: ">=3.1.5"
 
 allowBuilds:
   # Optional native accel for cbor-x (via @openeudi/openid4vp). Pure-JS
