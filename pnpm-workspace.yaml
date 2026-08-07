@@ -3,6 +3,9 @@ packages:
   - "examples/*"
 
 overrides:
+  # HAIP spike against the x509_hash fork, ahead of an upstream release.
+  # https://github.com/mkascel/openid4vp/pull/new/feat/x509-hash-client-id-prefix
+  "@openeudi/openid4vp": "github:mkascel/openid4vp#feat/x509-hash-client-id-prefix"
   esbuild: ">=0.28.1"
   vite: ">=6.4.3"
   # ^3.15.0 — not >=3.15.0. Bare >= pulls js-yaml 4.x, which drops safeLoad and breaks
@@ -23,6 +26,11 @@ allowBuilds:
   "@scarf/scarf": false
   cbor-extract: false
   esbuild: true
+  # HAIP spike git dependency (see overrides above): needs its own `prepare`
+  # (tsup) to build dist/ on install, since git deps skip the npm registry's
+  # prepublish build step. Key is pinned to the exact commit pnpm resolved —
+  # bump it if the override's branch ref moves.
+  "@openeudi/openid4vp@https://codeload.github.com/mkascel/openid4vp/tar.gz/1545f7a029596f4f4a00cf454f7cc0b7ae866379": true
 
 onlyBuiltDependencies:
   - esbuild

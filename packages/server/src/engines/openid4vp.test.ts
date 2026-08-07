@@ -1,7 +1,9 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { X509Certificate, type webcrypto } from "node:crypto";
 import { describe, it, expect } from "vitest";
+import { decodeJwt, CompactEncrypt } from "jose";
 import { Openid4vpEngine } from "./openid4vp.js";
 import { StaticTrustStore } from "@openeudi/openid4vp";
 import { buildAvDcqlQuery, AV_DOCTYPE } from "./openid4vp-mappers.js";
@@ -360,6 +362,111 @@ describe("Openid4vpEngine", () => {
       expect(result.success).toBe(false);
       expect(result.status).toBe("error");
       expect(result.error).toBe("missing_engine_session_data");
+    });
+  });
+
+  describe("haip (x509_hash signed request + direct_post.jwt)", () => {
+    const haipSigner = JSON.parse(
+      readFileSync(join(fixturesDir, "haip-signer.json"), "utf8"),
+    ) as { certDerBase64: string; privateKeyPkcs8Base64: string };
+    const certDer = new Uint8Array(
+      Buffer.from(haipSigner.certDerBase64, "base64"),
+    );
+    const leafCert = new X509Certificate(Buffer.from(certDer));
+
+    async function buildHaipEngine(): Promise<Openid4vpEngine> {
+      const signerPrivateKey = await crypto.subtle.importKey(
+        "pkcs8",
+        Buffer.from(haipSigner.privateKeyPkcs8Base64, "base64"),
+        { name: "ECDSA", namedCurve: "P-256" },
+        true,
+        ["sign"],
+      );
+      const signerPublicKey = await crypto.subtle.importKey(
+        "spki",
+        new Uint8Array(
+          leafCert.publicKey.export({ type: "spki", format: "der" }) as Buffer,
+        ),
+        { name: "ECDSA", namedCurve: "P-256" },
+        true,
+        ["verify"],
+      );
+
+      const engine = new Openid4vpEngine({
+        mode: "production",
+        baseUrl: "https://verify.example.com/api/eudi",
+        skipTrustCheck: true,
+        acknowledgeInsecureTrust: true,
+        haip: {
+          signer: { privateKey: signerPrivateKey, publicKey: signerPublicKey },
+          certificateChain: [certDer],
+          requestUriBase: "https://verify.example.com/api/eudi/request",
+          walletAuthorizationEndpoint: "https://suite.example.com/authorize",
+        },
+      });
+      await engine.initialize?.();
+      return engine;
+    }
+
+    it("emits an x509_hash client_id, rewritten authorization endpoint and request_uri", async () => {
+      const engine = await buildHaipEngine();
+      const result = await engine.createSession({
+        sessionId: "haip-sess-1",
+        request: {},
+        baseUrl: "https://verify.example.com/api/eudi",
+        ttlMs: 300_000,
+      });
+
+      expect(
+        result.qrUrl.startsWith("https://suite.example.com/authorize?"),
+      ).toBe(true);
+      const params = new URL(result.qrUrl).searchParams;
+      expect(params.get("client_id")).toMatch(/^x509_hash:/);
+      expect(params.get("request_uri")).toBe(
+        "https://verify.example.com/api/eudi/request/haip-sess-1",
+      );
+
+      const engineData = result.engineData as { requestObject?: string };
+      expect(typeof engineData.requestObject).toBe("string");
+      const payload = decodeJwt(engineData.requestObject!);
+      expect(payload.response_mode).toBe("direct_post.jwt");
+      expect(payload.client_id).toBe(params.get("client_id"));
+    });
+
+    it("round trips an encrypted callback: JWE(vp_token, state) -> parseCallback recovers the session id", async () => {
+      const engine = await buildHaipEngine();
+      const created = await engine.createSession({
+        sessionId: "haip-sess-2",
+        request: {},
+        baseUrl: "https://verify.example.com/api/eudi",
+        ttlMs: 300_000,
+      });
+      const engineData = created.engineData as {
+        encryptionJwk: webcrypto.JsonWebKey;
+      };
+
+      const recipientKey = await crypto.subtle.importKey(
+        "jwk",
+        engineData.encryptionJwk,
+        { name: "ECDH", namedCurve: "P-256" },
+        true,
+        [],
+      );
+
+      const vpToken = { mdl: ["deadbeef"] };
+      const payload = new TextEncoder().encode(
+        JSON.stringify({ vp_token: vpToken, state: "haip-sess-2" }),
+      );
+      const jwe = await new CompactEncrypt(payload)
+        .setProtectedHeader({ alg: "ECDH-ES", enc: "A256GCM" })
+        .encrypt(recipientKey);
+
+      const body = new URLSearchParams({ response: jwe }).toString();
+      const data = await engine.parseCallback(body);
+
+      expect(data.sessionId).toBe("haip-sess-2");
+      expect(data.state).toBe("haip-sess-2");
+      expect(data.vpToken).toEqual(vpToken);
     });
   });
 

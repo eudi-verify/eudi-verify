@@ -183,6 +183,19 @@ Verified claims include tamper-evident `trustLevel` on the minted verification t
 
 Behind a reverse proxy or CDN, pass the restored client IP into handler context (see `clientIpFromHeaders` and [deploy-eu.md](../../docs/deploy-eu.md)).
 
+#### `haip` (HAIP 1.0 Final signed request)
+
+Optional config block that switches the engine to a signed request object (JAR): `x509_hash` client_id, `request_uri` served from `getAuthorizationRequest`, `direct_post.jwt` encrypted responses. Spike/interop use — not yet part of the public support matrix, see `docs/SUPPORTED.md`.
+
+| Option                        | Purpose                                                                |
+| ----------------------------- | ---------------------------------------------------------------------- |
+| `signer`                      | Keypair bound to `certificateChain[0]` (leaf first)                    |
+| `certificateChain`            | DER-encoded X.509 chain, leaf first                                    |
+| `encryptionKey`               | Response-encryption keypair (P-256). Generated on first use if omitted |
+| `requestUriBase`              | Public base resolving to `GET /request/:sessionId`                     |
+| `walletAuthorizationEndpoint` | Replaces the `openid4vp://` scheme the library emits                   |
+| `credential`                  | `{ doctype, claims }`. Defaults to the mDL doctype + `age_over_18`     |
+
 ## Handlers
 
 | Handler                    | Route                       | Description                 |
