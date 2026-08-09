@@ -38,7 +38,7 @@ Avoid:
 - TypeScript strict mode
 - Vitest for testing
 - OpenAPI 3.1 for API contracts
-- AGPL-3.0 license; runtime deps must be Apache-2.0/MIT/BSD/ISC
+- Apache-2.0 license; runtime deps must be Apache-2.0/MIT/BSD/ISC
 - **Node.js 22+** — repo requires Node 22 or higher
 
 ## File Patterns

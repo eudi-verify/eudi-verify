@@ -159,11 +159,12 @@
 - Callback URL pinned to configured `baseUrl`
 - Production engine construction requires `https://` `baseUrl` unless `allowInsecureTransport: true` (LAN lab only)
 - Plain `direct_post` (no JARM / response encryption) — **TLS is the only confidentiality layer in transit** for the wallet callback body (`vp_token`)
+- HAIP 1.0 mode (`Openid4vpEngine` with `haip` configured): `direct_post.jwt` response encryption with a fresh P-256 ephemeral keypair generated per Authorization Request (per `createSession` call), not reused across sessions — matches HAIP's requirement that response-encryption keys not be reused. Keys live in an in-process `Map<kid, keyPair>` keyed by the public JWK's thumbprint, swept on expiry (`sessionTtlMs`). Callback decryption resolves the key via the JWE protected header's `kid`, falling back to trying all live keys if absent (AES-GCM's auth tag rejects a wrong key cleanly, so this cannot silently produce a wrong plaintext).
 
 **Planned Mitigations**:
 
-- JWE / `direct_post.jwt` when wallet builds support response encryption
 - Broader deployment HTTPS enforcement documentation
+- Multi-instance deployments: the per-session key map is single-process (dies with the process, not shared across instances) — move it into the shared session store if HAIP mode ever runs behind a load balancer
 
 **Residual Risk**: Standard TLS threat model; never set `allowInsecureTransport` outside local/LAN lab
 
@@ -272,23 +273,23 @@
 
 ## Security by Mode
 
-| Control              | Demo Mode (`OpenEudiEngine`) | Production Mode (`Openid4vpEngine`)                          |
-| -------------------- | ---------------------------- | ------------------------------------------------------------ |
-| VP Verification      | Simulated                    | Cryptographic (mdoc DeviceSignature + issuer sig + DCQL)     |
-| Trust Lists          | None                         | `StaticTrustStore` / injectable `TrustStore` (LOTL deferred) |
-| Trust level in token | `none`                       | `anchored` or `none` (tamper-evident)                        |
-| Callback replay      | CAS claim                    | CAS claim                                                    |
-| HTTPS Required       | No (local testing)           | Yes (engine asserts unless `allowInsecureTransport`)         |
-| Response encryption  | n/a                          | Plain `direct_post` today (TLS-only confidentiality)         |
-| Rate Limiting        | Yes                          | Yes                                                          |
-| Token Security       | Full                         | Full                                                         |
-| Audit Logging        | Console warnings             | Structured logging (planned)                                 |
+| Control              | Demo Mode (`OpenEudiEngine`) | Production Mode (`Openid4vpEngine`)                                                                             |
+| -------------------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| VP Verification      | Simulated                    | Cryptographic (mdoc DeviceSignature + issuer sig + DCQL)                                                        |
+| Trust Lists          | None                         | `StaticTrustStore` / injectable `TrustStore` (LOTL deferred)                                                    |
+| Trust level in token | `none`                       | `anchored` or `none` (tamper-evident)                                                                           |
+| Callback replay      | CAS claim                    | CAS claim                                                                                                       |
+| HTTPS Required       | No (local testing)           | Yes (engine asserts unless `allowInsecureTransport`)                                                            |
+| Response encryption  | n/a                          | Plain `direct_post` (TLS-only) unless `haip` configured, then `direct_post.jwt` with per-session ephemeral keys |
+| Rate Limiting        | Yes                          | Yes                                                                                                             |
+| Token Security       | Full                         | Full                                                                                                            |
+| Audit Logging        | Console warnings             | Structured logging (planned)                                                                                    |
 
 ## Future Hardening
 
 The following controls are on the roadmap:
 
-1. **T6**: JWE / `direct_post.jwt` for wallet callbacks when wallets support response encryption
+1. **T6**: `Openid4vpEngine`'s per-session HAIP encryption keys are a single-process `Map`; move to the shared session store for multi-instance deployments
 2. **T7**: Referer fallback and optional CSRF tokens
 3. **T9**: Multi-key rotation support (verify with key lookup by `kid`)
 4. **General**: Structured audit logging with session lifecycle events

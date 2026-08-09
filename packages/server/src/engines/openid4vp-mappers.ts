@@ -5,7 +5,11 @@
  * and the wire-level DCQL query / VerifyResult shapes from `@openeudi/openid4vp`.
  */
 
-import type { DcqlQuery, VerifyResult } from "@openeudi/openid4vp";
+import {
+  buildHaipQuery,
+  type DcqlQuery,
+  type VerifyResult,
+} from "@openeudi/openid4vp";
 import type {
   VerificationRequest,
   VerifiedClaims,
@@ -52,6 +56,19 @@ export function buildAvDcqlQuery(request: VerificationRequest): DcqlQuery {
       },
     ],
   };
+}
+
+/** Build the DCQL query for a HAIP mDL credential ask (`createSignedAuthorizationRequest` path). */
+export function buildMdlDcqlQuery(
+  doctype: string,
+  claims: string[],
+): DcqlQuery {
+  return buildHaipQuery({
+    credentialId: "mdl",
+    format: "mso_mdoc",
+    doctypeValue: doctype,
+    claims,
+  });
 }
 
 /** Claim keys requested (used for engine session bookkeeping). */

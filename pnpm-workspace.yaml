@@ -5,15 +5,25 @@ packages:
 overrides:
   esbuild: ">=0.28.1"
   vite: ">=6.4.3"
-  # ^3.15.0 — not >=3.15.0. Bare >= pulls js-yaml 4.x, which drops safeLoad and breaks
-  # @changesets/cli → @manypkg/get-packages → read-yaml-file@1.1.0.
-  "js-yaml@3": "^3.15.0"
+  # ^3.15.1 — not >=3.15.0 or bare >=. Bare >= pulls js-yaml 4.x, which drops
+  # safeLoad and breaks @changesets/cli → @manypkg/get-packages →
+  # read-yaml-file@1.1.0. 3.15.1 fixes CVE-2026-59870 (quadratic CPU via
+  # !!omap resolution) in the 3.x line.
+  "js-yaml@3": "^3.15.1"
+  # @changesets/parse pulls js-yaml 4.x directly; separate line from the 3.x
+  # pin above since both majors coexist. 4.3.1 fixes the same CVE in 4.x.
+  "js-yaml@4": "^4.3.1"
+  # vitest → @vitest/mocker/vite/vite-node → postcss → nanoid: indefinite
+  # loop with a zero-size custom generator, fixed 3.3.17.
+  nanoid: ">=3.3.17"
   # vue-tsc/spectral-cli pull minimatch@9/@3, which pin brace-expansion@1/@2
   # (DoS via unbounded expansion). Fix only ships in the 5.x rewrite; 5.0.9
   # covers a follow-up bypass of the original 5.0.8 mitigation.
   brace-expansion: ">=5.0.9"
-  # vite/tsup → postcss-load-config pins postcss <8.5.18 (path traversal via sourceMappingURL).
-  postcss: ">=8.5.18"
+  # vite/tsup → postcss-load-config pins postcss <8.5.23 (sourceMappingURL
+  # reads arbitrary .map files when `from` is unset; 8.5.18 fixed an earlier,
+  # incomplete version of this same issue).
+  postcss: ">=8.5.23"
   # spectral-cli → ajv pins fast-uri <3.1.5 (host confusion via backslash authority introducer).
   fast-uri: ">=3.1.5"
 
@@ -23,6 +33,12 @@ allowBuilds:
   "@scarf/scarf": false
   cbor-extract: false
   esbuild: true
+  # HAIP: packages/server depends on @openeudi/openid4vp via a pinned git
+  # commit (x509_hash support, not yet released — see openeudi/openid4vp#33).
+  # Needs its own `prepare` (tsup) to build dist/ on install, since git deps
+  # skip the npm registry's prepublish build step. Revert to a normal
+  # semver range once that PR ships a release.
+  "@openeudi/openid4vp@https://codeload.github.com/mkascel/openid4vp/tar.gz/1545f7a029596f4f4a00cf454f7cc0b7ae866379": true
 
 onlyBuiltDependencies:
   - esbuild

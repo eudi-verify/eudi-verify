@@ -8,7 +8,8 @@
   },
   "scripts": {
     "start": "node --import tsx server.ts",
-    "spike:wallet": "node --import tsx wallet-spike-server.ts"
+    "spike:wallet": "node --import tsx wallet-spike-server.ts",
+    "haip:fixtures": "node --import tsx scripts/gen-haip-fixtures.ts"
   },
   "dependencies": {
     "@eudi-verify/server": "workspace:*",
@@ -16,7 +17,9 @@
     "tsx": "^4.19.0"
   },
   "devDependencies": {
+    "@peculiar/x509": "^2.0.0",
     "@types/node": "^22.0.0",
+    "reflect-metadata": "^0.2.0",
     "@types/qrcode": "^1.5.5",
     "typescript": "^5.7.0"
   }
