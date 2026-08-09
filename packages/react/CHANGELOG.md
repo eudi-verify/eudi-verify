@@ -1,5 +1,13 @@
 # @eudi-verify/react
 
+## 1.4.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @eudi-verify/client@1.4.0
+  - @eudi-verify/embed@1.4.0
+
 ## 1.3.2
 
 ### Patch Changes

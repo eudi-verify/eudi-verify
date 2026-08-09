@@ -1,5 +1,15 @@
 # @eudi-verify/server
 
+## 1.4.0
+
+### Minor Changes
+
+- [#50](https://github.com/eudi-verify/eudi-verify/pull/50) [`2f92330`](https://github.com/eudi-verify/eudi-verify/commit/2f923301357d7da0c82f47409316b3c86284c83c) Thanks [@mkascel](https://github.com/mkascel)! - Add HAIP 1.0 Final support to `Openid4vpEngine` via a new optional `haip` config block: `x509_hash` client_id, signed request objects served via JAR (`request_uri`), and `direct_post.jwt` encrypted callback responses with a fresh per-session response-encryption key (HAIP requires verifiers not reuse a response-encryption key across Authorization Requests). `VerifierEngine` gains an optional `redirectUri` field, echoed on every `/callback` response body when set (HAIP 1.0 §5.1); unset for the existing plain `direct_post` path, which is unaffected.
+
+  Passed the free OpenID Foundation conformance suite's `oid4vp-1final-verifier-happy-flow` test on the HAIP 1.0 Final/HAIP plan (2026-08-09) — see `docs/INTEROP.md`. A free suite run is not a certification.
+
+  **Temporary dependency note:** `@openeudi/openid4vp`'s `x509_hash` client_id support isn't in an npm release yet, so this version pins a git dependency on [openeudi/openid4vp#33](https://github.com/openeudi/openid4vp/pull/33) rather than a normal registry range. A future patch will switch back to a semver range once that PR ships a release.
+
 ## 1.3.2
 
 ### Patch Changes
