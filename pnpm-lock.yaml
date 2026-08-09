@@ -5,7 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@openeudi/openid4vp': github:mkascel/openid4vp#feat/x509-hash-client-id-prefix
   esbuild: '>=0.28.1'
   vite: '>=6.4.3'
   js-yaml@3: ^3.15.1
@@ -216,7 +215,7 @@ importers:
         specifier: ^0.8.0
         version: 0.8.0(qrcode@1.5.4)
       '@openeudi/openid4vp':
-        specifier: github:mkascel/openid4vp#feat/x509-hash-client-id-prefix
+        specifier: github:mkascel/openid4vp#1545f7a029596f4f4a00cf454f7cc0b7ae866379
         version: https://codeload.github.com/mkascel/openid4vp/tar.gz/1545f7a029596f4f4a00cf454f7cc0b7ae866379(xpath@0.0.34)
       reflect-metadata:
         specifier: ^0.2.2
