@@ -468,6 +468,69 @@ describe("Openid4vpEngine", () => {
       expect(data.state).toBe("haip-sess-2");
       expect(data.vpToken).toEqual(vpToken);
     });
+
+    it("round trips an encrypted callback whose JWE protected header carries the session's kid", async () => {
+      const engine = await buildHaipEngine();
+      const created = await engine.createSession({
+        sessionId: "haip-sess-3",
+        request: {},
+        baseUrl: "https://verify.example.com/api/eudi",
+        ttlMs: 300_000,
+      });
+      const engineData = created.engineData as {
+        encryptionJwk: webcrypto.JsonWebKey & { kid: string };
+      };
+
+      const recipientKey = await crypto.subtle.importKey(
+        "jwk",
+        engineData.encryptionJwk,
+        { name: "ECDH", namedCurve: "P-256" },
+        true,
+        [],
+      );
+
+      const vpToken = { mdl: ["deadbeef"] };
+      const payload = new TextEncoder().encode(
+        JSON.stringify({ vp_token: vpToken, state: "haip-sess-3" }),
+      );
+      const jwe = await new CompactEncrypt(payload)
+        .setProtectedHeader({
+          alg: "ECDH-ES",
+          enc: "A256GCM",
+          kid: engineData.encryptionJwk.kid,
+        })
+        .encrypt(recipientKey);
+
+      const body = new URLSearchParams({ response: jwe }).toString();
+      const data = await engine.parseCallback(body);
+
+      expect(data.sessionId).toBe("haip-sess-3");
+      expect(data.vpToken).toEqual(vpToken);
+    });
+
+    it("generates a fresh per-session encryption key (different kid across sessions)", async () => {
+      const engine = await buildHaipEngine();
+      const first = await engine.createSession({
+        sessionId: "haip-sess-4",
+        request: {},
+        baseUrl: "https://verify.example.com/api/eudi",
+        ttlMs: 300_000,
+      });
+      const second = await engine.createSession({
+        sessionId: "haip-sess-5",
+        request: {},
+        baseUrl: "https://verify.example.com/api/eudi",
+        ttlMs: 300_000,
+      });
+
+      const firstJwk = (first.engineData as { encryptionJwk: { kid: string } })
+        .encryptionJwk;
+      const secondJwk = (
+        second.engineData as { encryptionJwk: { kid: string } }
+      ).encryptionJwk;
+
+      expect(firstJwk.kid).not.toBe(secondJwk.kid);
+    });
   });
 
   /**

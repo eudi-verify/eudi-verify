@@ -12,6 +12,8 @@ MAX_CODE_LINE=500
 is_ignored_path() {
   case "$1" in
     *node_modules/* | */dist/* | *playwright-report/* | pnpm-lock.yaml) return 0 ;;
+    # ponytail: base64 test fixture data, not code — long lines are inherent to the format
+    packages/server/src/engines/fixtures/haip-signer.json) return 0 ;;
   esac
   return 1
 }

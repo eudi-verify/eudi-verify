@@ -2,20 +2,21 @@
 
 Honest status of real-wallet OpenID4VP against `@eudi-verify/server`, distilled from lab runs. Platform support and roadmap stay in [SUPPORTED.md](./SUPPORTED.md). Integration how-to stays in [INTEGRATION.md](./INTEGRATION.md).
 
-**Scope of what was tested:** EU Age Verification (AV) reference wallet on iOS presenting `eu.europa.ec.av.1` / `age_over_18` to `Openid4vpEngine` (`@openeudi/openid4vp`), and earlier end-to-end runs against the EU reference verifier stack. Not a certification claim. Not HAIP / full PID coverage.
+**Scope of what was tested:** EU Age Verification (AV) reference wallet on iOS presenting `eu.europa.ec.av.1` / `age_over_18` to `Openid4vpEngine` (`@openeudi/openid4vp`), earlier end-to-end runs against the EU reference verifier stack, and a free OpenID Foundation conformance suite happy-flow run against the HAIP 1.0 Final `direct_post.jwt` path (see below). **Not a certification claim** — a free suite run is not certification. Not full PID coverage.
 
 ---
 
 ## What works
 
-| Area                                      | Result                                                                 |
-| ----------------------------------------- | ---------------------------------------------------------------------- |
-| Reference verifier + AV wallet (EU stack) | End-to-end presentation completes (lab)                                |
-| `Openid4vpEngine` + plain `direct_post`   | Wallet POSTs `vp_token` + `state` to `/callback`                       |
-| mdoc `eu.europa.ec.av.1` / `age_over_18`  | Claims verified; server mints `eudi_v1` token                          |
-| SessionTranscript                         | OpenID4VP 1.0 unencrypted handover (plain `direct_post`, no JWE `apu`) |
-| Example stack                             | `EUDI_MODE=production` on `examples/server` + `examples/html-vanilla`  |
-| Negative binding                          | Mutating `clientId` / `responseUri` / `nonce` rejects the presentation |
+| Area                                                           | Result                                                                                                                                                                                                                                                                                                                               |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Reference verifier + AV wallet (EU stack)                      | End-to-end presentation completes (lab)                                                                                                                                                                                                                                                                                              |
+| `Openid4vpEngine` + plain `direct_post`                        | Wallet POSTs `vp_token` + `state` to `/callback`                                                                                                                                                                                                                                                                                     |
+| mdoc `eu.europa.ec.av.1` / `age_over_18`                       | Claims verified; server mints `eudi_v1` token                                                                                                                                                                                                                                                                                        |
+| SessionTranscript                                              | OpenID4VP 1.0 unencrypted handover (plain `direct_post`, no JWE `apu`)                                                                                                                                                                                                                                                               |
+| Example stack                                                  | `EUDI_MODE=production` on `examples/server` + `examples/html-vanilla`                                                                                                                                                                                                                                                                |
+| Negative binding                                               | Mutating `clientId` / `responseUri` / `nonce` rejects the presentation                                                                                                                                                                                                                                                               |
+| `Openid4vpEngine` + `haip` (HAIP 1.0 Final, `direct_post.jwt`) | Passed the free OpenID Foundation conformance suite `oid4vp-1final-verifier-happy-flow` test (plan 1, `iso_mdl` + `direct_post.jwt`, 2026-08-09): `x509_hash` client_id, JAR (`request_uri`), signed request object, per-session response-encryption key, DCQL, `redirect_uri` echo. FAILURE 0. Free suite run, not a certification. |
 
 **Lab config that matched the happy path:** `client_id=redirect_uri:<response_uri>`, DCQL by value, `response_mode=direct_post`, trust skip (see below).
 
@@ -35,14 +36,14 @@ Honest status of real-wallet OpenID4VP against `@eudi-verify/server`, distilled 
 
 ## Missing / not attempted
 
-| Area                                 | Notes                                                                     |
-| ------------------------------------ | ------------------------------------------------------------------------- |
-| W3C Digital Credentials API (DC API) | Skipped in the current engine path                                        |
-| ZKP presentations                    | Roadmap                                                                   |
-| mdoc batch / credential sets         | Not implemented                                                           |
-| `direct_post.jwt`                    | Config stub / roadmap; lab used plain `direct_post`                       |
-| EU LOTL / national trusted lists     | `LotlTrustStore` roadmap; no live trusted-list enrollment documented here |
-| German / SPRIND sandbox wallets      | Not in this report                                                        |
+| Area                                       | Notes                                                                                                                       |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| W3C Digital Credentials API (DC API)       | Skipped in the current engine path                                                                                          |
+| ZKP presentations                          | Roadmap                                                                                                                     |
+| mdoc batch / credential sets               | Not implemented                                                                                                             |
+| `direct_post.jwt` on the plain AV lab path | AV wallet lab run used plain `direct_post`; `direct_post.jwt` only exercised via the `haip` config block (see "What works") |
+| EU LOTL / national trusted lists           | `LotlTrustStore` roadmap; no live trusted-list enrollment documented here                                                   |
+| German / SPRIND sandbox wallets            | Not in this report                                                                                                          |
 
 ---
 

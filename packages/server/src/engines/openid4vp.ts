@@ -23,6 +23,7 @@
 // Preload here so tsyringe is satisfied before that chain runs.
 import "reflect-metadata";
 import type { webcrypto } from "node:crypto";
+import { calculateJwkThumbprint, decodeProtectedHeader } from "jose";
 import {
   createAuthorizationRequest,
   createSignedAuthorizationRequest,
@@ -96,8 +97,6 @@ export interface Openid4vpEngineConfig {
     signer: webcrypto.CryptoKeyPair;
     /** DER-encoded X.509 chain, leaf certificate first. */
     certificateChain: Uint8Array[];
-    /** Response-encryption keypair (P-256). Generated on first use if omitted. */
-    encryptionKey?: webcrypto.CryptoKeyPair;
     /** Public base URL resolving to `GET /request/:sessionId`. */
     requestUriBase: string;
     /** Replaces the `openid4vp://` scheme the library always emits. */
@@ -131,6 +130,8 @@ export class Openid4vpEngine implements VerifierEngine {
   readonly mode: VerifierMode;
 
   private readonly baseUrl: string;
+  /** HAIP 1.0 §5.1: verifiers must always echo a `redirect_uri`. Unset outside `haip`. */
+  readonly redirectUri?: string;
   private readonly clientId: string;
   private readonly responseMode: "direct_post" | "direct_post.jwt";
   private readonly trustStore?: TrustStore;
@@ -138,11 +139,18 @@ export class Openid4vpEngine implements VerifierEngine {
   private readonly audience?: string;
   private readonly trustLevel: TrustLevel;
   private readonly haipConfig?: Openid4vpEngineConfig["haip"];
-  private haipEncryptionKey?: webcrypto.CryptoKeyPair;
+  private readonly sessionTtlMs: number;
+  // ponytail: per-process Map, dies with the process — fine for a single
+  // instance. Move into the shared store if this ever runs multi-instance.
+  private readonly haipKeys = new Map<
+    string,
+    { keyPair: webcrypto.CryptoKeyPair; expiresAt: number }
+  >();
 
   constructor(config: Openid4vpEngineConfig) {
     this.mode = config.mode;
     this.baseUrl = config.baseUrl;
+    this.redirectUri = config.haip ? `${config.baseUrl}/complete` : undefined;
     this.responseMode = config.haip
       ? "direct_post.jwt"
       : (config.responseMode ?? "direct_post");
@@ -151,7 +159,7 @@ export class Openid4vpEngine implements VerifierEngine {
     this.skipTrustCheck = config.skipTrustCheck === true;
     this.audience = config.audience;
     this.haipConfig = config.haip;
-    this.haipEncryptionKey = config.haip?.encryptionKey;
+    this.sessionTtlMs = config.sessionTtlMs ?? 5 * 60 * 1000;
 
     if (
       !config.allowInsecureTransport &&
@@ -201,14 +209,6 @@ export class Openid4vpEngine implements VerifierEngine {
           "anchoring is DISABLED. Do NOT use outside a controlled lab.",
       );
     }
-
-    if (this.haipConfig && !this.haipEncryptionKey) {
-      this.haipEncryptionKey = (await crypto.subtle.generateKey(
-        { name: "ECDH", namedCurve: "P-256" },
-        true,
-        ["deriveBits", "deriveKey"],
-      )) as webcrypto.CryptoKeyPair;
-    }
   }
 
   async createSession(
@@ -251,11 +251,6 @@ export class Openid4vpEngine implements VerifierEngine {
     responseUri: string,
   ): Promise<CreateSessionResult> {
     const haip = this.haipConfig!;
-    if (!this.haipEncryptionKey) {
-      throw new Error(
-        "[Openid4vpEngine] haip encryption key not initialized — call initialize() first",
-      );
-    }
 
     const { doctype, claims } = haip.credential ?? {
       doctype: DEFAULT_HAIP_DOCTYPE,
@@ -263,12 +258,28 @@ export class Openid4vpEngine implements VerifierEngine {
     };
     const dcqlQuery = buildMdlDcqlQuery(doctype, claims);
 
+    // HAIP requires a fresh response-encryption key per Authorization
+    // Request, not one reused across sessions.
+    const keyPair = (await crypto.subtle.generateKey(
+      { name: "ECDH", namedCurve: "P-256" },
+      true,
+      ["deriveBits", "deriveKey"],
+    )) as webcrypto.CryptoKeyPair;
+
     const encryptionJwk = (await crypto.subtle.exportKey(
       "jwk",
-      this.haipEncryptionKey.publicKey,
-    )) as webcrypto.JsonWebKey;
+      keyPair.publicKey,
+    )) as webcrypto.JsonWebKey & { kid?: string };
     encryptionJwk.alg = "ECDH-ES";
     encryptionJwk.use = "enc";
+    // client_metadata.jwks entries MUST carry a kid (OID4VP 1.0 Final §5.1).
+    encryptionJwk.kid = await calculateJwkThumbprint(encryptionJwk);
+
+    this.sweepExpiredHaipKeys();
+    this.haipKeys.set(encryptionJwk.kid, {
+      keyPair,
+      expiresAt: Date.now() + this.sessionTtlMs,
+    });
 
     const signed = await createSignedAuthorizationRequest(
       {
@@ -327,15 +338,13 @@ export class Openid4vpEngine implements VerifierEngine {
     const responseJwe = params.get("response");
 
     if (responseJwe !== null) {
-      if (!this.haipEncryptionKey) {
+      if (!this.haipConfig) {
         throw new Error(
           "[Openid4vpEngine] Received an encrypted response but haip is not configured",
         );
       }
-      const decrypted = await decryptAuthorizationResponse(
-        responseJwe,
-        this.haipEncryptionKey.privateKey,
-      );
+
+      const decrypted = await this.decryptHaipResponse(responseJwe);
       const sessionId = decrypted.state;
       if (!sessionId) {
         throw new Error(
@@ -437,7 +446,10 @@ export class Openid4vpEngine implements VerifierEngine {
         },
       );
 
-      return verifyResultToClaims(result, this.trustLevel);
+      return {
+        ...verifyResultToClaims(result, this.trustLevel),
+        redirectUri: this.redirectUri,
+      };
     } catch (err) {
       console.error(
         "[Openid4vpEngine] verifyAuthorizationResponse failed:",
@@ -447,6 +459,7 @@ export class Openid4vpEngine implements VerifierEngine {
         success: false,
         status: "error",
         error: err instanceof Error ? err.message : "verification_failed",
+        redirectUri: this.redirectUri,
       };
     }
   }
@@ -457,6 +470,45 @@ export class Openid4vpEngine implements VerifierEngine {
 
   async shutdown(): Promise<void> {
     // No cleanup needed.
+  }
+
+  private sweepExpiredHaipKeys(): void {
+    const now = Date.now();
+    for (const [kid, entry] of this.haipKeys) {
+      if (entry.expiresAt <= now) this.haipKeys.delete(kid);
+    }
+  }
+
+  private async decryptHaipResponse(
+    responseJwe: string,
+  ): ReturnType<typeof decryptAuthorizationResponse> {
+    const { kid } = decodeProtectedHeader(responseJwe);
+    if (kid) {
+      const entry = this.haipKeys.get(kid);
+      if (entry) {
+        return decryptAuthorizationResponse(
+          responseJwe,
+          entry.keyPair.privateKey,
+        );
+      }
+    }
+
+    // No kid, or kid not found (key expired/swept) — fall back to trying
+    // every live key. AES-GCM's auth tag rejects a wrong key cleanly, so a
+    // genuine decryption failure still surfaces once every candidate fails.
+    for (const entry of this.haipKeys.values()) {
+      try {
+        return await decryptAuthorizationResponse(
+          responseJwe,
+          entry.keyPair.privateKey,
+        );
+      } catch {
+        // try next candidate
+      }
+    }
+    throw new Error(
+      "[Openid4vpEngine] Could not decrypt response with any known key",
+    );
   }
 
   private generateNonce(): string {

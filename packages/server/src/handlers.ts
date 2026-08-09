@@ -99,7 +99,9 @@ export interface VerifierHandlers {
   getSession: RequestHandler<SessionDTO | ApiError>;
   cancelSession: RequestHandler<SessionDTO | ApiError>;
   verifyToken: RequestHandler<VerifyTokenResult | ApiError>;
-  handleCallback: RequestHandler<{ status: string } | ApiError>;
+  handleCallback: RequestHandler<
+    { status: string; redirect_uri?: string } | ApiError
+  >;
   getRequest: RequestHandler<string | ApiError>;
 }
 
@@ -375,7 +377,9 @@ export function createVerifierHandlers(
 
     async handleCallback(
       ctx,
-    ): Promise<HandlerResponse<{ status: string } | ApiError>> {
+    ): Promise<
+      HandlerResponse<{ status: string; redirect_uri?: string } | ApiError>
+    > {
       logDemoWarning();
 
       if (!ctx.rawBody) {
@@ -426,7 +430,9 @@ export function createVerifierHandlers(
         return {
           status: 200,
           headers: modeHeader(),
-          body: { status: "ok" },
+          body: engine.redirectUri
+            ? { status: "ok", redirect_uri: engine.redirectUri }
+            : { status: "ok" },
         };
       }
 
@@ -446,7 +452,9 @@ export function createVerifierHandlers(
         return {
           status: 200,
           headers: modeHeader(),
-          body: { status: "ok" },
+          body: engine.redirectUri
+            ? { status: "ok", redirect_uri: engine.redirectUri }
+            : { status: "ok" },
         };
       }
 
@@ -476,11 +484,10 @@ export function createVerifierHandlers(
 
         await store.set(sessionKey(session.id), updated, sessionTtlMs);
 
-        return {
-          status: 200,
-          headers: modeHeader(),
-          body: { status: "ok" },
-        };
+        const successBody = result.redirectUri
+          ? { status: "ok", redirect_uri: result.redirectUri }
+          : { status: "ok" };
+        return { status: 200, headers: modeHeader(), body: successBody };
       } catch (err) {
         console.error("[eudi-verify] handleCallback error:", err);
 
@@ -494,7 +501,9 @@ export function createVerifierHandlers(
         return {
           status: 200,
           headers: modeHeader(),
-          body: { status: "ok" },
+          body: engine.redirectUri
+            ? { status: "ok", redirect_uri: engine.redirectUri }
+            : { status: "ok" },
         };
       }
     },

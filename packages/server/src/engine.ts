@@ -85,6 +85,13 @@ export interface CallbackResult {
    * explicitly says so.
    */
   trustLevel?: TrustLevel;
+  /**
+   * `redirect_uri` to echo back in the `direct_post`/`direct_post.jwt`
+   * response body. HAIP 1.0 §5.1 requires verifiers to always include it
+   * (plain OID4VP §8.2 leaves it optional); engines that don't set it get
+   * the plain-OID4VP behaviour of omitting the field.
+   */
+  redirectUri?: string;
   /** Error message (if !success) */
   error?: string;
   /** New status for the session */
@@ -126,6 +133,15 @@ export interface VerifierEngine {
    * Operating mode (demo returns simulated credentials).
    */
   readonly mode: VerifierMode;
+
+  /**
+   * `redirect_uri` to echo back in every `direct_post`/`direct_post.jwt`
+   * callback response body, including replay/idempotent paths that never
+   * reach `handleCallback`. HAIP 1.0 §5.1 requires it unconditionally;
+   * engines that don't set it get the plain-OID4VP behaviour of omitting
+   * the field.
+   */
+  readonly redirectUri?: string;
 
   /**
    * Create a new verification session.

@@ -24,3 +24,6 @@ scripts/provision-base.conf
 
 # Maintainer-local Claude rule (symlink to a gitignored canon file)
 .claude/rules/maintainer-local.md
+
+# Lab-only HAIP key material (see docs/internal/haip-spike-plan-v2.local.md)
+.haip-lab/

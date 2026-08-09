@@ -187,14 +187,15 @@ Behind a reverse proxy or CDN, pass the restored client IP into handler context 
 
 Optional config block that switches the engine to a signed request object (JAR): `x509_hash` client_id, `request_uri` served from `getAuthorizationRequest`, `direct_post.jwt` encrypted responses. Spike/interop use — not yet part of the public support matrix, see `docs/SUPPORTED.md`.
 
-| Option                        | Purpose                                                                |
-| ----------------------------- | ---------------------------------------------------------------------- |
-| `signer`                      | Keypair bound to `certificateChain[0]` (leaf first)                    |
-| `certificateChain`            | DER-encoded X.509 chain, leaf first                                    |
-| `encryptionKey`               | Response-encryption keypair (P-256). Generated on first use if omitted |
-| `requestUriBase`              | Public base resolving to `GET /request/:sessionId`                     |
-| `walletAuthorizationEndpoint` | Replaces the `openid4vp://` scheme the library emits                   |
-| `credential`                  | `{ doctype, claims }`. Defaults to the mDL doctype + `age_over_18`     |
+| Option                        | Purpose                                                            |
+| ----------------------------- | ------------------------------------------------------------------ |
+| `signer`                      | Keypair bound to `certificateChain[0]` (leaf first)                |
+| `certificateChain`            | DER-encoded X.509 chain, leaf first                                |
+| `requestUriBase`              | Public base resolving to `GET /request/:sessionId`                 |
+| `walletAuthorizationEndpoint` | Replaces the `openid4vp://` scheme the library emits               |
+| `credential`                  | `{ doctype, claims }`. Defaults to the mDL doctype + `age_over_18` |
+
+Response-encryption keys are generated per session (fresh P-256 keypair per `createSession` call, not configurable) — HAIP 1.0 requires verifiers not reuse a response-encryption key across Authorization Requests. When `haip` is set, `engine.redirectUri` is populated and echoed on every `/callback` response body (HAIP 1.0 §5.1); it's `undefined` for the plain `direct_post` path, matching OID4VP's optional field.
 
 ## Handlers
 
