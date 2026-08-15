@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@openeudi/core": "^0.8.0",
-    "@openeudi/openid4vp": "github:mkascel/openid4vp#1545f7a029596f4f4a00cf454f7cc0b7ae866379",
+    "@openeudi/openid4vp": "github:mkascel/openid4vp#e08c2a81f1d14c7e52b16fb9c4270e4cdb3cfb58",
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {

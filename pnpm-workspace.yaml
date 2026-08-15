@@ -38,7 +38,7 @@ allowBuilds:
   # Needs its own `prepare` (tsup) to build dist/ on install, since git deps
   # skip the npm registry's prepublish build step. Revert to a normal
   # semver range once that PR ships a release.
-  "@openeudi/openid4vp@https://codeload.github.com/mkascel/openid4vp/tar.gz/1545f7a029596f4f4a00cf454f7cc0b7ae866379": true
+  "@openeudi/openid4vp@https://codeload.github.com/mkascel/openid4vp/tar.gz/e08c2a81f1d14c7e52b16fb9c4270e4cdb3cfb58": true
 
 onlyBuiltDependencies:
   - esbuild
