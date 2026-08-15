@@ -45,7 +45,9 @@
 
 **Demo verification engine:** `OpenEudiEngine` wraps `@openeudi/core` `DemoMode`. Simulated claims are limited to **age over 18** and **country/nationality** (per core 0.8.0). `age_over_21` and full PID attributes (`given_name`, `family_name`, `birth_date`) are not returned in demo mode.
 
-**Production OpenID4VP engine:** `Openid4vpEngine` wraps `@openeudi/openid4vp` — real mdoc verification for `eu.europa.ec.av.1` / `age_over_18` via plain `direct_post` and OpenID4VP 1.0 unencrypted SessionTranscript. Trust: injectable `TrustStore` / `StaticTrustStore`, or double-gated `skipTrustCheck` (lab-only). Interop validated against the EU Age Verification reference wallet (lab). Honest works / partial / missing notes: [INTEROP.md](./INTEROP.md). HAIP / full PID / `direct_post.jwt` and LOTL trust remain roadmap.
+**Production OpenID4VP engine:** `Openid4vpEngine` wraps `@openeudi/openid4vp` — real mdoc verification for `eu.europa.ec.av.1` / `age_over_18` via plain `direct_post` and OpenID4VP 1.0 unencrypted SessionTranscript. Trust: injectable `TrustStore` / `StaticTrustStore`, or double-gated `skipTrustCheck` (lab-only). Interop validated against the EU Age Verification reference wallet (lab). Honest works / partial / missing notes: [INTEROP.md](./INTEROP.md).
+
+**HAIP 1.0 Final (`direct_post.jwt`):** all 4 applicable OpenID Foundation conformance suite modules pass (demo and production suites, 2026-08-14). Self-certification request submitted 2026-08-14, pending OpenID Foundation review — not yet a granted certification. Full PID profiles and LOTL trust remain roadmap.
 
 ### API contract
 
@@ -78,7 +80,7 @@ Svelte, Angular, etc. can embed `<eudi-verify>` without a dedicated package (sam
 
 ### Production verification
 
-- Broader HAIP / PID profiles and `direct_post.jwt` (wallet-dependent)
+- Full PID profiles beyond `age_over_18` (wallet-dependent)
 - `LotlTrustStore` (EU LOTL + national TLs) as drop-in trust anchor
 - Redis-backed session store (interface exists; production guide TBD)
 - Certified national EUDI wallets — expected from **Dec 2026**
