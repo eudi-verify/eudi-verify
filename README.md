@@ -4,12 +4,13 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 [![OpenAPI 3.1](https://img.shields.io/badge/OpenAPI-3.1-green.svg)](openapi/eudi-verifier.yaml)
 [![Status](https://img.shields.io/badge/status-preview-orange.svg)](#current-limitations)
+[![OpenID Certified: OID4VP + HAIP Verifier](https://img.shields.io/badge/OpenID%20Certified-OID4VP%201.0%20%2B%20HAIP%201.0%20Verifier-blue.svg)](https://openid.net/certification/certified-oid4vp-haip-final/)
 
 Open-source toolkit for privacy-preserving verification with the European Digital Identity Wallet. Selective disclosure of specific claims (for example age over 18); no central broker logging who verified what.
 
 `eudi-verify` provides a drop-in web component, typed client SDK, optional React wrapper, Node.js server handlers, and an OpenAPI specification, with reference examples for plain HTML, React, and Vue. Self-hostable; no OID4VP protocol work required for the common integration path.
 
-**Demo verification** builds on [`@openeudi/core`](https://github.com/openeudi/core) — `OpenEudiEngine` runs its `DemoMode` behind the swappable `VerifierEngine` interface. **Production OpenID4VP** uses `Openid4vpEngine` (`@openeudi/openid4vp`) for real wallet presentations (see [docs/SUPPORTED.md](docs/SUPPORTED.md) and lab notes in [docs/INTEROP.md](docs/INTEROP.md)).
+**Demo verification** builds on [`@openeudi/core`](https://github.com/openeudi/core) — `OpenEudiEngine` runs its `DemoMode` behind the swappable `VerifierEngine` interface. **Production OpenID4VP** uses `Openid4vpEngine` (`@openeudi/openid4vp`) for real wallet presentations (see [docs/SUPPORTED.md](docs/SUPPORTED.md) and lab notes in [docs/INTEROP.md](docs/INTEROP.md)). That engine's HAIP path is [OpenID Certified](https://openid.net/certification/certified-oid4vp-haip-final/) (2026-08-14) for the _OID4VP-1.0+HAIP-1.0 Verifier `iso_mdl` `direct_post.jwt`_ profile.
 
 **Live demo:** https://demo.eudi-verify.eu/
 
