@@ -58,7 +58,10 @@ async function loadHaipConfig(): Promise<
     ...(doctype && {
       credential: {
         doctype,
-        claims: (process.env.EUDI_HAIP_CLAIMS ?? "age_over_18").split(","),
+        claims: (process.env.EUDI_HAIP_CLAIMS ?? "age_over_18")
+          .split(",")
+          .map((c) => c.trim())
+          .filter(Boolean),
       },
     }),
   };
@@ -440,7 +443,7 @@ bootstrap().then(() => {
           `    HAIP enabled, EUDI_HAIP_DIR=${process.env.EUDI_HAIP_DIR}`,
         );
         console.log(
-          `    credential: ${process.env.EUDI_HAIP_DOCTYPE ?? "org.iso.18013.5.1.mDL (default)"}`,
+          `    credential: ${process.env.EUDI_HAIP_DOCTYPE || "org.iso.18013.5.1.mDL (default)"}`,
         );
       }
       if (trust === "skip") {

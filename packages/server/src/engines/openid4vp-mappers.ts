@@ -88,6 +88,7 @@ const MDOC_CLAIM_TO_SDJWT_PATH: Record<string, [string, string]> = {
 };
 
 const PID_SDJWT_CREDENTIAL_ID = "pid-sd-jwt";
+const PID_MDOC_CREDENTIAL_ID = "pid-mso-mdoc";
 
 /**
  * Inverse of `MDOC_CLAIM_TO_SDJWT_PATH`, keyed by the SD-JWT path's last
@@ -127,7 +128,7 @@ export function buildPidDcqlQuery(claims: string[]): DcqlQuery {
   const knownClaims = claims.filter((c) => MDOC_CLAIM_TO_SDJWT_PATH[c]);
 
   const { credentials: mdocCredentials } = buildHaipQuery({
-    credentialId: "pid-mso-mdoc",
+    credentialId: PID_MDOC_CREDENTIAL_ID,
     format: "mso_mdoc",
     doctypeValue: PID_MDOC_DOCTYPE,
     claims: knownClaims,
@@ -145,7 +146,7 @@ export function buildPidDcqlQuery(claims: string[]): DcqlQuery {
     ],
     credential_sets: [
       {
-        options: [[PID_SDJWT_CREDENTIAL_ID], ["pid-mso-mdoc"]],
+        options: [[PID_SDJWT_CREDENTIAL_ID], [PID_MDOC_CREDENTIAL_ID]],
         required: true,
       },
     ],
