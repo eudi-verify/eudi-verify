@@ -47,7 +47,7 @@
 
 **Production OpenID4VP engine:** `Openid4vpEngine` wraps `@openeudi/openid4vp` — real mdoc verification for `eu.europa.ec.av.1` / `age_over_18` via plain `direct_post` and OpenID4VP 1.0 unencrypted SessionTranscript. Trust: injectable `TrustStore` / `StaticTrustStore`, or double-gated `skipTrustCheck` (lab-only). Interop validated against the EU Age Verification reference wallet (lab). Honest works / partial / missing notes: [INTEROP.md](./INTEROP.md).
 
-**HAIP 1.0 Final (`direct_post.jwt`):** all 4 applicable OpenID Foundation conformance suite modules pass (demo and production suites, 2026-08-14). Self-certification request submitted 2026-08-14, pending OpenID Foundation review — not yet a granted certification. Full PID profiles and LOTL trust remain roadmap.
+**HAIP 1.0 Final (`direct_post.jwt`):** all 4 applicable OpenID Foundation conformance suite modules pass (demo and production suites, 2026-08-14). **OpenID Certified** 2026-08-14 for _OID4VP-1.0+HAIP-1.0 Verifier `iso_mdl` `direct_post.jwt`_ (entity `eudi-verify`, deployment `1.4.0`): [listing](https://openid.net/certification/certified-oid4vp-haip-final/), [test results](https://www.certification.openid.net/plan-detail.html?plan=YuR6NiK5aGzUF&public=true). The mark covers that verifier profile only. SD-JWT VC, full PID profiles, and LOTL trust remain roadmap.
 
 ### API contract
 
