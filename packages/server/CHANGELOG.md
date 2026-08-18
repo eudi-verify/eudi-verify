@@ -1,5 +1,11 @@
 # @eudi-verify/server
 
+## 1.4.1
+
+### Patch Changes
+
+- [#52](https://github.com/eudi-verify/eudi-verify/pull/52) [`763695a`](https://github.com/eudi-verify/eudi-verify/commit/763695a60b7afce61757fdf1c1d3197b76e66883) Thanks [@mkascel](https://github.com/mkascel)! - Ship the OpenID Certified HAIP build: `@openeudi/openid4vp` is pinned to the ID3-bridge-free fork commit (`e08c2a81`) that the certified conformance run used. Published 1.4.0 still carried the earlier pin, which emitted the singular `authorization_encrypted_response_alg` / `_enc` client metadata fields the OIDF suite flagged as unexpected.
+
 ## 1.4.0
 
 ### Minor Changes
