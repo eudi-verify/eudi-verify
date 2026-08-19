@@ -8,7 +8,7 @@ How `eudi-verify` layers fit together — from the browser widget to `@openeudi/
 
 ## Overview
 
-`eudi-verify` is three browser packages plus a Node handler library. Session lifecycle and tokens are owned by `@eudi-verify/server` (`IKVStore` + handlers). The pluggable `VerifierEngine` interface wraps a protocol strategy — today `@openeudi/core` `DemoMode` inside `OpenEudiEngine`.
+`eudi-verify` is three browser packages plus a Node handler library. Session lifecycle and tokens are owned by `@eudi-verify/server` (`IKVStore` + handlers). The pluggable `VerifierEngine` interface wraps a protocol strategy: `OpenEudiEngine` on `@openeudi/core` `DemoMode` for demo mode (the default), or `Openid4vpEngine` on `@openeudi/openid4vp` for real verification.
 
 **PHP and other non-Node backends:** implement the [OpenAPI contract](../openapi/eudi-verifier.yaml) in your language, or run a **Node sidecar** that mounts `@eudi-verify/server` and proxy wallet-facing URLs through your public origin ([production flow](#production-flow-php-proxy--node-sidecar)).
 
@@ -34,18 +34,20 @@ flowchart TB
     S["IKVStore<br/>sessions · rate limits"]
     T["TokenService<br/>HMAC mint / verify"]
     VE["VerifierEngine interface<br/>(swappable)"]
-    OE["OpenEudiEngine<br/>(default adapter)"]
+    OE["OpenEudiEngine<br/>(demo, default)"]
+    PE["Openid4vpEngine<br/>(production)"]
     H --> S
     H --> T
     H --> VE
     VE --> OE
+    VE --> PE
   end
 
   subgraph Protocol["Protocol layer (inside engine)"]
-    DM["@openeudi/core DemoMode<br/>today — simulated age + country"]
-    PM["custom IVerificationMode<br/>+ @openeudi/openid4vp<br/>production crypto (roadmap)"]
+    DM["@openeudi/core DemoMode<br/>simulated age + country"]
+    PM["@openeudi/openid4vp<br/>real VP verification"]
     OE --> DM
-    OE -.-> PM
+    PE --> PM
   end
 
   W["EUDI Wallet<br/>(production only)"]
@@ -63,15 +65,15 @@ flowchart TB
 
 ## Layer responsibilities
 
-| Layer             | Package                         | Owns                                                |
-| ----------------- | ------------------------------- | --------------------------------------------------- |
-| Widget UI         | `@eudi-verify/embed`            | DOM, accessibility, custom events                   |
-| Client logic      | `@eudi-verify/client`           | QR generation, polling, state machine               |
-| API handlers      | `@eudi-verify/server`           | Sessions, rate limits, wallet callbacks, token mint |
-| Session store     | `IKVStore` (in server)          | Session lifecycle — not `@openeudi/core`'s store    |
-| Engine seam       | `VerifierEngine`                | Swappable protocol adapter                          |
-| Protocol strategy | `@openeudi/core` `DemoMode`     | Credential simulation (demo today)                  |
-| Production crypto | `@openeudi/openid4vp` (roadmap) | VP parsing and signature verification               |
+| Layer             | Package                     | Owns                                                |
+| ----------------- | --------------------------- | --------------------------------------------------- |
+| Widget UI         | `@eudi-verify/embed`        | DOM, accessibility, custom events                   |
+| Client logic      | `@eudi-verify/client`       | QR generation, polling, state machine               |
+| API handlers      | `@eudi-verify/server`       | Sessions, rate limits, wallet callbacks, token mint |
+| Session store     | `IKVStore` (in server)      | Session lifecycle — not `@openeudi/core`'s store    |
+| Engine seam       | `VerifierEngine`            | Swappable protocol adapter                          |
+| Protocol strategy | `@openeudi/core` `DemoMode` | Credential simulation (demo, the default)           |
+| Production crypto | `@openeudi/openid4vp`       | VP parsing and signature verification               |
 
 The engine interface is the portability seam: swap `OpenEudiEngine` for another `VerifierEngine` implementation without changing handlers, the widget, or your session store.
 
@@ -209,11 +211,11 @@ Requests for `age_over_21`, `given_name`, `family_name`, or `birth_date` are acc
 
 ## Trust boundaries
 
-| Component                  | Trusted? | Notes                                                          |
-| -------------------------- | -------- | -------------------------------------------------------------- |
-| Browser / widget           | No       | Can start verification; cannot assert verified claims          |
-| Verifier API (your server) | Yes      | Owns sessions, callbacks, token signing, replay protection     |
-| EUDI Wallet                | External | Validated via OpenID4VP / trust framework (production roadmap) |
-| Your checkout route        | Yes      | Must call `POST /tokens/verify` — never trust the widget alone |
+| Component                  | Trusted? | Notes                                                                                                    |
+| -------------------------- | -------- | -------------------------------------------------------------------------------------------------------- |
+| Browser / widget           | No       | Can start verification; cannot assert verified claims                                                    |
+| Verifier API (your server) | Yes      | Owns sessions, callbacks, token signing, replay protection                                               |
+| EUDI Wallet                | External | Validated via OpenID4VP in production mode; trust anchoring is configurable and surfaced as `trustLevel` |
+| Your checkout route        | Yes      | Must call `POST /tokens/verify` — never trust the widget alone                                           |
 
 See [Error handling](./integration-errors.md) for how failures surface at each layer.

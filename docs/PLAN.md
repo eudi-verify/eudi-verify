@@ -14,7 +14,7 @@
 
 ### MVP Scope
 
-Four core artifacts in WP0–WP7 (server, client, embed, demo, security docs, integration guide). **WP9 React** and the Vue reference example are shipped. WordPress, Next/Hono bindings, Auth.js, and production HAIP remain on the roadmap — see [SUPPORTED.md](./SUPPORTED.md).
+Four core artifacts in WP0–WP7 (server, client, embed, demo, security docs, integration guide). **WP9 React** and the Vue reference example are shipped. HAIP 1.0 Final `direct_post.jwt` ships and is OpenID Certified for the `iso_mdl` verifier profile. WordPress, Next/Hono bindings, Auth.js, EU Trusted List ingestion, and revocation remain on the roadmap — see [SUPPORTED.md](./SUPPORTED.md).
 
 ### WP0 — Scaffold ✓
 
