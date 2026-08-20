@@ -309,4 +309,4 @@ See [docs/rules/threat-model-sync.md](docs/rules/threat-model-sync.md) for sync 
 ---
 
 **Last Updated**: 2026-07-19  
-**Version**: 1.4.1 (demo + OpenID4VP production engine)
+**Version**: 1.4.2 (demo + OpenID4VP production engine)
