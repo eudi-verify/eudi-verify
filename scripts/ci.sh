@@ -10,6 +10,9 @@ cd "$ROOT"
 echo "==> Source security (trojan-source, padding)"
 bash scripts/check-source-security.sh
 
+echo "==> Publishable dependency check"
+bash scripts/check-publishable-deps.sh
+
 echo "==> Install (frozen lockfile)"
 echo "    (Socket Firewall wraps install in CI only — local install is plain pnpm)"
 pnpm install --frozen-lockfile

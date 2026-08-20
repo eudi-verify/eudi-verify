@@ -33,12 +33,12 @@ allowBuilds:
   "@scarf/scarf": false
   cbor-extract: false
   esbuild: true
-  # HAIP: packages/server depends on @openeudi/openid4vp via a pinned git
-  # commit (x509_hash support, not yet released — see openeudi/openid4vp#33).
-  # Needs its own `prepare` (tsup) to build dist/ on install, since git deps
-  # skip the npm registry's prepublish build step. Revert to a normal
-  # semver range once that PR ships a release.
-  "@openeudi/openid4vp@https://codeload.github.com/mkascel/openid4vp/tar.gz/e08c2a81f1d14c7e52b16fb9c4270e4cdb3cfb58": true
 
 onlyBuiltDependencies:
   - esbuild
+
+# 0.10.0 lands the x509_hash support we ran the OIDF certification against
+# (openeudi/openid4vp#33, reviewed and merged upstream), so the release-age
+# cooldown adds nothing here: we tracked this change through review ourselves.
+minimumReleaseAgeExclude:
+  - "@openeudi/openid4vp@0.10.0"
