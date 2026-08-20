@@ -18,9 +18,10 @@
  * local/LAN lab use).
  */
 
-// `@openeudi/openid4vp@0.9.2` declares `reflect-metadata` as a runtime dep, but its
-// ESM bundle still evaluates `@peculiar/x509` before the polyfill side effect.
-// Preload here so tsyringe is satisfied before that chain runs.
+// `@openeudi/openid4vp` auto-loads `reflect-metadata` from 0.9.3 on (0.9.2's
+// attempt never reached the published ESM bundle, which evaluated
+// `@peculiar/x509` before the polyfill side effect). Kept as a preload so
+// tsyringe is satisfied regardless of the consumer's import order.
 import "reflect-metadata";
 import type { webcrypto } from "node:crypto";
 import { calculateJwkThumbprint, decodeProtectedHeader } from "jose";
