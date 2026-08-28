@@ -7,6 +7,7 @@ dist/
 # Local-only files (not committed)
 *.local.md
 *.local.txt
+docs/internal/archived/
 scripts/deploy.sh
 scripts/ops-watch.sh
 scripts/ops-watch.local.conf

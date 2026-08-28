@@ -1,5 +1,13 @@
 # @eudi-verify/server
 
+## 1.4.2
+
+### Patch Changes
+
+- [#55](https://github.com/eudi-verify/eudi-verify/pull/55) [`9592c6e`](https://github.com/eudi-verify/eudi-verify/commit/9592c6edf942bb54749b36806ba799387db97c79) Thanks [@mkascel](https://github.com/mkascel)! - Depend on `@openeudi/openid4vp` `^0.10.0` from the npm registry instead of a pinned fork commit. The `x509_hash` client_id support and the ID3 `client_metadata` removal that the OpenID Certified HAIP build was tested against are now released upstream ([openeudi/openid4vp#33](https://github.com/openeudi/openid4vp/pull/33)).
+
+  This fixes installation under pnpm 11, which blocks git-resolved subdependencies by default (`ERR_PNPM_EXOTIC_SUBDEP`) and so could not install 1.4.1 at all. Registry installs also restore integrity checking and no longer need github.com reachable at install time.
+
 ## 1.4.1
 
 ### Patch Changes

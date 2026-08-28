@@ -1,5 +1,12 @@
 # example-react
 
+## 0.1.12
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @eudi-verify/react@1.4.2
+
 ## 0.1.11
 
 ### Patch Changes

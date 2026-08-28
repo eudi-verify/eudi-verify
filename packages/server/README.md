@@ -187,8 +187,6 @@ Behind a reverse proxy or CDN, pass the restored client IP into handler context 
 
 Optional config block that switches the engine to a signed request object (JAR): `x509_hash` client*id, `request_uri` served from `getAuthorizationRequest`, `direct_post.jwt` encrypted responses. This path is OpenID Certified for the \_OID4VP-1.0+HAIP-1.0 Verifier `iso_mdl` `direct_post.jwt`* profile (2026-08-14): see `docs/SUPPORTED.md` and `docs/INTEROP.md`.
 
-`@openeudi/openid4vp`'s `x509_hash` client_id support is not yet in an npm release — this package temporarily depends on a pinned commit of [openeudi/openid4vp#33](https://github.com/openeudi/openid4vp/pull/33) via a git dependency. Revert to a normal `npm` semver range once that PR ships a release.
-
 | Option                        | Purpose                                                            |
 | ----------------------------- | ------------------------------------------------------------------ |
 | `signer`                      | Keypair bound to `certificateChain[0]` (leaf first)                |
