@@ -2,7 +2,7 @@
 
 Honest status of real-wallet OpenID4VP against `@eudi-verify/server`, distilled from lab runs. Platform support and roadmap stay in [SUPPORTED.md](./SUPPORTED.md). Integration how-to stays in [INTEGRATION.md](./INTEGRATION.md).
 
-**Scope of what was tested:** EU Age Verification (AV) reference wallet on iOS presenting `eu.europa.ec.av.1` / `age_over_18` to `Openid4vpEngine` (`@openeudi/openid4vp`), earlier end-to-end runs against the EU reference verifier stack, the German EUDI Ecosystem Sandbox wallet (iOS, SPRIND) presenting a PID in both SD-JWT VC and mdoc form, and the full applicable OpenID Foundation HAIP conformance suite plan against the HAIP 1.0 Final `direct_post.jwt` path (see below), run on both the free demo suite and the production suite. **OpenID Certified** for the HAIP verifier profile below: the mark covers `iso_mdl` + `direct_post.jwt` only, not the AV lab path and not full PID coverage.
+**Scope of what was tested:** EU Age Verification (AV) reference wallet on iOS presenting `eu.europa.ec.av.1` / `age_over_18` to `Openid4vpEngine` (`@openeudi/openid4vp`), earlier end-to-end runs against the EU reference verifier stack, the German EUDI Ecosystem Sandbox wallet (iOS, SPRIND) presenting a PID in both SD-JWT VC and mdoc form, once with issuer trust anchored (`trustLevel: anchored`), and the full applicable OpenID Foundation HAIP conformance suite plan against the HAIP 1.0 Final `direct_post.jwt` path (see below), run on both the free demo suite and the production suite. **OpenID Certified** for the HAIP verifier profile below: the mark covers `iso_mdl` + `direct_post.jwt` only, not the AV lab path and not full PID coverage.
 
 ---
 
@@ -31,7 +31,22 @@ Registered as a relying party with the sandbox registrar, obtained an X.509 acce
 | Dual-format DCQL via `credential_sets`                     | Wallet resolves both options against credentials it holds and presents one of them. Which one is the wallet's choice                          |
 | Registration certificate / `verifier_info`                 | Not required by this wallet for an age claim. Still expected by the sandbox's own request validator, so treat it as a profile-conformance gap |
 
-Both runs used `EUDI_TRUST=skip`, so `trustLevel` was `none`. What these runs establish is that the wallet trusts the verifier, which is the opposite direction from issuer trust anchoring. See "Partial" below.
+Those runs used `EUDI_TRUST=skip`, so `trustLevel` was `none`. What they establish is that the wallet trusts the verifier, which is the opposite direction from issuer trust anchoring. That second direction was closed three days later.
+
+### Anchored issuer trust (2026-08-31)
+
+Re-ran the mdoc PID presentation with `EUDI_TRUST=static` and the sandbox PID provider CA as the trust anchor.
+
+| Area                        | Result                                                                                                                                                                                                               |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `trustLevel`                | `anchored`. The issued token carries it, and the presentation verified with `age_over_18: true`                                                                                                                      |
+| Trust anchor source         | The sandbox publishes its PID provider CAs in an ETSI TS 119 602 list of trusted entities, alongside the registrar list. Four CAs, covering the real and demo PID branches                                           |
+| Anchor that matched         | The sandbox PID's mdoc issuer chains to the Bundesdruckerei preprod PID provider CA. The other three published CAs are not exercised by this credential                                                              |
+| Reader-side certificate DNs | The registrar CA served by the sandbox API is the one to anchor against. An older copy of the same key published under a different DN spelling fails name-based path building, while signature checking still passes |
+
+Anchoring both directions at once means the wallet trusts the verifier's access certificate and the verifier trusts the credential's issuer, which is the full trust seam for a presentation. Anchoring is per-anchor and not transitive: a sandbox that rotates to a different PID provider CA needs its new anchor configured.
+
+`EUDI_TRUSTED_CERTS` in `examples/server` accepts a comma-separated list, so a run can anchor on several candidate CAs when it is not yet known which one a credential chains to.
 
 **OpenID Certified (2026-08-14):** entity `eudi-verify`, deployment `1.4.0`, profile _OID4VP-1.0+HAIP-1.0 Verifier `iso_mdl` `direct_post.jwt`_. Listing: [certified-oid4vp-haip-final](https://openid.net/certification/certified-oid4vp-haip-final/) · [public test results](https://www.certification.openid.net/plan-detail.html?plan=YuR6NiK5aGzUF&public=true). Self-certification under the OpenID Foundation program: it certifies this verifier profile, not the wallet side and not other credential formats. The certified build is the engine with `@openeudi/openid4vp` pinned to fork commit `e08c2a81`, which ships on npm from `@eudi-verify/server` 1.4.1: the submitted deployment string `1.4.0` names the repo state that was tested, and npm 1.4.0 predates that pin. That fork work is now upstream in `@openeudi/openid4vp` 0.10.0 ([openeudi/openid4vp#33](https://github.com/openeudi/openid4vp/pull/33)), which this package depends on by semver range.
 
@@ -43,11 +58,11 @@ Both runs used `EUDI_TRUST=skip`, so `trustLevel` was `none`. What these runs es
 
 ## Partial
 
-| Area                    | Status                                                                                                                                                                                                                                                                       |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Issuer trust            | Every lab run to date used `EUDI_TRUST=skip` → `trustLevel: none`, including the German sandbox runs. Code supports `StaticTrustStore` / `EUDI_TRUST=static` + trusted certs; no anchored run completed yet, because no PID issuer trust anchor is published for the sandbox |
-| Claim / profile breadth | Age claims only on the production engine path: AV `age_over_18`, and German PID `age_over_18` / `age_equal_or_over.18`                                                                                                                                                       |
-| Example UX              | Page chrome stays demo-branded; omit widget `demo-mode` so the in-widget banner follows `X-Eudi-Mode` from `POST /sessions`                                                                                                                                                  |
+| Area                    | Status                                                                                                                                                                                                                                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Issuer trust            | Anchored against the German sandbox PID provider CA on 2026-08-31 → `trustLevel: anchored` (see above). Still partial because it is one static anchor for one credential: the AV lab runs remain `EUDI_TRUST=skip` → `trustLevel: none`, and there is no trusted-list-driven anchoring yet |
+| Claim / profile breadth | Age claims only on the production engine path: AV `age_over_18`, and German PID `age_over_18` / `age_equal_or_over.18`                                                                                                                                                                     |
+| Example UX              | Page chrome stays demo-branded; omit widget `demo-mode` so the in-widget banner follows `X-Eudi-Mode` from `POST /sessions`                                                                                                                                                                |
 
 ---
 

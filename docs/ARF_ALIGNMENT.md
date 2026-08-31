@@ -192,15 +192,15 @@ Only requested + disclosed attributes appear in verified claims. ARF-compliant s
 
 The following ARF requirements are **not yet implemented**:
 
-| ARF Component                    | Status          | Blocker                                                                                            |
-| -------------------------------- | --------------- | -------------------------------------------------------------------------------------------------- |
-| **EU Trusted List validation**   | Not implemented | Needs LOTL and national trusted list ingestion; `StaticTrustStore` is the interim path             |
-| **Relying Party registration**   | Not started     | Requires a Member State Registrar: access certificate + registration certificate                   |
-| **Registration certificates**    | Not implemented | Depends on registration above                                                                      |
-| **Revocation / status checking** | Not implemented | Token Status List support not built                                                                |
-| **Certified national wallets**   | Blocked         | Certified wallets expected from Dec 2026; testing to date is against reference and sandbox wallets |
+| ARF Component                    | Status          | Blocker                                                                                                                          |
+| -------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **EU Trusted List validation**   | Not implemented | Needs LOTL and national trusted list ingestion; `StaticTrustStore` is the interim path                                           |
+| **Relying Party registration**   | Partial         | Access certificate obtained from the German sandbox registrar and accepted by its wallet; registration certificate still missing |
+| **Registration certificates**    | Not implemented | Depends on registration above                                                                                                    |
+| **Revocation / status checking** | Not implemented | Token Status List support not built                                                                                              |
+| **Certified national wallets**   | Blocked         | Certified wallets expected from Dec 2026; testing to date is against reference and sandbox wallets                               |
 
-Anchored issuer trust is **supported but not yet exercised end to end**: every lab run so far has used trust skip, so `trustLevel` has been `none`. See [INTEROP.md](INTEROP.md) for what has and has not been proven against real wallets.
+Anchored issuer trust is **exercised end to end** as of 2026-08-31: a German sandbox PID presentation verified with `trustLevel: anchored` against a statically configured PID provider CA. What remains missing is where the anchor comes from, not whether anchoring works: trusted-list ingestion is the row above, so anchors are configured by hand today. See [INTEROP.md](INTEROP.md) for what has and has not been proven against real wallets.
 
 **Demo mode warnings** (demo is the default engine):
 

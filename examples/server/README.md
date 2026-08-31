@@ -35,7 +35,8 @@ pnpm start
 - `EUDI_MODE=production` selects `Openid4vpEngine` (`@openeudi/openid4vp`)
 - `HOST=0.0.0.0` required when `BASE_URL` is a LAN IP: default `127.0.0.1` makes the phone unable to POST `/callback`
 - `BASE_URL` must be reachable from the wallet (LAN IP for phone QR flows)
-- `EUDI_TRUST=skip` is lab-only (no issuer anchoring); use `EUDI_TRUST=static` + `EUDI_TRUSTED_CERTS=/path/to/ca.der` for anchored trust
+- `EUDI_TRUST=skip` is lab-only (no issuer anchoring); use `EUDI_TRUST=static` + `EUDI_TRUSTED_CERTS=/path/to/ca.der` for anchored trust. `EUDI_TRUSTED_CERTS` anchors the **credential issuer**, not the reader/registrar CA. Accepts a comma-separated list when you do not yet know which of several candidate CAs a credential chains to
+- `EUDI_CAPTURE_DIR=/path/to/dir` writes each raw wallet callback to `callback-<ts>.txt`. Lab aid, opt-in; the files contain a real credential, so keep the directory gitignored. Note this is the callback **as received**: under HAIP's `direct_post.jwt` that is the encrypted JWE, and the response key is held only in memory for the life of the session, so a saved capture cannot be decrypted after the fact
 - Dedicated QR/capture helper: `pnpm spike:wallet` (see `wallet-spike-server.ts`)
 - Frontend examples omit the widget `demo-mode` attribute so the in-widget banner follows `X-Eudi-Mode` from `POST /sessions` (production API: no demo banner; demo API: banner after session create). Optional: set `demo-mode` on the element for an immediate banner without waiting on the header.
 - Page-level demo chrome (top banner, demo-wallet panel) stays for the public demo story; for a real-wallet lab, ignore the demo wallet and use the QR.
