@@ -1,6 +1,6 @@
 import { createServer, IncomingMessage, ServerResponse } from "node:http";
 import { randomUUID } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import {
   createVerifierHandlers,
@@ -80,7 +80,13 @@ async function buildEngine(): Promise<VerifierEngine> {
   const trustedCertsPath = process.env.EUDI_TRUSTED_CERTS;
   const trustConfig =
     trustMode === "static" && trustedCertsPath
-      ? { trustedCerts: [new Uint8Array(readFileSync(trustedCertsPath))] }
+      ? {
+          // Comma-separated so a lab run can anchor on several candidate CAs
+          // in one pass instead of one wallet scan per candidate.
+          trustedCerts: trustedCertsPath
+            .split(",")
+            .map((p) => new Uint8Array(readFileSync(p.trim()))),
+        }
       : ({
           skipTrustCheck: true,
           acknowledgeInsecureTrust: true,
@@ -350,6 +356,15 @@ const server = createServer(async (req, res) => {
 
     if (req.method === "POST" && apiPath === "/callback") {
       const raw = await parseBody(req);
+      // Lab aid: keep the raw wallet POST so issuer chains can be inspected
+      // offline instead of costing another handset run. Opt-in, never in demo.
+      const captureDir = process.env.EUDI_CAPTURE_DIR;
+      if (captureDir) {
+        mkdirSync(captureDir, { recursive: true });
+        const file = join(captureDir, `callback-${Date.now()}.txt`);
+        writeFileSync(file, raw ?? "");
+        console.log(`[+] captured wallet callback: ${file}`);
+      }
       return sendResponse(
         res,
         await handlers.handleCallback(buildContext(req, {}, undefined, raw)),
