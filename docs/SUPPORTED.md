@@ -22,17 +22,18 @@
 
 ### Frontend
 
-| Stack          | Status          | How                                                                        |
-| -------------- | --------------- | -------------------------------------------------------------------------- |
-| **Plain HTML** | ✅ Supported    | Import `@eudi-verify/embed`; use `<eudi-verify>`                           |
-| **React**      | ✅ Supported    | `@eudi-verify/react` — React wrapper with typed props + callbacks          |
-| **Vue**        | ✅ Supported    | Import `@eudi-verify/embed`; configure `<eudi-verify>` as a custom element |
-| **Custom UI**  | ✅ Supported    | `@eudi-verify/client` (vanilla TS, zero framework deps)                    |
-| **WordPress**  | 🟡 Manual embed | Add script + element in theme/block; no plugin yet                         |
+| Stack          | Status               | How                                                                                     |
+| -------------- | -------------------- | --------------------------------------------------------------------------------------- |
+| **Plain HTML** | ✅ Supported         | Import `@eudi-verify/embed`; use `<eudi-verify>`                                        |
+| **React**      | ✅ Supported         | `@eudi-verify/react` — React wrapper with typed props + callbacks                       |
+| **Vue**        | ✅ Supported         | Import `@eudi-verify/embed`; configure `<eudi-verify>` as a custom element              |
+| **Next.js**    | 🟡 Guide, no library | `@eudi-verify/react`, mounted client-side; no dedicated `@eudi-verify/next` package yet |
+| **Custom UI**  | ✅ Supported         | `@eudi-verify/client` (vanilla TS, zero framework deps)                                 |
+| **WordPress**  | 🟡 Manual embed      | Add script + element in theme/block; no plugin yet                                      |
 
-**Documented integration:** [integration-frontend.md](./integration-frontend.md), [packages/embed/README.md](../packages/embed/README.md), [packages/react/README.md](../packages/react/README.md)
+**Documented integration:** [integration-frontend.md](./integration-frontend.md), [packages/embed/README.md](../packages/embed/README.md), [packages/react/README.md](../packages/react/README.md), [INTEGRATION.md](./INTEGRATION.md)
 
-**Reference demos:** [examples/html-vanilla](../examples/html-vanilla/) (plain HTML + shared API server), [examples/react](../examples/react/) (React + TypeScript + Vite), [examples/vue](../examples/vue/) (Vue + TypeScript + Vite)
+**Reference demos:** [examples/html-vanilla](../examples/html-vanilla/) (plain HTML + shared API server), [examples/react](../examples/react/) (React + TypeScript + Vite), [examples/vue](../examples/vue/) (Vue + TypeScript + Vite), [examples/nextjs](../examples/nextjs/) (Next.js App Router + TypeScript)
 
 ### Packages
 

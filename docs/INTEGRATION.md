@@ -2,7 +2,7 @@
 
 Add EU digital identity verification to your website.
 
-> **Platform support:** Node.js backend with plain HTML, React, or Vue frontends today. PHP: see the [PHP integration guide](./php.md). Other stacks: use a [Node sidecar](./integration-architecture.md#production-flow-php-proxy--node-sidecar) or implement the [OpenAPI spec](../openapi/eudi-verifier.yaml). See [SUPPORTED.md](./SUPPORTED.md) for the full matrix.
+> **Platform support:** Node.js backend with plain HTML, React, Vue, or Next.js frontends today. PHP: see the [PHP integration guide](./php.md). Other stacks: use a [Node sidecar](./integration-architecture.md#production-flow-php-proxy--node-sidecar) or implement the [OpenAPI spec](../openapi/eudi-verifier.yaml). See [SUPPORTED.md](./SUPPORTED.md) for the full matrix.
 
 ---
 
@@ -117,10 +117,40 @@ Build once from the repository root, then start API + frontend in separate termi
 ```bash
 pnpm install && pnpm build
 cd examples/server && pnpm start          # API :3000
-cd examples/html-vanilla && pnpm start    # or examples/react, examples/vue :3001
+cd examples/html-vanilla && pnpm start    # or examples/react, examples/vue, examples/nextjs :3001
 ```
 
-See [examples/html-vanilla](../examples/html-vanilla/), [examples/react](../examples/react/), [examples/vue](../examples/vue/).
+See [examples/html-vanilla](../examples/html-vanilla/), [examples/react](../examples/react/), [examples/vue](../examples/vue/), [examples/nextjs](../examples/nextjs/).
+
+### Server-rendered frameworks (Next.js)
+
+`<eudi-verify>` is a custom element, and custom elements only exist in the
+browser — the class extends `HTMLElement`, which is undefined in Node.js.
+Frameworks that render on the server (Next.js App Router, and SSR setups
+generally) will crash if that module is evaluated during a server render
+pass, even inside a component marked `'use client'` — `'use client'` only
+controls hydration, not whether Next.js still does an initial server render
+of that component.
+
+The fix is to defer loading the widget module itself to the browser, not
+just its rendering. In Next.js this means wrapping the widget in
+`next/dynamic` with `ssr: false`:
+
+```tsx
+"use client";
+
+import dynamic from "next/dynamic";
+
+const VerifyWidget = dynamic(() => import("./verify-widget"), {
+  ssr: false,
+});
+```
+
+The component doing the actual `<EudiVerify>` usage (`./verify-widget` above)
+stays a normal client component — the `dynamic(..., { ssr: false })` wrapper
+is the only SSR-specific code needed. See
+[examples/nextjs](../examples/nextjs/) for the full pattern, including where
+this split happens relative to the page's Server Component shell.
 
 ---
 
