@@ -7,6 +7,5 @@ export default defineConfig({
       "packages/client/src/**/*.test.ts",
       "examples/shared/**/*.test.js",
     ],
-    environmentMatchGlobs: [["examples/shared/**", "happy-dom"]],
   },
 });

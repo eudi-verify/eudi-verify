@@ -9,23 +9,30 @@ overrides:
   # safeLoad and breaks @changesets/cli → @manypkg/get-packages →
   # read-yaml-file@1.1.0. 3.15.1 fixes CVE-2026-59870 (quadratic CPU via
   # !!omap resolution) in the 3.x line.
-  "js-yaml@3": "^3.15.1"
+  "js-yaml@3": "^3.15.2"
   # @changesets/parse pulls js-yaml 4.x directly; separate line from the 3.x
   # pin above since both majors coexist. 4.3.1 fixes the same CVE in 4.x.
-  "js-yaml@4": "^4.3.1"
+  "js-yaml@4": "^4.3.2"
   # vitest → @vitest/mocker/vite/vite-node → postcss → nanoid: indefinite
   # loop with a zero-size custom generator, fixed 3.3.17.
   nanoid: ">=3.3.17"
   # vue-tsc/spectral-cli pull minimatch@9/@3, which pin brace-expansion@1/@2
   # (DoS via unbounded expansion). Fix only ships in the 5.x rewrite; 5.0.9
   # covers a follow-up bypass of the original 5.0.8 mitigation.
-  brace-expansion: ">=5.0.9"
+  brace-expansion: ">=5.0.12"
   # vite/tsup → postcss-load-config pins postcss <8.5.23 (sourceMappingURL
   # reads arbitrary .map files when `from` is unset; 8.5.18 fixed an earlier,
   # incomplete version of this same issue).
   postcss: ">=8.5.23"
   # spectral-cli → ajv pins fast-uri <3.1.5 (host confusion via backslash authority introducer).
-  fast-uri: ">=3.1.5"
+  fast-uri: ">=4.1.5"
+  # @openeudi/openid4vp → xmldsigjs pins @xmldom/xmldom 0.9.10 (XML parsing
+  # advisories fixed in 0.9.12). Stay on 0.9.x: the certified build ran on it.
+  "@xmldom/xmldom": "^0.9.12"
+  browserslist: ">=4.28.7"
+  baseline-browser-mapping: ">=2.11.0"
+  source-map-js: ">=1.2.2"
+  "@vue/server-renderer": ">=3.5.42"
 
 allowBuilds:
   # Optional native accel for cbor-x (via @openeudi/openid4vp). Pure-JS
@@ -42,3 +49,10 @@ onlyBuiltDependencies:
 # cooldown adds nothing here: we tracked this change through review ourselves.
 minimumReleaseAgeExclude:
   - "@openeudi/openid4vp@0.10.0"
+
+auditConfig:
+  ignoreGhsas:
+    # braces DoS via nested patterns: no fixed release (3.0.4) on npm yet.
+    # Dev-only, via @changesets/cli → fast-glob → micromatch, parsing our own
+    # globs. Remove once braces >=3.0.4 ships.
+    - GHSA-vfj7-8cjw-p6xm

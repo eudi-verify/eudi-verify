@@ -17,6 +17,7 @@ scripts/provision-base.conf
 .cursor/rules/maintainer-local.mdc
 .tmp-ops-state/
 .vscode/*
+.vscode/settings.json
 .DS_Store
 
 # Playwright e2e output (regenerated every run)
