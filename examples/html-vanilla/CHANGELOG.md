@@ -1,5 +1,12 @@
 # @eudi-verify/demo-html-vanilla
 
+## 0.0.17
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @eudi-verify/embed@1.5.1
+
 ## 0.0.16
 
 ### Patch Changes

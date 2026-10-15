@@ -1,5 +1,11 @@
 # @eudi-verify/client
 
+## 1.5.1
+
+### Patch Changes
+
+- [#72](https://github.com/eudi-verify/eudi-verify/pull/72) [`0f094fe`](https://github.com/eudi-verify/eudi-verify/commit/0f094febf59eb0ecb36f81fcff98461a2309b861) Thanks [@mkascel](https://github.com/mkascel)! - Map the `processing` session status to `waitingForWallet` instead of reporting "Unknown session status" while the server verifies the wallet response.
+
 ## 1.5.0
 
 ## 1.4.2
