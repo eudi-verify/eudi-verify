@@ -70,7 +70,7 @@ After=network.target
 
 [Service]
 Type=simple
-User=www-data
+DynamicUser=yes
 WorkingDirectory=/opt/eudi-verify/examples/html-vanilla
 EnvironmentFile=/opt/eudi-verify/examples/html-vanilla/.env
 ExecStart=/opt/eudi-verify/examples/html-vanilla/start.sh
