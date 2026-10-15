@@ -547,6 +547,7 @@ describe("createVerification", () => {
           sessionStatus: "waiting_for_wallet",
           expectedState: "waitingForWallet",
         },
+        { sessionStatus: "processing", expectedState: "waitingForWallet" },
         { sessionStatus: "verified", expectedState: "verified" },
         { sessionStatus: "rejected", expectedState: "rejected" },
         { sessionStatus: "expired", expectedState: "expired" },
