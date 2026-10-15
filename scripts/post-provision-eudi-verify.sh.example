@@ -41,7 +41,7 @@ After=network.target
 
 [Service]
 Type=simple
-User=$DEPLOY_USER
+DynamicUser=yes
 WorkingDirectory=$WORK_DIR
 EnvironmentFile=$ENV_FILE
 ExecStart=$APP_DIR/examples/html-vanilla/start.sh
