@@ -115,6 +115,7 @@ export function createVerification(config: VerificationConfig): Verification {
         return { status: "loading" };
 
       case "waiting_for_wallet":
+      case "processing":
         return { status: "waitingForWallet", sessionId: session.id };
 
       case "verified":
