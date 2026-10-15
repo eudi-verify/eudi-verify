@@ -243,7 +243,7 @@
 
 **Implemented Mitigations**:
 
-- `pnpm audit` in CI (fails on high/critical)
+- `pnpm audit` in CI (fails on high/critical); exceptions only for advisories with no fixed release, each listed with its path and removal condition under `auditConfig.ignoreGhsas` in `pnpm-workspace.yaml`
 - Dependabot security alerts enabled
 - License allowlist enforcement in CI
 - Minimal dependency surface (runtime: `@openeudi/core`, `@openeudi/openid4vp` + Apache-2.0/MIT transitive tree; see DEPENDENCY.md)
