@@ -220,8 +220,8 @@ importers:
   packages/server:
     dependencies:
       '@openeudi/core':
-        specifier: ^0.8.0
-        version: 0.8.0(qrcode@1.5.4)
+        specifier: ^0.9.0
+        version: 0.9.0(qrcode@1.5.4)
       '@openeudi/openid4vp':
         specifier: ^0.10.0
         version: 0.10.0(xpath@0.0.34)
@@ -324,6 +324,10 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+
+  '@babel/runtime@7.29.10':
+    resolution: {integrity: sha512-NpugTzbKgGrNe45Ui32cN8vCFFMxVtP/9rtfwv0nP5FRDAjvYBxJcLVpYA9mr1jxP6cnIT7x9LUzuDTbWYYNRA==}
+    engines: {node: '>=6.9.0'}
 
   '@babel/runtime@7.29.7':
     resolution: {integrity: sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==}
@@ -657,8 +661,9 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@openeudi/core@0.8.0':
-    resolution: {integrity: sha512-Ao3F6OXHUW+uDgQPYjOydGW0AQaXrK0jaBq+7ofUfulj2k1Oq2dRQnls4pN92hHAButQQPJMUdrnvAuaAYDSWg==}
+  '@openeudi/core@0.9.0':
+    resolution: {integrity: sha512-bHLnnbJi3ARg02FWNu3S79wKrBTo7eptUWHGQFU0WOjNZuBkYzLIukZzZgrUAc4z6tvLR88LF9+soxAn+wOawg==}
+    engines: {node: '>=22'}
     peerDependencies:
       qrcode: ^1.5.0
     peerDependenciesMeta:
@@ -2938,6 +2943,8 @@ snapshots:
       '@babel/core': 7.29.7
       '@babel/helper-plugin-utils': 7.29.7
 
+  '@babel/runtime@7.29.10': {}
+
   '@babel/runtime@7.29.7': {}
 
   '@babel/template@7.29.7':
@@ -3290,7 +3297,7 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
 
-  '@openeudi/core@0.8.0(qrcode@1.5.4)':
+  '@openeudi/core@0.9.0(qrcode@1.5.4)':
     dependencies:
       uuid: 11.1.1
     optionalDependencies:
@@ -3782,7 +3789,7 @@ snapshots:
   '@testing-library/dom@10.4.1':
     dependencies:
       '@babel/code-frame': 7.29.7
-      '@babel/runtime': 7.29.7
+      '@babel/runtime': 7.29.10
       '@types/aria-query': 5.0.4
       aria-query: 5.3.0
       dom-accessibility-api: 0.5.16
